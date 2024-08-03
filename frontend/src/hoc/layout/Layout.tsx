@@ -1,13 +1,17 @@
 import { Outlet } from "react-router-dom";
+import TopNav from "../../shared-components/navbar/TopNav";
 
 const Layout = () => {
   return (
-    <div>
-      <h1>rendereds</h1>
-      <div>
+    <main>
+      <section className="bg-red-400">
+        <TopNav />
+      </section>
+      <h1 className="bg-green-900">rendereds</h1>
+      <section className="bg-red-400">
         <Outlet />
-      </div>
-    </div>
+      </section>
+    </main>
   );
 };
 

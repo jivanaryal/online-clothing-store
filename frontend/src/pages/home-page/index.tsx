@@ -1,4 +1,3 @@
-import React from "react";
 import HeroSection from "./hero-section/HeroSection";
 
 const Index = () => {
