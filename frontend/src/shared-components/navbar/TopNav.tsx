@@ -1,5 +1,5 @@
 const TopNav = () => {
-  return <div>TopNav</div>;
+  return <div>This is top nabar where we should include the main category here</div>;
 };
 
 export default TopNav;
