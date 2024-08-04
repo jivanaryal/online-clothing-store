@@ -1,0 +1,9 @@
+/* nav.css */
+.sidebar {
+  transition: transform 0.4s ease-in;
+  transform: translateX(100%);
+}
+
+.sidebar-open {
+  transform: translateX(0);
+}

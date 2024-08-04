@@ -1,5 +1,9 @@
 const TopNav = () => {
-  return <div>This is top nabar where we should include the main category here</div>;
+  return (
+    <div className="bg-black text-gray-300 text-center py-1">
+      Free Shipping on order more than Rs. 500
+    </div>
+  );
 };
 
 export default TopNav;
