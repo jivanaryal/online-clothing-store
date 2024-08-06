@@ -8,16 +8,15 @@ import {
 } from "@/components/ui/carousel";
 import { CarouselType } from "../../../types/Carousel";
 import CarouselData from "./Carousel.json";
-
 import { Card, CardContent } from "@/components/ui/card";
 
 type Props = {};
 
 const CarouselSection: React.FC<Props> = () => {
   return (
-    <div className="container flex justify-center items-center md:py-3">
+    <div className="container flex justify-center items-center md:py-2">
       <Carousel
-        className="w-full md:w-11/12 h-2/3"
+        className="w-full md:w-11/12 cursor-pointer"
         opts={{
           align: "start",
           loop: true,
