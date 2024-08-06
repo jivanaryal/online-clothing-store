@@ -13,6 +13,7 @@ const createProduct = async (req, res) => {
       color,
       subcategory_id,
       discount,
+      stockQuantity,
     } = req.body;
     // console.log(req.body);
     console.log(req.files);
@@ -31,7 +32,8 @@ const createProduct = async (req, res) => {
       size,
       color,
       subcategory_id,
-      discount
+      discount,
+      stockQuantity
     );
     const createRecord = await productModel.create();
     return res.status(201).json({
@@ -95,6 +97,7 @@ const updateProduct = async (req, res) => {
       color,
       subcategory_id,
       discount,
+      stockQuantity,
     } = req.body;
     const images = req.files
       ? req.files.map((file) => `/uploads/${file.filename}`).join(",")
@@ -111,6 +114,7 @@ const updateProduct = async (req, res) => {
       color,
       subcategory_id,
       discount,
+      stockQuantity,
     };
     const updatedProduct = await Product.update(id, updateData);
 
