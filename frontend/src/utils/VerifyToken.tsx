@@ -1,9 +1,12 @@
 import axios from "axios";
 
-const VerifyToken = async (token) => {
-  console.log(token);
+interface VerifyTokenResponse {
+  isValid: boolean;
+}
+
+const VerifyToken = async (token: string): Promise<boolean> => {
   try {
-    const response = await axios.post(
+    const response = await axios.post<VerifyTokenResponse>(
       "http://localhost:5001/api/auth/ocs/customers/verify-token",
       { token }
     );

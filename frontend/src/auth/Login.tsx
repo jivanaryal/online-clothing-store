@@ -1,5 +1,4 @@
-import React from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -7,28 +6,34 @@ import { useAuth } from "./AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const Login = () => {
+interface MyFormValues {
+  Email: string;
+  Password: string;
+}
+
+// Define the initial values
+const initialValues: MyFormValues = {
+  Email: "",
+  Password: "",
+};
+
+// Define the validation schema
+const validationSchema = Yup.object({
+  Email: Yup.string()
+    .email("Invalid email format")
+    .required("Email is required"),
+  Password: Yup.string().required("Password is required"),
+});
+
+const Login: React.FC = () => {
   const { setIsAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  const formFields = [
-    { name: "Email", type: "email", label: "Email" },
-    { name: "Password", type: "password", label: "Password" },
-  ];
-
-  const initialValues = {
-    Email: "",
-    Password: "",
-  };
-
-  const validationSchema = Yup.object({
-    Email: Yup.string()
-      .email("Invalid email format")
-      .required("Email is required"),
-    Password: Yup.string().required("Password is required"),
-  });
-
-  const handleLogin = async (values, { setSubmitting, resetForm }) => {
+  // Handle form submission
+  const handleLogin = async (
+    values: MyFormValues,
+    { setSubmitting, resetForm }: FormikHelpers<MyFormValues>
+  ) => {
     try {
       const response = await axios.post(
         "http://localhost:5001/api/auth/ocs/customers/login",
@@ -43,7 +48,7 @@ const Login = () => {
         navigate("/");
       }
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "An error occurred");
     } finally {
       setSubmitting(false);
     }
@@ -60,27 +65,38 @@ const Login = () => {
         >
           {({ isSubmitting }) => (
             <Form className="space-y-6">
-              {formFields.map((field) => (
-                <div key={field.name}>
-                  <label
-                    className="block mb-1 text-gray-600"
-                    htmlFor={field.name}
-                  >
-                    {field.label}
-                  </label>
-                  <Field
-                    type={field.type}
-                    name={field.name}
-                    id={field.name}
-                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                  />
-                  <ErrorMessage
-                    name={field.name}
-                    component="div"
-                    className="mt-1 text-sm text-red-600"
-                  />
-                </div>
-              ))}
+              <div>
+                <label className="block mb-1 text-gray-600" htmlFor="Email">
+                  Email
+                </label>
+                <Field
+                  type="email"
+                  name="Email"
+                  id="Email"
+                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                />
+                <ErrorMessage
+                  name="Email"
+                  component="div"
+                  className="mt-1 text-sm text-red-600"
+                />
+              </div>
+              <div>
+                <label className="block mb-1 text-gray-600" htmlFor="Password">
+                  Password
+                </label>
+                <Field
+                  type="password"
+                  name="Password"
+                  id="Password"
+                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                />
+                <ErrorMessage
+                  name="Password"
+                  component="div"
+                  className="mt-1 text-sm text-red-600"
+                />
+              </div>
               <button
                 type="submit"
                 className="w-full px-4 py-2 text-white bg-indigo-500 rounded-md focus:bg-indigo-600 hover:bg-indigo-600"

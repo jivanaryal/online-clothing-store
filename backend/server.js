@@ -8,8 +8,10 @@ const productRoutes = require("./routes/products");
 const reviewRoutes = require("./routes/reviews");
 const discountRoutes = require("./routes/discount");
 const cartRoutes = require("./routes/cart");
+const cors = require("cors");
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
