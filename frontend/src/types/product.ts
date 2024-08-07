@@ -8,7 +8,7 @@ export type Tproduct = {
   description: string;
   price: number;
   category: TCategory;
-  // imageUrl: string;
+  imageUrl: string;
   discount: number;
   stockQuantity: number;
   images: string[];

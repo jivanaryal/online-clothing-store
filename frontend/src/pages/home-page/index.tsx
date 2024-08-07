@@ -9,7 +9,7 @@ const Index = () => {
       <CarouselSection />
       <HeroSection />
       {/* <ProductList /> */}
-      <ProductList varient={""} />
+      <ProductList varient={"all-product"} />
     </div>
   );
 };
