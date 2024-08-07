@@ -6,6 +6,8 @@ const CategoryRoutes = require("./routes/categories");
 const SubCategoryRoutes = require("./routes/subcategories");
 const productRoutes = require("./routes/products");
 const reviewRoutes = require("./routes/reviews");
+const discountRoutes = require("./routes/discount");
+const cartRoutes = require("./routes/cart");
 
 const app = express();
 app.use(express.json());
@@ -17,6 +19,8 @@ app.use("/api/ocs/categories", CategoryRoutes);
 app.use("/api/ocs/subcategories", SubCategoryRoutes);
 app.use("/api/ocs/products", productRoutes);
 app.use("/api/ocs/reviews", reviewRoutes);
+app.use("/api/ocs/discounts", discountRoutes);
+app.use("/api/ocs/carts", cartRoutes);
 
 const port = 5001;
 
