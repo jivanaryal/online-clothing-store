@@ -10,7 +10,7 @@ import SecondNavData from "./SecondNavData";
 import "./nav.css";
 
 const SecondNav = () => {
-  console.log(SecondNavData);
+  // console.log(SecondNavData);
   const [sidebar, setSidebar] = useState(false);
   return (
     <div>

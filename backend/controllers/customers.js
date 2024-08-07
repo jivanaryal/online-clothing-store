@@ -91,6 +91,9 @@ const loginCustomers = async (req, res) => {
 const verifyToken = async (req, res) => {
   const { token } = req.body;
 
+  const name = token;
+  console.log(name);
+
   try {
     jwt.verify(token, JWT_SECRET);
     res.status(200).json({ isValid: true });
