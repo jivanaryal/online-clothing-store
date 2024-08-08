@@ -25,7 +25,9 @@ const Sidebar = () => {
   return (
     <div>
       <main>
-        <h1 className="font-bold text-2xl ml-6 mt-5">Jivan Aryal</h1>
+        <h1 className="font-extrabold text-gray-800 text-2xl ml-6 mt-5">
+          Jivan Aryal
+        </h1>
         <section>
           <nav className="mt-6 flex justify-center flex-col ml-4 gap-2 mr-3">
             {SidbarItem.map((items, index) => (
@@ -37,7 +39,7 @@ const Sidebar = () => {
                   <li className="text-xl text-gray-600 group-hover:text-white">
                     {items.icons}
                   </li>
-                  <li className="capitalize font-medium text-sm text-gray-700 group-hover:text-white">
+                  <li className="capitalize font-medium text-base text-gray-700 group-hover:text-white">
                     {items.title}
                   </li>
                 </ul>
