@@ -17,6 +17,7 @@ const SingleProduct = ({ product }: Props) => {
             className="h-full w-full object-cover rounded-md"
           />
         </div>
+
         <div className="content text-black p-1">
           <p className="text-lg line-clamp-2 leading-5">{product.name}</p>
           <p className="text-xl font-semibold text-blue-600">
