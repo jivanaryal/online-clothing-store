@@ -45,7 +45,7 @@ class Product {
       this.stockQuantity,
     ];
 
-    console.log(values);
+    // console.log(values);
     return db.execute(createSql, values);
   }
 

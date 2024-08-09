@@ -15,10 +15,10 @@ const createProduct = async (req, res) => {
       discount,
       stockQuantity,
     } = req.body;
-    // console.log(req.body);
-    console.log(req.files);
 
-    console.log(req.body);
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ message: "Please provide the images" });
+    }
 
     const imageURLs = req.files.map((file) => `/uploads/${file.filename}`);
 
