@@ -1,0 +1,15 @@
+.range-input {
+  @apply appearance-none h-2 bg-black rounded-full;
+}
+
+.range-input::-webkit-slider-thumb {
+  @apply appearance-none w-6 h-6 bg-black border border-black rounded-full cursor-pointer;
+}
+
+.range-input::-moz-range-thumb {
+  @apply w-6 h-6 bg-white border border-black rounded-full cursor-pointer;
+}
+
+.range-input::-ms-thumb {
+  @apply w-6 h-6 bg-white border border-black rounded-full cursor-pointer;
+}
