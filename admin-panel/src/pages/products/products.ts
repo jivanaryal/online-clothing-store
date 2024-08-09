@@ -1,14 +1,15 @@
-import Yup from "yup";
+import * as Yup from "yup";
+
 export const initialValues = {
-  name: "",
   category_id: "",
+  subcategory_id: "",
+  name: "",
   price: "",
   description: "",
-  imageURLs: "",
+  imageURL: "",
   brand: "",
   size: "",
   color: "",
-  subcategory_id: "",
   discount: "",
   stockQuantity: "",
 };
@@ -31,7 +32,21 @@ export const validationSchema = Yup.object({
     .min(0, "Stock Quantity cannot be negative"),
 });
 
-export const FormFields = [
+interface IOption {
+  id?: string;
+  category_id?: string | number;
+  subcategory_id?: string | number;
+  name: string;
+}
+
+interface IFormField {
+  name: keyof typeof initialValues;
+  type: "text" | "select" | "number" | "file";
+  broswername: string;
+  options?: IOption[];
+}
+
+export const FormFields: IFormField[] = [
   {
     name: "name",
     type: "text",
@@ -40,8 +55,8 @@ export const FormFields = [
   {
     broswername: "category",
     name: "category_id",
-    type: "text",
-    option: [],
+    type: "select",
+    options: [],
   },
   {
     broswername: "sub-category",
@@ -49,7 +64,6 @@ export const FormFields = [
     type: "select",
     options: [],
   },
-
   {
     broswername: "product price",
     name: "price",
