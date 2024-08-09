@@ -18,7 +18,7 @@ const App = () => {
           <Route path="/" element={<Layout />}>
             <Route index element={<HomePage />} />
             <Route path="/new-arrivals" element={<NewArrivals />} />
-            {/* <Route path="/shop" element={<Shop />} /> */}
+            <Route path="/shop" element={<Shop />} />
             <Route path="/products/:id" element={<HeroProduct />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
@@ -31,14 +31,14 @@ const App = () => {
               </PrivateRoute>
             }
           />
-          <Route
+          {/* <Route
             path="/shop"
             element={
               <PrivateRoute>
                 <Shop />
               </PrivateRoute>
             }
-          />
+          /> */}
         </Routes>
       </AuthProvider>
     </Router>
