@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:50001/api/ocs";
+const API_BASE_URL = "http://localhost:5001/api/ocs";
 type DataType = unknown;
 
 export const get = (url: string, params: string) => {

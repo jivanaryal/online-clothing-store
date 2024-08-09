@@ -9,7 +9,7 @@ const Layout = () => {
         <Sidebar />
       </section>
       <section className="col-span-10 ">
-        <section className="fixed w-full border-b-2 h-16 bg-white">
+        <section className="fixed w-10/12 mx-auto border-b-2 h-16 bg-white">
           <Navbar />
           <div className="mt-16">
             <Outlet />
