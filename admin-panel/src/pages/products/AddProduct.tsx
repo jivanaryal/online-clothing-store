@@ -47,78 +47,92 @@ const AddProduct = () => {
 
   return (
     <main>
-      <h1>Create Product</h1>
+      <h1 className="text-center text-2xl font-semibold my-10">
+        Create Product
+      </h1>
 
-      <section>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={(val) => {
-            console.log(val);
-          }}
-        >
-          {({ handleSubmit, setFieldValue, values }) => (
-            <Form onSubmit={handleSubmit}>
-              <div>
-                {FormFields.map((formValues, index) => {
-                  if (formValues.type === "select") {
-                    return (
-                      <div key={index}>
-                        <label htmlFor={formValues.name}>
-                          {formValues.broswername}
-                        </label>
-                        <Field
-                          as="select"
-                          name={formValues.name}
-                          value={values[formValues.name]} // Controlled by Formik
-                          onChange={(
-                            event: React.ChangeEvent<HTMLSelectElement>
-                          ) =>
-                            formValues.name === "category_id"
-                              ? handleCategoryChange(event, setFieldValue)
-                              : setFieldValue(
-                                  formValues.name,
-                                  event.target.value
-                                )
-                          }
-                        >
-                          <option value="" disabled>
-                            Choose {formValues.broswername}
-                          </option>
-
-                          {formValues.options?.map((option) => (
-                            <option
-                              key={
-                                option.category_id ||
-                                option.subcategory_id ||
-                                option.name
-                              }
-                              value={
-                                formValues.name === "category_id"
-                                  ? option.category_id
-                                  : option.subcategory_id
-                              }
-                            >
-                              {option.name}
-                            </option>
-                          ))}
-                        </Field>
-                      </div>
-                    );
-                  }
-                  // Handle other field types here
-                  return null; // Handle other cases like text, number, etc.
-                })}
-              </div>
-              <button
-                type="submit"
-                className="bg-blue-500 mb-5 w-fit hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      <section className=" ">
+        <div className=" ">
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={(val) => {
+              console.log(val);
+            }}
+          >
+            {({ handleSubmit, setFieldValue, values }) => (
+              <Form
+                onSubmit={handleSubmit}
+                className="border-2 w-5/12 mx-auto p-10 rounded-sm min-h-screen"
               >
-                Submit
-              </button>
-            </Form>
-          )}
-        </Formik>
+                <div className=" ">
+                  {FormFields.map((formValues, index) => {
+                    if (formValues.type === "select") {
+                      return (
+                        <div
+                          key={index}
+                          className="flex flex-col gap-2 mb-4 capitalize text-gray-600 text-sm "
+                        >
+                          <label
+                            htmlFor={formValues.name}
+                            className="font-semibold"
+                          >
+                            {formValues.broswername}
+                          </label>
+                          <Field
+                            as="select"
+                            name={formValues.name}
+                            value={values[formValues.name]} // Controlled by Formik
+                            className="py-2  w-full border-2 px-2 rounded text-gray-700 "
+                            onChange={(
+                              event: React.ChangeEvent<HTMLSelectElement>
+                            ) =>
+                              formValues.name === "category_id"
+                                ? handleCategoryChange(event, setFieldValue)
+                                : setFieldValue(
+                                    formValues.name,
+                                    event.target.value
+                                  )
+                            }
+                          >
+                            <option value="" disabled>
+                              Choose {formValues.broswername}
+                            </option>
+
+                            {formValues.options?.map((option) => (
+                              <option
+                                key={
+                                  option.category_id ||
+                                  option.subcategory_id ||
+                                  option.name
+                                }
+                                value={
+                                  formValues.name === "category_id"
+                                    ? option.category_id
+                                    : option.subcategory_id
+                                }
+                              >
+                                {option.name}
+                              </option>
+                            ))}
+                          </Field>
+                        </div>
+                      );
+                    }
+                    // Handle other field types here
+                    return null; // Handle other cases like text, number, etc.
+                  })}
+                </div>
+                <button
+                  type="submit"
+                  className="bg-blue-500 mb-5 w-fit hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                >
+                  Submit
+                </button>
+              </Form>
+            )}
+          </Formik>
+        </div>
       </section>
     </main>
   );

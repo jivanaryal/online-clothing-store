@@ -59,7 +59,7 @@ export const FormFields: IFormField[] = [
     options: [],
   },
   {
-    broswername: "sub-category",
+    broswername: "sub category",
     name: "subcategory_id",
     type: "select",
     options: [],
