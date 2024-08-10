@@ -63,9 +63,9 @@ const AddProduct = () => {
             {({ handleSubmit, setFieldValue, values }) => (
               <Form
                 onSubmit={handleSubmit}
-                className="border-2 w-5/12 mx-auto p-10 rounded-sm min-h-screen"
+                className="border-2 w-5/12 mx-auto p-10 rounded-sm"
               >
-                <div className=" ">
+                <div className="">
                   {FormFields.map((formValues, index) => {
                     if (formValues.type === "select") {
                       return (
@@ -119,15 +119,35 @@ const AddProduct = () => {
                         </div>
                       );
                     }
+                    if (formValues.type === "number") {
+                      return (
+                        <div
+                          key={index}
+                          className="flex flex-col gap-2 mb-4 capitalize text-gray-600 text-sm "
+                        >
+                          <label
+                            htmlFor={formValues.name}
+                            className="font-semibold"
+                          >
+                            {formValues.broswername}
+                          </label>
+                          <Field
+                            type={formValues.type}
+                            name={formValues.name}
+                            className="py-2  w-full border-2 px-2 rounded text-gray-700 "
+                          ></Field>
+                        </div>
+                      );
+                    }
                     // Handle other field types here
                     return null; // Handle other cases like text, number, etc.
                   })}
                 </div>
                 <button
                   type="submit"
-                  className="bg-blue-500 mb-5 w-fit hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  className="bg-blue-600 mb-5 w-fit hover:bg-blue-500 text-white f py-2 font-semibold  px-3 text-xs rounded"
                 >
-                  Submit
+                  Submit item
                 </button>
               </Form>
             )}
