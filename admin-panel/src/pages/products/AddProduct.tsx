@@ -7,13 +7,15 @@ import { TCategory } from "../../types/category";
 import { TSubCategory } from "../../types/subcategory";
 import { FaTimes } from "react-icons/fa";
 import { IoMdCloudUpload } from "react-icons/io";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddProduct = () => {
   const [category, setCategory] = useState<TCategory[]>([]);
   const [subCategory, setSubCategory] = useState<TSubCategory[]>([]);
   const [showimage, setShowImage] = useState("");
-  const [newImage, setImage] = useState([]);
-  const [extraImage, setExtraImage] = useState([]);
+  const [newImage, setImage] = useState<File[]>([]);
+  const [extraImage, setExtraImage] = useState<File[]>([]);
 
   useEffect(() => {
     async function getCategory() {
@@ -23,6 +25,37 @@ const AddProduct = () => {
 
     getCategory();
   }, []);
+
+  const postFormData = async (values) => {
+    const formData = new FormData();
+    console.log(values);
+
+    FormFields.forEach((field) => {
+      if (field.type !== "file") {
+        formData.append(field.name, values[field.name] || "");
+      }
+    });
+    newImage.forEach((file) => {
+      formData.append("imageURL", file);
+    });
+    try {
+      const response = await axios.post(
+        "http://localhost:5001/api/ocs/products",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      toast.success("product added successfully");
+
+      console.log("Product added successfully:", response.data);
+    } catch (error) {
+      toast.error("product is not posted");
+      console.error("Error adding product:", error);
+    }
+  };
 
   const handleCategoryChange = async (
     event: React.ChangeEvent<HTMLSelectElement>,
@@ -76,9 +109,9 @@ const AddProduct = () => {
         <div className=" ">
           <Formik
             initialValues={initialValues}
-            validationSchema={validationSchema}
+            // validationSchema={validationSchema}
             onSubmit={(val) => {
-              console.log(val);
+              postFormData(val);
             }}
           >
             {({ handleSubmit, setFieldValue, values }) => (
@@ -129,8 +162,8 @@ const AddProduct = () => {
                                 }
                                 value={
                                   formValues.name === "category_id"
-                                    ? option.category_id
-                                    : option.subcategory_id
+                                    ? Number(option.category_id)
+                                    : Number(option.subcategory_id)
                                 }
                               >
                                 {option.name}
@@ -205,7 +238,7 @@ const AddProduct = () => {
                     if (formValues.type === "file") {
                       return (
                         <div className="col-span-8 grid grid-cols-7 ">
-                          <label className="col-span-full mb-4">
+                          <label className="col-span-full mb-4 text-sm font-semibold text-gray-600">
                             Product Images:
                           </label>
                           <label
@@ -220,7 +253,6 @@ const AddProduct = () => {
                             type={formValues.type}
                             name={formValues.name}
                             accept=".png,.jpg,.jpeg,.gif"
-                            required
                             multiple
                             onChange={(e) => handleImageChange(e)}
                             className="hidden"
@@ -250,6 +282,7 @@ const AddProduct = () => {
                                     >
                                       <FaTimes className="text-sm" />
                                     </button>
+                                    <ToastContainer />
                                   </div>
                                 );
                               })}

@@ -81,6 +81,11 @@ export const FormFields: IFormField[] = [
     type: "text",
   },
   {
+    broswername: "product color",
+    name: "color",
+    type: "text",
+  },
+  {
     broswername: "product price",
     name: "price",
     type: "number",

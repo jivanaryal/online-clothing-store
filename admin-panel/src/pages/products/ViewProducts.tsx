@@ -42,7 +42,7 @@ const ViewProducts: React.FC = () => {
             </section>
           </header>
 
-          <section className="grid pb-6   pl-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <section className="grid pb-6   pl-4 grid-cols-1 sm:grid- s-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {products.slice(0, 10).map((product, index) => (
               <section
                 key={index}
