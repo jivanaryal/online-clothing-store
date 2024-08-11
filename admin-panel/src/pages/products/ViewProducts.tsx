@@ -4,7 +4,7 @@ import { getSingle, remove } from "../../services/api";
 import { FaPen } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { TProduct } from "../../types/products";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 
 const ViewProducts: React.FC = () => {
@@ -81,10 +81,16 @@ const ViewProducts: React.FC = () => {
                   </b>
                 </section>
                 <section className="flex justify-center gap-5 mt-4 text-sm">
-                  <button className="bg-white  border-[1px] px-3 py-2 flex gap-1 items-center rounded">
-                    <FaPen className="text-[10px] text-gray-600" />
-                    <p className="text-xs text-gray-800 font-bold ">Edit</p>
-                  </button>
+                  <Link
+                    to={`/products/edit/${product.product_id}`}
+                    state={product}
+                  >
+                    {" "}
+                    <button className="bg-white  border-[1px] px-3 py-2 flex gap-1 items-center rounded">
+                      <FaPen className="text-[10px] text-gray-600" />
+                      <p className="text-xs text-gray-800 font-bold ">Edit</p>
+                    </button>{" "}
+                  </Link>
                   <button
                     className="bg-white text-red-500 border-[1px]  p-2 gap-1 flex items-center rounded"
                     onClick={() => handleDeleteProduct(product.product_id)}
