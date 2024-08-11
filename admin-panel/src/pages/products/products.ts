@@ -41,7 +41,7 @@ interface IOption {
 
 interface IFormField {
   name: keyof typeof initialValues;
-  type: "text" | "select" | "number" | "file";
+  type: "text" | "select" | "number" | "file" | "textarea";
   broswername: string;
   options?: IOption[];
 }
@@ -65,15 +65,11 @@ export const FormFields: IFormField[] = [
     options: [],
   },
   {
-    broswername: "product price",
-    name: "price",
-    type: "number",
-  },
-  {
     broswername: "product description",
     name: "description",
-    type: "text",
+    type: "textarea",
   },
+
   {
     broswername: "product brand",
     name: "brand",
@@ -83,6 +79,11 @@ export const FormFields: IFormField[] = [
     broswername: "product size",
     name: "size",
     type: "text",
+  },
+  {
+    broswername: "product price",
+    name: "price",
+    type: "number",
   },
   {
     broswername: "discount",
