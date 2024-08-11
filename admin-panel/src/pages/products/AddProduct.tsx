@@ -121,6 +121,10 @@ const AddProduct = () => {
               >
                 <div className="grid grid-cols-12 gap-x-10">
                   {FormFields.map((formValues, index) => {
+                    console.log(
+                      values[formValues.name],
+                      "is this original value"
+                    );
                     if (formValues.type === "select") {
                       return (
                         <div

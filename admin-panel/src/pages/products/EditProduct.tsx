@@ -7,56 +7,62 @@ import { TCategory } from "../../types/category";
 import { TSubCategory } from "../../types/subcategory";
 import { FaTimes } from "react-icons/fa";
 import { IoMdCloudUpload } from "react-icons/io";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 const EditProduct = () => {
   const [category, setCategory] = useState<TCategory[]>([]);
   const [subCategory, setSubCategory] = useState<TSubCategory[]>([]);
   const [newImage, setImage] = useState<File[]>([]);
   const [extraImage, setExtraImage] = useState<File[]>([]);
+  const [oldImage, setOldImage] = useState<string[]>([]); // Store URLs or paths of old images
 
   const location = useLocation();
 
-  console.log(location.state);
+  const { id } = useParams();
 
   useEffect(() => {
     async function getCategory() {
       const res = await getSingle("/categories");
+      const res1 = await axios.get(
+        `http://localhost:5001/api/ocs/subcategories/${location.state.subcategory_id}`
+      );
+
       setCategory(res.data);
+      setSubCategory(res1.data);
     }
 
     getCategory();
   }, []);
 
-  const postFormData = async (values) => {
+  useEffect(() => {
+    setOldImage(location.state.imageURL?.map((val) => val)); // Assuming imageURL is an array of image URLs
+  }, []);
+
+  const updateFormData = async (values) => {
     const formData = new FormData();
-    console.log(values);
 
     FormFields.forEach((field) => {
       if (field.type !== "file") {
         formData.append(field.name, values[field.name] || "");
       }
     });
+
     newImage.forEach((file) => {
       formData.append("imageURL", file);
     });
+
     try {
-      const response = await axios.post(
-        "http://localhost:5001/api/ocs/products",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+      const response = await axios.patch(
+        `http://localhost:5001/api/ocs/products/${id}`,
+        formData
       );
-      toast.success("product added successfully");
+      toast.success("Product added successfully");
 
       console.log("Product added successfully:", response.data);
     } catch (error) {
-      toast.error("product is not posted");
+      toast.error("Product is not posted");
       console.error("Error adding product:", error);
     }
   };
@@ -66,7 +72,7 @@ const EditProduct = () => {
     setFieldValue: any
   ) => {
     const categoryId = event.target.value;
-    setFieldValue("category_id", categoryId); // Update the Formik state
+    setFieldValue("category_id", categoryId);
 
     if (categoryId) {
       const res = await axios.get(
@@ -90,11 +96,12 @@ const EditProduct = () => {
   }));
 
   const handleImageChange = (event) => {
-    setImage([...newImage, event.target.files[0]]);
-    setExtraImage([...extraImage, event.target.files[0]]);
+    const newSelectedImages = Array.from(event.target.files); // Convert FileList to Array
+    setImage([...newImage, ...newSelectedImages]); // Append new images to the existing ones
+    setExtraImage([...extraImage, ...newSelectedImages]); // Same for extraImage
   };
 
-  const handleRemoveImage = (index: number) => {
+  const handleRemoveNewImage = (index: number) => {
     const updatedImages = extraImage.filter((_, i) => i !== index);
     setExtraImage(updatedImages);
     setImage(updatedImages);
@@ -104,12 +111,17 @@ const EditProduct = () => {
     }
   };
 
-  return (
-    <main className="bg-[#F7F7F7]  pt-2">
-      <h1 className="text-center text-2xl font-medium my-4">Create Product</h1>
+  const handleRemoveOldImage = (index: number) => {
+    const updatedOldImages = oldImage.filter((_, i) => i !== index);
+    setOldImage(updatedOldImages);
+  };
 
-      <section className=" ">
-        <div className=" ">
+  return (
+    <main className="bg-[#F7F7F7] pt-2">
+      <h1 className="text-center text-2xl font-medium my-4">Edit Product</h1>
+
+      <section>
+        <div>
           <Formik
             initialValues={{
               category_id: location.state.category_id,
@@ -126,7 +138,7 @@ const EditProduct = () => {
             }}
             validationSchema={validation}
             onSubmit={(val) => {
-              postFormData(val);
+              updateFormData(val);
             }}
           >
             {({ handleSubmit, setFieldValue, values }) => (
@@ -140,7 +152,7 @@ const EditProduct = () => {
                       return (
                         <div
                           key={index}
-                          className="flex flex-col gap-2 mb-4 capitalize text-gray-600 text-sm col-span-6 "
+                          className="flex flex-col gap-2 mb-4 capitalize text-gray-600 text-sm col-span-6"
                         >
                           <label
                             htmlFor={formValues.name}
@@ -151,11 +163,9 @@ const EditProduct = () => {
                           <Field
                             as="select"
                             name={formValues.name}
-                            value={values[formValues.name]} // Controlled by Formik
-                            className="py-2  w-full border-2 px-2 rounded text-gray-700 "
-                            onChange={(
-                              event: React.ChangeEvent<HTMLSelectElement>
-                            ) =>
+                            value={values[formValues.name]}
+                            className="py-2 w-full border-2 px-2 rounded text-gray-700"
+                            onChange={(event) =>
                               formValues.name === "category_id"
                                 ? handleCategoryChange(event, setFieldValue)
                                 : setFieldValue(
@@ -167,7 +177,6 @@ const EditProduct = () => {
                             <option value="" disabled>
                               Choose {formValues.broswername}
                             </option>
-
                             {formValues.options?.map((option) => (
                               <option
                                 key={
@@ -188,16 +197,17 @@ const EditProduct = () => {
                           <ErrorMessage
                             name={formValues.name}
                             component={"div"}
-                            className="text-red-500 text-[12px] font-semibold "
+                            className="text-red-500 text-[12px] font-semibold"
                           />
                         </div>
                       );
                     }
+
                     if (formValues.type === "number") {
                       return (
                         <div
                           key={index}
-                          className="flex flex-col col-span-4   gap-2 mb-4 capitalize text-gray-600 text-sm "
+                          className="flex flex-col col-span-4 gap-2 mb-4 capitalize text-gray-600 text-sm"
                         >
                           <label
                             htmlFor={formValues.name}
@@ -208,21 +218,22 @@ const EditProduct = () => {
                           <Field
                             type={formValues.type}
                             name={formValues.name}
-                            className="py-2  w-full border-2 px-2 rounded text-gray-700 "
+                            className="py-2 w-full border-2 px-2 rounded text-gray-700"
                           ></Field>
                           <ErrorMessage
                             name={formValues.name}
                             component={"div"}
-                            className="text-red-500 text-[12px] font-semibold "
+                            className="text-red-500 text-[12px] font-semibold"
                           />
                         </div>
                       );
                     }
+
                     if (formValues.type === "text") {
                       return (
                         <div
                           key={index}
-                          className="flex flex-col col-span-6   gap-2 mb-4 capitalize text-gray-600 text-sm "
+                          className="flex flex-col col-span-6 gap-2 mb-4 capitalize text-gray-600 text-sm"
                         >
                           <label
                             htmlFor={formValues.name}
@@ -233,21 +244,22 @@ const EditProduct = () => {
                           <Field
                             type={formValues.type}
                             name={formValues.name}
-                            className="py-2  w-full border-2 px-2 rounded text-gray-700 "
+                            className="py-2 w-full border-2 px-2 rounded text-gray-700"
                           ></Field>
                           <ErrorMessage
                             name={formValues.name}
                             component={"div"}
-                            className="text-red-500 text-[12px] font-semibold "
+                            className="text-red-500 text-[12px] font-semibold"
                           />
                         </div>
                       );
                     }
+
                     if (formValues.type === "textarea") {
                       return (
                         <div
                           key={index}
-                          className="flex flex-col col-span-6   gap-2 mb-4 capitalize text-gray-600 text-sm "
+                          className="flex flex-col col-span-6 gap-2 mb-4 capitalize text-gray-600 text-sm"
                         >
                           <label
                             htmlFor={formValues.name}
@@ -259,12 +271,12 @@ const EditProduct = () => {
                             as={formValues.type}
                             name={formValues.name}
                             placeholder={formValues.name}
-                            className="h-20 w-full border-2 px-2 rounded text-gray-700 "
+                            className="h-20 w-full border-2 px-2 rounded text-gray-700"
                           />
                           <ErrorMessage
                             name={formValues.name}
                             component={"div"}
-                            className="text-red-500 text-[12px] font-semibold "
+                            className="text-red-500 text-[12px] font-semibold"
                           />
                         </div>
                       );
@@ -272,7 +284,7 @@ const EditProduct = () => {
 
                     if (formValues.type === "file") {
                       return (
-                        <div className="col-span-8 grid grid-cols-7 ">
+                        <div className="col-span-8 grid grid-cols-7">
                           <label className="col-span-full mb-4 text-sm font-semibold text-gray-600">
                             Product Images:
                           </label>
@@ -281,7 +293,7 @@ const EditProduct = () => {
                             className="cursor-pointer flex flex-col border-2 h-24 justify-center max-w-32 rounded text-gray-500 bg-[#F7F7F7] col-span-2 items-center"
                           >
                             <IoMdCloudUpload className="text-2xl font-semibold" />
-                            <p>upload</p>
+                            <p>Upload</p>
                           </label>
                           <input
                             id="file-upload"
@@ -293,45 +305,69 @@ const EditProduct = () => {
                             className="hidden"
                             ref={fileInputRef}
                           />
+
+                          {/* Display Old Images */}
                           <div
-                            className={` flex items-center col-span-full ${
+                            className={`flex items-center col-span-full ${
+                              oldImage.length === 0 ? "h-0" : "h-36"
+                            }`}
+                          >
+                            {oldImage.map((val, i) => (
+                              <div
+                                key={i}
+                                className="relative h-full max-w-56 mr-4 mt-4"
+                              >
+                                <img
+                                  src={`http://localhost:5001${val}`}
+                                  alt="old-img"
+                                  className="h-full border-2 w-full object-contain"
+                                />
+                                <button
+                                  type="button"
+                                  className="absolute top-0 right-0 p-1 bg-red-600 text-white rounded-full"
+                                  onClick={() => handleRemoveOldImage(i)}
+                                >
+                                  <FaTimes className="text-sm" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Display New Images */}
+                          <div
+                            className={`flex items-center col-span-full ${
                               extraImage.length === 0 ? "h-0" : "h-36"
                             }`}
                           >
-                            {extraImage &&
-                              extraImage.map((val, i) => {
-                                return (
-                                  <div
-                                    key={i}
-                                    className="relative h-full max-w-56 mr-4 mt-4"
-                                  >
-                                    <img
-                                      src={URL.createObjectURL(val)}
-                                      alt="img"
-                                      className="h-full border-2 w-full  object-contain"
-                                    />
-                                    <button
-                                      type="button"
-                                      className="absolute top-0 right-0 p-1 bg-red-600 text-white rounded-full"
-                                      onClick={() => handleRemoveImage(i)}
-                                    >
-                                      <FaTimes className="text-sm" />
-                                    </button>
-                                    <ToastContainer />
-                                  </div>
-                                );
-                              })}
+                            {extraImage.map((val, i) => (
+                              <div
+                                key={i}
+                                className="relative h-full max-w-56 mr-4 mt-4"
+                              >
+                                <img
+                                  src={URL.createObjectURL(val)}
+                                  alt="new-img"
+                                  className="h-full border-2 w-full object-contain"
+                                />
+                                <button
+                                  type="button"
+                                  className="absolute top-0 right-0 p-1 bg-red-600 text-white rounded-full"
+                                  onClick={() => handleRemoveNewImage(i)}
+                                >
+                                  <FaTimes className="text-sm" />
+                                </button>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       );
                     }
-                    // Handle other field types here
-                    return null; // Handle other cases like text, number, etc.
+                    return null;
                   })}
                 </div>
                 <button
                   type="submit"
-                  className="bg-blue-600 mb-5 mt-10 w-fit hover:bg-blue-500 text-white f py-2 font-semibold  px-3 text-xs rounded"
+                  className="bg-blue-600 mb-5 mt-10 w-fit hover:bg-blue-500 text-white py-2 font-semibold px-3 text-xs rounded"
                 >
                   Submit item
                 </button>
