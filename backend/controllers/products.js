@@ -35,6 +35,8 @@ const createProduct = async (req, res) => {
       discount,
       stockQuantity
     );
+
+    console.log(imageURLs);
     const createRecord = await productModel.create();
     return res.status(201).json({
       createRecord,
@@ -99,16 +101,29 @@ const updateProduct = async (req, res) => {
       discount,
       stockQuantity,
     } = req.body;
-    const images = req.files
-      ? req.files.map((file) => `/uploads/${file.filename}`).join(",")
-      : null;
+
+    let imageURLs;
+    if (req.files && req.files.length > 0) {
+      console.log(req.files);
+      imageURLs = req.files.map((file) => `/uploads/${file.filename}`);
+    } else {
+      // Fetch existing imageURLs if no new images are provided
+      const existingProduct = await Product.findById(id);
+      if (existingProduct[0].length === 0) {
+        return res.status(404).json({
+          error: "Not Found",
+          msg: "No product found with the specified ID.",
+        });
+      }
+      imageURLs = existingProduct[0][0].imageURL; // Assuming the imageURLs field exists in the database
+    }
 
     const updateData = {
       name,
       category_id,
       price,
       description,
-      imageURL: images,
+      imageURLs, // This should be an array
       brand,
       size,
       color,
@@ -116,6 +131,7 @@ const updateProduct = async (req, res) => {
       discount,
       stockQuantity,
     };
+
     const updatedProduct = await Product.update(id, updateData);
 
     if (updatedProduct[0].affectedRows === 0) {

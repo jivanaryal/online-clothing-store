@@ -45,7 +45,6 @@ class Product {
       this.stockQuantity,
     ];
 
-    // console.log(values);
     return db.execute(createSql, values);
   }
 
@@ -74,6 +73,7 @@ class Product {
       discount,
       stockQuantity,
     } = data;
+    console.log(imageURLs, "from models");
     const updateSql = `
       UPDATE products
       SET name = ?, category_id = ?, price = ?, description = ?, imageURL = ?, brand = ?, size = ?, color = ?, subcategory_id = ?, discount = ?,stockQuantity =?
@@ -89,9 +89,10 @@ class Product {
       color,
       subcategory_id,
       discount,
-      product_id,
       stockQuantity,
+      product_id,
     ];
+    console.log(values, "console loggine value");
     return db.execute(updateSql, values);
   }
 
