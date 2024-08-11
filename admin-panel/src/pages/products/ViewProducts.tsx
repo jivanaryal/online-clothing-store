@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
-import { getSingle } from "../../services/api";
+import { getSingle, remove } from "../../services/api";
 import { FaPen } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { TProduct } from "../../types/products";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
 
 const ViewProducts: React.FC = () => {
   const [products, setProducts] = useState<TProduct[]>([]);
+  const [toggle, setToggle] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,7 +19,19 @@ const ViewProducts: React.FC = () => {
     }
 
     getData();
-  }, []);
+  }, [toggle]);
+
+  const handleDeleteProduct = async (id) => {
+    try {
+      const res = await remove(`/products/${id}`);
+      if (res?.status === 200) {
+        toast.success("product deleted");
+        setToggle(!toggle);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <main className="bg-[#F7F7F7] ">
       <header className="flex items-center justify-between mx-4 ">
@@ -47,7 +61,7 @@ const ViewProducts: React.FC = () => {
             </section>
           </header>
 
-          <section className="grid pb-6   pl-4 grid-cols-1 sm:grid- s-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <section className="grid pb-6   pl-4 grid-cols-1 sm:grid- s-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {products.slice(0, 10).map((product, index) => (
               <section
                 key={index}
@@ -71,11 +85,15 @@ const ViewProducts: React.FC = () => {
                     <FaPen className="text-[10px] text-gray-600" />
                     <p className="text-xs text-gray-800 font-bold ">Edit</p>
                   </button>
-                  <button className="bg-white text-red-500 border-[1px]  p-2 gap-1 flex items-center rounded">
+                  <button
+                    className="bg-white text-red-500 border-[1px]  p-2 gap-1 flex items-center rounded"
+                    onClick={() => handleDeleteProduct(product.product_id)}
+                  >
                     <MdDelete />
                     <p className="text-xs font-bold">Delete</p>
                   </button>
                 </section>
+                <ToastContainer />
               </section>
             ))}
           </section>
