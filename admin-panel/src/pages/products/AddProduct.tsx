@@ -1,5 +1,5 @@
-import { Field, Formik, Form } from "formik";
-import { FormFields, initialValues, validationSchema } from "./products";
+import { Field, Formik, Form, ErrorMessage } from "formik";
+import { FormFields, initialValues, validation } from "./products";
 import { useEffect, useRef, useState } from "react";
 import { getSingle } from "../../services/api";
 import axios from "axios";
@@ -109,7 +109,7 @@ const AddProduct = () => {
         <div className=" ">
           <Formik
             initialValues={initialValues}
-            // validationSchema={validationSchema}
+            validationSchema={validation}
             onSubmit={(val) => {
               postFormData(val);
             }}
@@ -170,6 +170,11 @@ const AddProduct = () => {
                               </option>
                             ))}
                           </Field>
+                          <ErrorMessage
+                            name={formValues.name}
+                            component={"div"}
+                            className="text-red-500 text-[12px] font-semibold "
+                          />
                         </div>
                       );
                     }
@@ -190,6 +195,11 @@ const AddProduct = () => {
                             name={formValues.name}
                             className="py-2  w-full border-2 px-2 rounded text-gray-700 "
                           ></Field>
+                          <ErrorMessage
+                            name={formValues.name}
+                            component={"div"}
+                            className="text-red-500 text-[12px] font-semibold "
+                          />
                         </div>
                       );
                     }
@@ -210,6 +220,11 @@ const AddProduct = () => {
                             name={formValues.name}
                             className="py-2  w-full border-2 px-2 rounded text-gray-700 "
                           ></Field>
+                          <ErrorMessage
+                            name={formValues.name}
+                            component={"div"}
+                            className="text-red-500 text-[12px] font-semibold "
+                          />
                         </div>
                       );
                     }
@@ -230,6 +245,11 @@ const AddProduct = () => {
                             name={formValues.name}
                             placeholder={formValues.name}
                             className="h-20 w-full border-2 px-2 rounded text-gray-700 "
+                          />
+                          <ErrorMessage
+                            name={formValues.name}
+                            component={"div"}
+                            className="text-red-500 text-[12px] font-semibold "
                           />
                         </div>
                       );

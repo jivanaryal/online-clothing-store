@@ -4,9 +4,11 @@ import { getSingle } from "../../services/api";
 import { FaPen } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { TProduct } from "../../types/products";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const ViewProducts: React.FC = () => {
   const [products, setProducts] = useState<TProduct[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function getData() {
@@ -20,7 +22,10 @@ const ViewProducts: React.FC = () => {
     <main className="bg-[#F7F7F7] ">
       <header className="flex items-center justify-between mx-4 ">
         <h1 className="font-bold text-2xl">Products List</h1>
-        <button className="bg-blue-700 mt-3 text-sm font-semibold text-white py-2 px-3 flex items-center gap-2 rounded">
+        <button
+          className="bg-blue-700 mt-3 text-sm font-semibold text-white py-2 px-3 flex items-center gap-2 rounded"
+          onClick={() => navigate("/add-product")}
+        >
           <FaPlus />
           <p>Create New</p>
         </button>

@@ -14,17 +14,31 @@ export const initialValues = {
   stockQuantity: "",
 };
 
-export const validationSchema = Yup.object({
-  name: Yup.string().required("Name is required"),
+export const validation = Yup.object({
+  name: Yup.string()
+    .trim("Name cannot contain leading or trailing spaces")
+    .required("Name is required")
+    .matches(/^\S.*\S$/, "Name cannot be just spaces"),
   category_id: Yup.string().required("Category is required"),
   price: Yup.number()
     .required("Price is required")
     .positive("Price must be positive"),
-  description: Yup.string().required("Description is required"),
-  imageURLs: Yup.string().required("Image URLs are required"),
-  brand: Yup.string().required("Brand is required"),
-  size: Yup.string().required("Size is required"),
-  color: Yup.string().required("Color is required"),
+  description: Yup.string()
+    .trim("Description cannot contain leading or trailing spaces")
+    .required("Description is required")
+    .matches(/^\S.*\S$/, "Description cannot be just spaces"),
+  brand: Yup.string()
+    .trim("Brand cannot contain leading or trailing spaces")
+    .required("Brand is required")
+    .matches(/^\S.*\S$/, "Brand cannot be just spaces"),
+  size: Yup.string()
+    .trim("Size cannot contain leading or trailing spaces")
+    .required("Size is required")
+    .matches(/^\S.*\S$/, "Size cannot be just spaces"),
+  color: Yup.string()
+    .trim("Color cannot contain leading or trailing spaces")
+    .required("Color is required")
+    .matches(/^\S.*\S$/, "Color cannot be just spaces"),
   subcategory_id: Yup.string().required("Subcategory is required"),
   discount: Yup.number().min(0, "Discount cannot be negative"),
   stockQuantity: Yup.number()
