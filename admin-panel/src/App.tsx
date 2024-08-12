@@ -5,6 +5,7 @@ import ViewProducts from "./pages/products/ViewProducts";
 import ViewCategories from "./pages/categories/ViewCategories";
 import AddProduct from "./pages/products/AddProduct";
 import EditProduct from "./pages/products/EditProduct";
+import AddCategories from "./pages/categories/AddCategories";
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
             <Route path="/add-product" element={<AddProduct />} />
             <Route path="/products/edit/:id" element={<EditProduct />} />
             <Route path="/categories" element={<ViewCategories />} />
+            <Route path="/add-category" element={<AddCategories />} />
           </Route>
         </Routes>
       </Router>
