@@ -5,9 +5,14 @@ import {
   categoryInitialValues,
   categoryvalidation,
 } from "./category";
+import { post } from "../../services/api";
 
 const AddCategories = () => {
   const navigate = useNavigate();
+
+  const postCategoryData = async (values) => {
+    await post("/categories", values);
+  };
 
   return (
     <div className="flex justify-center items-center min-h-[80vh] bg-slate-50">
@@ -26,41 +31,51 @@ const AddCategories = () => {
         <Formik
           initialValues={categoryInitialValues}
           onSubmit={(values) => {
-            console.log(values);
+            postCategoryData();
           }}
           validationSchema={categoryvalidation}
         >
           {({ handleSubmit }) => (
             <Form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Category Name
-                </label>
-                <Field
-                  type="text"
-                  name="name"
-                  id="name"
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                />
-              </div>
-              <div className="mb-4">
-                <label
-                  htmlFor="description"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Description
-                </label>
-                <Field
-                  as="textarea"
-                  name="description"
-                  id="description"
-                  rows={4}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                />
-              </div>
+              {categoryField.map((formValues, index) => {
+                if (formValues.type === "text") {
+                  return (
+                    <div className="mb-4" key={index}>
+                      <label
+                        htmlFor="name"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        {formValues.broswername}
+                      </label>
+                      <Field
+                        type={formValues.type}
+                        name={formValues.name}
+                        id="name"
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      />
+                    </div>
+                  );
+                }
+                if (formValues.type === "textarea") {
+                  return (
+                    <div className="mb-4" key={index}>
+                      <label
+                        htmlFor="description"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        {formValues.broswername}
+                      </label>
+                      <Field
+                        as={formValues.type}
+                        name={formValues.name}
+                        rows={4}
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      />
+                    </div>
+                  );
+                }
+              })}
+
               <div className="flex justify-start">
                 <button
                   type="submit"
