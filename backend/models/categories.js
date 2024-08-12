@@ -1,7 +1,7 @@
 const db = require("../database/connect");
 
 class Category {
-  constructor(name) {
+  constructor(name, description) {
     this.name = name;
     this.description = description;
   }
