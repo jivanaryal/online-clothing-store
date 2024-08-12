@@ -1,5 +1,5 @@
 import { MdDashboard } from "react-icons/md";
-import { MdOutlineProductionQuantityLimits } from "react-icons/md";
+import { BsFillBagCheckFill } from "react-icons/bs";
 import { FaSitemap } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { MdKeyboardArrowLeft } from "react-icons/md";
@@ -15,7 +15,7 @@ export const SidebarItem = [
   },
   {
     title: "products",
-    icons: <MdOutlineProductionQuantityLimits />,
+    icons: <BsFillBagCheckFill />,
     path: "/products",
     extralist: [
       { title: "add product", path: "/add-product" },
@@ -119,7 +119,9 @@ const Sidebar = () => {
                       <MdKeyboardArrowLeft
                         className={`transition-transform duration-400 text-2xl ${
                           (items.title === "products" && state.showproduct) ||
-                          (items.title === "categories" && state.showcategory)
+                          (items.title === "categories" &&
+                            state.showcategory) ||
+                          (items.title === "orders" && state.showorder)
                             ? "-rotate-90"
                             : ""
                         }`}
