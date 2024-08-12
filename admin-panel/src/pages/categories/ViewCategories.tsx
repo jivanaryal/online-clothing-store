@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import { MdDelete, MdOutlineUpdate } from "react-icons/md";
 import { getSingle } from "../../services/api";
+import { useNavigate } from "react-router-dom";
+import { FaPlus } from "react-icons/fa";
 
 const ViewCategories = () => {
   const [category, setCategory] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function getCategory() {
@@ -15,9 +19,16 @@ const ViewCategories = () => {
 
   return (
     <div className="pt-20  mx-10">
-      <h1 className="text-2xl font-semibold text-gray-700 pb-5">
-        Category List
-      </h1>
+      <div className="flex justify-between pb-5">
+        <h1 className="text-2xl font-semibold text-gray-700 ">Category List</h1>
+        <button
+          className="bg-blue-700 mt-3 text-sm font-semibold text-white py-2 px-3 flex items-center gap-2 rounded"
+          onClick={() => navigate("/add-category")}
+        >
+          <FaPlus />
+          <p>Create New</p>
+        </button>
+      </div>
       <table className="table-auto w-full rounded-lg border-collapse">
         <thead className="bg-blue-800 text-white text-sm font-semibold">
           <tr>
