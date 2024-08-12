@@ -1,6 +1,6 @@
 import { MdDashboard } from "react-icons/md";
 import { BsFillBagCheckFill } from "react-icons/bs";
-import { FaSitemap } from "react-icons/fa";
+
 import { useNavigate } from "react-router-dom";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { FaCartArrowDown } from "react-icons/fa";
@@ -23,20 +23,13 @@ export const SidebarItem = [
         title: "product list",
         path: "/products", // Fixed typo here
       },
-    ],
-  },
-  {
-    title: "categories",
-    icons: <FaSitemap />,
-    path: "/categories",
-    extralist: [
-      { title: "add category", path: "/add-category" },
       {
-        title: "category list",
-        path: "/category-list", // Fixed typo here
+        title: "category",
+        path: "/categories",
       },
     ],
   },
+
   {
     title: "orders",
     icons: <FaCartArrowDown />,
@@ -60,13 +53,7 @@ function reducer(state, action) {
         showorder: state.showorder,
       };
     }
-    case "categories": {
-      return {
-        showcategory: !state.showcategory,
-        showproduct: state.showproduct,
-        showorder: state.showorder,
-      };
-    }
+
     case "orders": {
       return {
         showorder: !state.showorder,
@@ -144,21 +131,7 @@ const Sidebar = () => {
                     ))}
                   </section>
                 )}
-                {items.title === "categories" && state.showcategory && (
-                  <section className="ml-8 mt-1">
-                    {items.extralist?.map((val, i) => (
-                      <ul
-                        key={i}
-                        className="cursor-pointer text-gray-600 hover:text-blue-500"
-                        onClick={() => navigate(val.path)}
-                      >
-                        <li className="capitalize text-[13px] mt-2 font-medium">
-                          {val.title}
-                        </li>
-                      </ul>
-                    ))}
-                  </section>
-                )}
+
                 {items.title === "orders" && state.showorder && (
                   <section className="ml-8 mt-1">
                     {items.extralist?.map((val, i) => (
