@@ -31,7 +31,7 @@ const AddCategories = () => {
         <Formik
           initialValues={categoryInitialValues}
           onSubmit={(values) => {
-            postCategoryData();
+            postCategoryData(values);
           }}
           validationSchema={categoryvalidation}
         >
