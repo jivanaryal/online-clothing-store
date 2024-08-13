@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { MdDelete, MdOutlineUpdate } from "react-icons/md";
-import { getSingle } from "../../services/api";
-import { useNavigate } from "react-router-dom";
+import { getSingle, remove } from "../../services/api";
+import { Link, useNavigate } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
+import { toast } from "react-toastify";
+import { TCategory } from "../../types/category";
 
 const ViewCategories = () => {
-  const [category, setCategory] = useState([]);
+  const [category, setCategory] = useState<TCategory[]>([]);
+  const [toggele, setToggle] = useState(false);
 
   const navigate = useNavigate();
 
@@ -15,7 +18,21 @@ const ViewCategories = () => {
       setCategory(res.data);
     }
     getCategory();
-  }, []);
+  }, [toggele]);
+
+  const handleDelete = async (id: number) => {
+    try {
+      const res = await remove(`/categories/${id}`);
+      if (res?.status === 200) {
+        toast.success("delete from sucessfully");
+        setToggle(!toggele);
+      } else {
+        toast.error("having error in deleting the product check you query");
+      }
+    } catch (error) {
+      toast.error("can't delete the product");
+    }
+  };
 
   return (
     <div className="pt-20  mx-10">
@@ -54,8 +71,14 @@ const ViewCategories = () => {
               </td>
               <td className="py-3">
                 <div className="flex justify-center md:justify-center gap-3">
-                  <MdDelete className="md:text-3xl text-center text-xl hover:scale-110 hover:text-red-500 transition-all delay-100 duration-300 cursor-pointer" />
-                  <MdOutlineUpdate className="md:text-3xl text-center text-xl cursor-pointer" />
+                  <MdDelete
+                    className="md:text-3xl text-center text-xl hover:scale-110 hover:text-red-500 transition-all delay-100 duration-300 cursor-pointer"
+                    onClick={() => handleDelete(category.category_id)}
+                  />
+                  <Link to={`edit/${category.category_id}`} state={category}>
+                    {" "}
+                    <MdOutlineUpdate className="md:text-3xl text-center text-xl cursor-pointer" />
+                  </Link>
                 </div>
               </td>
             </tr>

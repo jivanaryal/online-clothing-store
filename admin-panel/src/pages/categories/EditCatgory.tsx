@@ -1,19 +1,19 @@
 import { Field, Formik, Form } from "formik";
-import { useNavigate } from "react-router-dom";
-import {
-  categoryField,
-  categoryInitialValues,
-  categoryvalidation,
-} from "./category";
-import { post } from "../../services/api";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { categoryField, categoryvalidation } from "./category";
+import { update } from "../../services/api";
 import { TCategory } from "../../types/category";
 
-type TValue = Omit<TCategory, "category_id">;
-const AddCategories = () => {
+type TProps = Omit<TCategory, "category_id">;
+const EditCategory = () => {
   const navigate = useNavigate();
 
-  const postCategoryData = async (values: TValue) => {
-    await post("/categories", values);
+  const location = useLocation();
+  const { id } = useParams();
+  console.log(location);
+
+  const updateCategoryData = async (values: TProps) => {
+    await update(`/categories/${id}`, values);
   };
 
   return (
@@ -25,15 +25,18 @@ const AddCategories = () => {
           </h2>
           <button
             onClick={() => navigate("/categories")}
-            className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200"
+            className="bg-blue-600 text-white py-2 px-2 text-xs  font-semibold rounded hover:bg-blue-700 transition duration-200"
           >
             View Categories
           </button>
         </div>
         <Formik
-          initialValues={categoryInitialValues}
+          initialValues={{
+            name: location.state.name,
+            description: location.state.description,
+          }}
           onSubmit={(values) => {
-            postCategoryData(values);
+            updateCategoryData(values);
           }}
           validationSchema={categoryvalidation}
         >
@@ -81,7 +84,7 @@ const AddCategories = () => {
               <div className="flex justify-start">
                 <button
                   type="submit"
-                  className="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition duration-200"
+                  className="bg-blue-600 text-sm text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200"
                 >
                   Submit
                 </button>
@@ -94,4 +97,4 @@ const AddCategories = () => {
   );
 };
 
-export default AddCategories;
+export default EditCategory;

@@ -9,11 +9,11 @@ import { FaTimes } from "react-icons/fa";
 import { IoMdCloudUpload } from "react-icons/io";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { TProduct } from "../../types/products";
 
 const AddProduct = () => {
   const [category, setCategory] = useState<TCategory[]>([]);
   const [subCategory, setSubCategory] = useState<TSubCategory[]>([]);
-  const [showimage, setShowImage] = useState("");
   const [newImage, setImage] = useState<File[]>([]);
   const [extraImage, setExtraImage] = useState<File[]>([]);
 
@@ -26,7 +26,7 @@ const AddProduct = () => {
     getCategory();
   }, []);
 
-  const postFormData = async (values) => {
+  const postFormData = async (values: TProduct) => {
     const formData = new FormData();
     console.log(values);
 
@@ -85,10 +85,11 @@ const AddProduct = () => {
     name: sub.name,
   }));
 
-  const handleImageChange = (event) => {
-    setShowImage(event.target.files[0]);
-    setImage([...newImage, event.target.files[0]]);
-    setExtraImage([...extraImage, event.target.files[0]]);
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setImage([...newImage, event.target.files[0]]);
+      setExtraImage([...extraImage, event.target.files[0]]);
+    }
   };
 
   const handleRemoveImage = (index: number) => {

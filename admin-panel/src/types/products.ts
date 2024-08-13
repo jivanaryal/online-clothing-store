@@ -1,4 +1,5 @@
 export type TProduct = {
+  product_id: number;
   name: string;
   category_id: string;
   price: number;

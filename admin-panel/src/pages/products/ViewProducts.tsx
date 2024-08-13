@@ -21,7 +21,7 @@ const ViewProducts: React.FC = () => {
     getData();
   }, [toggle]);
 
-  const handleDeleteProduct = async (id) => {
+  const handleDeleteProduct = async (id: number) => {
     try {
       const res = await remove(`/products/${id}`);
       if (res?.status === 200) {
