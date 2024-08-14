@@ -14,6 +14,8 @@ const AddSubCategories = () => {
   const [category, setCategory] = useState<TCategory[]>([]);
   const navigate = useNavigate();
 
+  //   const[subcategory,setSubCategory] = useState([]);
+
   const postsubCategoryData = async (values: TValue) => {
     await post("/subcategories", values);
   };

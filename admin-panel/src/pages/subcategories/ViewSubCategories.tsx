@@ -8,6 +8,7 @@ import { TCategory } from "../../types/category";
 
 const ViewSubCategories = () => {
   const [category, setCategory] = useState<TCategory[]>([]);
+  const [subcategory, setSubCategory] = useState([]);
   const [toggele, setToggle] = useState(false);
 
   const navigate = useNavigate();
@@ -15,14 +16,17 @@ const ViewSubCategories = () => {
   useEffect(() => {
     async function getCategory() {
       const res = await getSingle("/categories");
+      const res1 = await getSingle("/subcategories/all");
+      console.log(res1);
       setCategory(res.data);
+      setSubCategory(res1.data);
     }
     getCategory();
   }, [toggele]);
 
   const handleDelete = async (id: number) => {
     try {
-      const res = await remove(`/categories/${id}`);
+      const res = await remove(`/subcategories/${id}`);
       if (res?.status === 200) {
         toast.success("delete from sucessfully");
         setToggle(!toggele);
@@ -57,6 +61,9 @@ const ViewSubCategories = () => {
             <th className="py-3 px-1 border-b border-mainColor">
               Sub Category Name
             </th>
+            <th className="py-3 px-1 border-b border-mainColor">
+              Category Name
+            </th>
             <th className="py-3 px-2 border-b border-mainColor hidden md:table-cell">
               Description
             </th>
@@ -64,20 +71,26 @@ const ViewSubCategories = () => {
           </tr>
         </thead>
         <tbody className="text-gray-800 md:text-base text-[12px] font-bold">
-          {category.map((category, i) => (
+          {subcategory.map((category, i) => (
             <tr key={i} className="border-b border-mainColor hover:bg-gray-100">
               <td className="py-3 text-center">{i + 1}</td>
-              <td className="py-3 text-center capitalize">{category.name}</td>
-              <td className="py-3 text-center capitalize hidden md:table-cell">
-                {category.description}
+
+              <td className="py-3 text-center  capitalize">
+                {category.subcategory_name}
+              </td>
+              <td className="py-3 text-center capitalize">
+                {category.category_name}
+              </td>
+              <td className="py-3 text-center text-xs capitalize hidden md:table-cell">
+                {category.subcategory_description}
               </td>
               <td className="py-3">
                 <div className="flex justify-center md:justify-center gap-3">
                   <MdDelete
                     className="md:text-3xl text-center text-xl hover:scale-110 hover:text-red-500 transition-all delay-100 duration-300 cursor-pointer"
-                    onClick={() => handleDelete(category.category_id)}
+                    onClick={() => handleDelete(category.subcategory_id)}
                   />
-                  <Link to={`edit/${category.category_id}`} state={category}>
+                  <Link to={`edit/${category.subcategory_id}`} state={category}>
                     {" "}
                     <MdOutlineUpdate className="md:text-3xl text-center text-xl cursor-pointer" />
                   </Link>
