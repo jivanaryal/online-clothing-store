@@ -3,6 +3,7 @@ const Subcategory = require("../models/subcategories");
 const postSubcategoryData = async (req, res) => {
   try {
     const { name, category_id, description } = req.body;
+    console.log(req.body);
     const subcategoryModel = new Subcategory(name, category_id, description);
 
     if (await subcategoryModel.exists()) {
@@ -18,7 +19,7 @@ const postSubcategoryData = async (req, res) => {
       msg: "Subcategory created successfully",
     });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     return res.status(500).json({
       error: "Internal Server Error",
       msg: error.message,
@@ -41,6 +42,27 @@ const getAllSubcategories = async (req, res) => {
     }
 
     return res.status(200).json(subcategories);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      error: "Internal Server Error",
+      msg: error.message,
+    });
+  }
+};
+
+const getAllCategoryandSubCategory = async (req, res) => {
+  try {
+    const subcategoryandcategory =
+      await Subcategory.findAllCategoryandSubCategory();
+    if (!subcategoryandcategory) {
+      return res.status(404).json({
+        error: "Not Found",
+        msg: "No subcategory found",
+      });
+    }
+
+    return res.status(200).json(subcategoryandcategory);
   } catch (error) {
     console.log(error);
     return res.status(500).json({
@@ -132,6 +154,7 @@ const updateSubcategoryData = async (req, res) => {
 
 module.exports = {
   postSubcategoryData,
+  getAllCategoryandSubCategory,
   getAllSubcategories,
   getSubcategoryById,
   deleteSubcategoryData,

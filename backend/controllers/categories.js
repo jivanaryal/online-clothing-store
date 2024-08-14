@@ -91,6 +91,7 @@ const deleteCategoryData = async (req, res) => {
 
 const updateCategoryData = async (req, res) => {
   const { id } = req.params;
+  console.log(req.body, req.params, "hello jivan");
 
   try {
     const { name, description } = req.body;
