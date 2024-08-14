@@ -10,6 +10,7 @@ import EditCategory from "./pages/categories/EditCatgory";
 import SubCategories from "./pages/subcategories/ViewSubCategories";
 import ViewSubCategories from "./pages/subcategories/ViewSubCategories";
 import AddSubCategories from "./pages/subcategories/AddSubCategories";
+import EditSubCategories from "./pages/subcategories/EditSubCategories";
 
 const App = () => {
   return (
@@ -22,6 +23,10 @@ const App = () => {
             <Route path="/add-product" element={<AddProduct />} />
             <Route path="/products/edit/:id" element={<EditProduct />} />
             <Route path="/categories/edit/:id" element={<EditCategory />} />
+            <Route
+              path="/subcategories/edit/:id"
+              element={<EditSubCategories />}
+            />
             <Route path="/categories" element={<ViewCategories />} />
             <Route path="/subcategories" element={<ViewSubCategories />} />
             <Route path="/add-category" element={<AddCategories />} />
