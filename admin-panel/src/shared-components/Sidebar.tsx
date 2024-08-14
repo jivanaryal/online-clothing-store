@@ -27,6 +27,10 @@ export const SidebarItem = [
         title: "category",
         path: "/categories",
       },
+      {
+        title: "sub-category",
+        path: "/subcategories",
+      },
     ],
   },
 

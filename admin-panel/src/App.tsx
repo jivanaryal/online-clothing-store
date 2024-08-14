@@ -7,6 +7,9 @@ import AddProduct from "./pages/products/AddProduct";
 import EditProduct from "./pages/products/EditProduct";
 import AddCategories from "./pages/categories/AddCategories";
 import EditCategory from "./pages/categories/EditCatgory";
+import SubCategories from "./pages/subcategories/ViewSubCategories";
+import ViewSubCategories from "./pages/subcategories/ViewSubCategories";
+import AddSubCategories from "./pages/subcategories/AddSubCategories";
 
 const App = () => {
   return (
@@ -20,7 +23,9 @@ const App = () => {
             <Route path="/products/edit/:id" element={<EditProduct />} />
             <Route path="/categories/edit/:id" element={<EditCategory />} />
             <Route path="/categories" element={<ViewCategories />} />
+            <Route path="/subcategories" element={<ViewSubCategories />} />
             <Route path="/add-category" element={<AddCategories />} />
+            <Route path="/add-subcategory" element={<AddSubCategories />} />
           </Route>
         </Routes>
       </Router>
