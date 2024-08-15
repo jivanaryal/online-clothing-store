@@ -1,7 +1,7 @@
 const db = require("../database/connect");
 
 class Subcategory {
-  constructor(name, description, category_id) {
+  constructor(name, category_id, description) {
     this.name = name;
     this.category_id = category_id;
     this.description = description;
@@ -9,11 +9,11 @@ class Subcategory {
 
   async exists() {
     const query =
-      "SELECT COUNT(*) as count FROM subcategories WHERE name = ? & description = ? AND category_id = ?";
+      "SELECT COUNT(*) as count FROM subcategories WHERE name = ? AND category_id = ? AND description = ?";
     const [rows] = await db.execute(query, [
       this.name,
-      this.description,
       this.category_id,
+      this.description,
     ]);
     return rows[0].count > 0;
   }
@@ -27,16 +27,23 @@ class Subcategory {
 
     const createSql =
       "INSERT INTO subcategories (name,category_id, description) VALUES (?, ?,?)";
-    const values = [this.name, this.description, this.category_id];
+    const values = [this.name, this.category_id, this.description];
     console.log(this.name, this.category_id, this.description);
     return db.execute(createSql, values);
   }
 
   async updateSubcategory(id) {
+    console.log(this.name, this.category_id, this.description, id);
     const updateSql =
       "UPDATE subcategories SET name = ?, category_id = ?, description = ? WHERE subcategory_id = ?";
     const values = [this.name, this.category_id, this.description, id];
-    return db.execute(updateSql, values);
+
+    try {
+      return await db.execute(updateSql, values);
+    } catch (error) {
+      console.error("Error updating subcategory:", error);
+      throw error;
+    }
   }
 
   static async findAll() {
