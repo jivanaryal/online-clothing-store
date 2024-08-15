@@ -8,6 +8,7 @@ import {
 import { post } from "../../services/api";
 import { TCategory } from "../../types/category";
 import { toast, ToastContainer } from "react-toastify";
+import axios from "axios";
 
 type TValue = Omit<TCategory, "category_id">;
 const AddCategories = () => {
@@ -24,7 +25,11 @@ const AddCategories = () => {
         console.log("jfkajk");
       }
     } catch (error) {
-      toast.error(error.response.data.msg);
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.msg || "An error occurred");
+      } else {
+        toast.error("An unexpected error occurred");
+      }
     }
   };
 

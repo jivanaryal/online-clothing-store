@@ -4,7 +4,7 @@ export type TProduct = {
   category_id: string;
   price: number;
   description: string;
-  imageURL: string; // Assuming this is a JSON string
+  imageURL: string[]; // Assuming this is a JSON string
   brand: string;
   size: string;
   color: string;

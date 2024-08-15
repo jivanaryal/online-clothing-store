@@ -7,7 +7,6 @@ import AddProduct from "./pages/products/AddProduct";
 import EditProduct from "./pages/products/EditProduct";
 import AddCategories from "./pages/categories/AddCategories";
 import EditCategory from "./pages/categories/EditCatgory";
-import SubCategories from "./pages/subcategories/ViewSubCategories";
 import ViewSubCategories from "./pages/subcategories/ViewSubCategories";
 import AddSubCategories from "./pages/subcategories/AddSubCategories";
 import EditSubCategories from "./pages/subcategories/EditSubCategories";

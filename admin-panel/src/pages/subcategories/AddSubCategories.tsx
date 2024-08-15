@@ -9,6 +9,7 @@ import { getSingle, post } from "../../services/api";
 import { TCategory } from "../../types/category";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import axios from "axios";
 
 type TValue = Omit<TCategory, "category_id">;
 const AddSubCategories = () => {
@@ -26,10 +27,12 @@ const AddSubCategories = () => {
       } else {
         console.log(data);
       }
-    } catch (error: unkown) {
-      // console.log("here");
-      console.log(error.response.data.msg);
-      toast.error(error.response.data.msg);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.msg || "An error occurred");
+      } else {
+        toast.error("An unexpected error occurred");
+      }
     }
   };
 
