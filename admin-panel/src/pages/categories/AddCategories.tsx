@@ -16,11 +16,12 @@ const AddCategories = () => {
   const postCategoryData = async (values: TValue) => {
     try {
       const data = await post("/categories", values);
+      console.log(data);
 
       if (data.status === 200) {
         return toast.success("the category added sucessfully");
       } else {
-        console.log(data);
+        console.log("jfkajk");
       }
     } catch (error) {
       toast.error(error.response.data.msg);

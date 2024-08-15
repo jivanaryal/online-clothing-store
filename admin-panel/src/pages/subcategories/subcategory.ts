@@ -11,7 +11,7 @@ export const subcategoryvalidation = Yup.object({
     .trim("Name cannot contain leading or trailing spaces")
     .required("Name is required")
     .matches(/^\S.*\S$/, "Name cannot be just spaces"),
-  category_id: Yup.number().required("description is required"),
+  category_id: Yup.string().required("description is required"),
   description: Yup.string().required("description is required"),
 });
 

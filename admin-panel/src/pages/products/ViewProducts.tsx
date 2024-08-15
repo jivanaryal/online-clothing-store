@@ -6,6 +6,7 @@ import { MdDelete } from "react-icons/md";
 import { TProduct } from "../../types/products";
 import { Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
+import { CgMore } from "react-icons/cg";
 
 const ViewProducts: React.FC = () => {
   const [products, setProducts] = useState<TProduct[]>([]);
@@ -97,6 +98,13 @@ const ViewProducts: React.FC = () => {
                   >
                     <MdDelete />
                     <p className="text-xs font-bold">Delete</p>
+                  </button>
+                  <button
+                    className="bg-white text-black  border-[1px]  p-2 gap-1 flex items-center rounded"
+                    onClick={() => navigate(`action/${product.product_id}`)}
+                  >
+                    <CgMore />
+                    <p className="text-xs font-bold">More</p>
                   </button>
                 </section>
                 <ToastContainer />

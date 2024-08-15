@@ -1,4 +1,4 @@
-import { Field, Formik, Form } from "formik";
+import { Field, Formik, Form, ErrorMessage } from "formik";
 import { useNavigate } from "react-router-dom";
 import {
   subcategoryInitialValues,
@@ -8,6 +8,7 @@ import {
 import { getSingle, post } from "../../services/api";
 import { TCategory } from "../../types/category";
 import { useEffect, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 
 type TValue = Omit<TCategory, "category_id">;
 const AddSubCategories = () => {
@@ -17,7 +18,19 @@ const AddSubCategories = () => {
   //   const[subcategory,setSubCategory] = useState([]);
 
   const postsubCategoryData = async (values: TValue) => {
-    await post("/subcategories", values);
+    try {
+      const data = await post("/subcategories", values);
+
+      if (data.status === 200) {
+        return toast.success("the category added sucessfully");
+      } else {
+        console.log(data);
+      }
+    } catch (error: unkown) {
+      // console.log("here");
+      console.log(error.response.data.msg);
+      toast.error(error.response.data.msg);
+    }
   };
 
   useEffect(() => {
@@ -41,7 +54,7 @@ const AddSubCategories = () => {
       <div className="w-full max-w-lg bg-white rounded-lg shadow-lg p-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-semibold text-gray-700">
-            Create Category
+            Create Sub Category
           </h2>
           <button
             onClick={() => navigate("/subcategories")}
@@ -56,7 +69,7 @@ const AddSubCategories = () => {
             console.log(values);
             postsubCategoryData(values);
           }}
-          //   validationSchema={subcategoryvalidation}
+          validationSchema={subcategoryvalidation}
         >
           {({ handleSubmit, values }) => (
             <Form onSubmit={handleSubmit}>
@@ -76,6 +89,11 @@ const AddSubCategories = () => {
                         id="name"
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                       />
+                      <ErrorMessage
+                        component={"div"}
+                        name={formValues.name}
+                        className="text-red-500 text-[12px] font-bold"
+                      />
                     </div>
                   );
                 }
@@ -94,6 +112,11 @@ const AddSubCategories = () => {
                         rows={10}
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                       />
+                      <ErrorMessage
+                        component={"div"}
+                        name={formValues.name}
+                        className="text-red-500 text-[12px] font-bold"
+                      />{" "}
                     </div>
                   );
                 }
@@ -120,6 +143,12 @@ const AddSubCategories = () => {
                           </option>
                         ))}
                       </Field>
+                      <ErrorMessage
+                        component={"div"}
+                        name={formValues.name}
+                        className="text-red-500 text-[12px] font-bold"
+                      />{" "}
+                      <ToastContainer />
                     </div>
                   );
                 }
