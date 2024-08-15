@@ -1,4 +1,4 @@
-import { Field, Formik, Form } from "formik";
+import { Field, Formik, Form, ErrorMessage } from "formik";
 import { useNavigate } from "react-router-dom";
 import {
   categoryField,
@@ -7,13 +7,24 @@ import {
 } from "./category";
 import { post } from "../../services/api";
 import { TCategory } from "../../types/category";
+import { toast, ToastContainer } from "react-toastify";
 
 type TValue = Omit<TCategory, "category_id">;
 const AddCategories = () => {
   const navigate = useNavigate();
 
   const postCategoryData = async (values: TValue) => {
-    await post("/categories", values);
+    try {
+      const data = await post("/categories", values);
+
+      if (data.status === 200) {
+        return toast.success("the category added sucessfully");
+      } else {
+        console.log(data);
+      }
+    } catch (error) {
+      toast.error(error.response.data.msg);
+    }
   };
 
   return (
@@ -55,6 +66,11 @@ const AddCategories = () => {
                         id="name"
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                       />
+                      <ErrorMessage
+                        component={"div"}
+                        name={formValues.name}
+                        className="text-red-500 text-[12px] font-bold"
+                      />
                     </div>
                   );
                 }
@@ -73,6 +89,12 @@ const AddCategories = () => {
                         rows={10}
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                       />
+                      <ErrorMessage
+                        component={"div"}
+                        name={formValues.name}
+                        className="text-red-500 text-[12px] font-bold"
+                      />
+                      <ToastContainer />
                     </div>
                   );
                 }

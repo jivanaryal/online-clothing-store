@@ -1,8 +1,9 @@
-import { Field, Formik, Form } from "formik";
+import { Field, Formik, Form, ErrorMessage } from "formik";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { categoryField, categoryvalidation } from "./category";
 import { update } from "../../services/api";
 import { TCategory } from "../../types/category";
+import { toast, ToastContainer } from "react-toastify";
 
 type TProps = Omit<TCategory, "category_id">;
 const EditCategory = () => {
@@ -13,7 +14,19 @@ const EditCategory = () => {
   console.log(location);
 
   const updateCategoryData = async (values: TProps) => {
-    await update(`/categories/${id}`, values);
+    try {
+      const data = await update(`/categories/${id}`, values);
+      if (data.status === 200) {
+        toast.success("the category updated sucessfully");
+        setTimeout(() => {
+          navigate("/categories");
+        }, 1500);
+      } else {
+        return console.log("error occur");
+      }
+    } catch (error) {
+      return toast.error(error.response.data.msg);
+    }
   };
 
   return (
@@ -58,6 +71,11 @@ const EditCategory = () => {
                         id="name"
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                       />
+                      <ErrorMessage
+                        component={"div"}
+                        name={formValues.name}
+                        className="text-red-500 text-[12px] font-bold"
+                      />
                     </div>
                   );
                 }
@@ -76,6 +94,12 @@ const EditCategory = () => {
                         rows={10}
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                       />
+                      <ErrorMessage
+                        component={"div"}
+                        name={formValues.name}
+                        className="text-red-500 text-[12px] font-bold"
+                      />
+                      <ToastContainer />
                     </div>
                   );
                 }

@@ -35,7 +35,7 @@ const ViewCategories = () => {
   };
 
   return (
-    <div className="pt-20  mx-10">
+    <div className="pt-20 text-sm  mx-10">
       <div className="flex justify-between pb-5">
         <h1 className="text-2xl font-semibold text-gray-700 ">Category List</h1>
         <button
@@ -63,10 +63,13 @@ const ViewCategories = () => {
         </thead>
         <tbody className="text-gray-800 md:text-base text-[12px] font-bold">
           {category.map((category, i) => (
-            <tr key={i} className="border-b border-mainColor hover:bg-gray-100">
+            <tr
+              key={i}
+              className="border-b text-sm border-mainColor hover:bg-gray-100"
+            >
               <td className="py-3 text-center">{i + 1}</td>
               <td className="py-3 text-center capitalize">{category.name}</td>
-              <td className="py-3 text-center capitalize hidden md:table-cell">
+              <td className="py-3 text-center capitalize hidden md:table-cell  w-3/12 line-clamp-6 text-xs">
                 {category.description}
               </td>
               <td className="py-3">
