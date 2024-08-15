@@ -1,21 +1,41 @@
 import { Field, Formik, Form } from "formik";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { subcategoryField, subcategoryvalidation } from "./subcategory";
-import { update } from "../../services/api";
+import { subcategoryField } from "./subcategory";
+import { getSingle, update } from "../../services/api";
 import { TCategory } from "../../types/category";
+import { useEffect, useState } from "react";
 
-type TProps = Omit<TCategory, "category_id">;
+type TValue = Omit<TCategory, "category_id">;
 const EditSubCategories = () => {
+  const [category, setCategory] = useState<TCategory[]>([]);
   const navigate = useNavigate();
 
   const location = useLocation();
   const { id } = useParams();
-  console.log(location);
 
-  const updateCategoryData = async (values: TProps) => {
-    await update(`/categories/${id}`, values);
+  //   const[subcategory,setSubCategory] = useState([]);
+
+  const updatesubCategoryData = async (values: TValue) => {
+    console.log(values);
+    await update(`/subcategories/${id}`, values);
   };
 
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const res = await getSingle("/categories");
+        setCategory(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getData();
+  }, []);
+
+  subcategoryField[1].options = category.map((cat) => ({
+    category_id: cat.category_id,
+    name: cat.name,
+  }));
   return (
     <div className="flex justify-center items-center min-h-[90vh] bg-slate-50">
       <div className="w-full max-w-lg bg-white rounded-lg shadow-lg p-6">
@@ -24,22 +44,25 @@ const EditSubCategories = () => {
             Create Category
           </h2>
           <button
-            onClick={() => navigate("/categories")}
-            className="bg-blue-600 text-white py-2 px-2 text-xs  font-semibold rounded hover:bg-blue-700 transition duration-200"
+            onClick={() => navigate("/subcategories")}
+            className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200"
           >
-            View Categories
+            View Sub Categories
           </button>
         </div>
         <Formik
           initialValues={{
-            name: location.state.name,
-            description: location.state.description,
+            name: location.state.subcategory_name,
+            category_id: location.state.category_id,
+            description: location.state.subcategory_description,
           }}
           onSubmit={(values) => {
-            updateCategoryData(values);
+            console.log(values);
+            updatesubCategoryData(values);
           }}
+          //   validationSchema={subcategoryvalidation}
         >
-          {({ handleSubmit }) => (
+          {({ handleSubmit, values }) => (
             <Form onSubmit={handleSubmit}>
               {subcategoryField.map((formValues, index) => {
                 if (formValues.type === "text") {
@@ -78,12 +101,38 @@ const EditSubCategories = () => {
                     </div>
                   );
                 }
+                if (formValues.type === "select") {
+                  return (
+                    <div className="mb-4" key={index}>
+                      <label htmlFor={formValues.broswername}>
+                        {formValues.broswername}
+                      </label>
+                      <Field
+                        as={formValues.type}
+                        name={formValues.name}
+                        value={values[formValues.name]}
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      >
+                        <option value="" disabled>
+                          {" "}
+                          select category option
+                        </option>
+
+                        {formValues.options?.map((option, index) => (
+                          <option key={index} value={option.category_id}>
+                            {option.name}
+                          </option>
+                        ))}
+                      </Field>
+                    </div>
+                  );
+                }
               })}
 
               <div className="flex justify-start">
                 <button
                   type="submit"
-                  className="bg-blue-600 text-sm text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200"
+                  className="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition duration-200"
                 >
                   Submit
                 </button>
