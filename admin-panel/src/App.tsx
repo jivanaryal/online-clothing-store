@@ -11,6 +11,7 @@ import ViewSubCategories from "./pages/subcategories/ViewSubCategories";
 import AddSubCategories from "./pages/subcategories/AddSubCategories";
 import EditSubCategories from "./pages/subcategories/EditSubCategories";
 import MoreAction from "./pages/products/MoreAction";
+import AddProductDiscount from "./pages/discounts/AddProductDiscount";
 
 const App = () => {
   return (
@@ -22,6 +23,10 @@ const App = () => {
             <Route path="/products" element={<ViewProducts />} />
             <Route path="/add-product" element={<AddProduct />} />
             <Route path="/products/action/:id" element={<MoreAction />} />
+            <Route
+              path="/products/action/:id/discount"
+              element={<AddProductDiscount />}
+            />
             <Route path="/products/edit/:id" element={<EditProduct />} />
             <Route path="/categories/edit/:id" element={<EditCategory />} />
             <Route
