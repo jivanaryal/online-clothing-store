@@ -4,6 +4,7 @@ import { API_IMAGE_URL, getSingle } from "../../services/api";
 import { TProduct } from "../../types/products";
 import Modal from "../../shared-components/Modal";
 import AddProductDiscount from "../discounts/AddProductDiscount";
+import UpdateProductDiscount from "../discounts/EditProductDiscount";
 
 type IdProps = {
   newId: number;
@@ -11,22 +12,31 @@ type IdProps = {
 
 const MoreAction = ({ newId }: IdProps) => {
   const [singleProduct, setSingleProduct] = useState<TProduct>();
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
 
   const { id } = useParams();
   newId = Number(id);
-  const openModal = () => {
-    setIsModalOpen(true);
+
+  const openAddModal = () => {
+    setIsAddModalOpen(true);
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const closeAddModal = () => {
+    setIsAddModalOpen(false);
+  };
+
+  const openUpdateModal = () => {
+    setIsUpdateModalOpen(true);
+  };
+
+  const closeUpdateModal = () => {
+    setIsUpdateModalOpen(false);
   };
 
   useEffect(() => {
     const getSingleProduct = async () => {
       const res = await getSingle(`/products/${id}`);
-
       setSingleProduct(res.data);
       console.log(singleProduct);
     };
@@ -34,31 +44,15 @@ const MoreAction = ({ newId }: IdProps) => {
     getSingleProduct();
   }, [id]);
 
-  // brand: "samsung";
-  // category_id: 4;
-  // color: "red";
-  // created_at: "2024-08-15T09:01:00.000Z";
-  // description: "this is first descirption";
-  // discount: "10.00";
-  // imageURL: ["/uploads/imageURL-1723712460777-993735676.png"];
-  // name: "pubg";
-  // price: "1000.00";
-  // product_id: 58;
-  // size: "xl";
-  // stockQuantity: 19;
-  // subcategory_id: 11;
-  // updated_at: "2024-08-15T09:01:00.000Z";
   return (
-    <main className=" w-9/12 mx-auto ">
-      <section className="grid grid-cols-12 ">
+    <main className="w-9/12 mx-auto">
+      <section className="grid grid-cols-12">
         <section className="left col-span-5 border-2">
-          {singleProduct != undefined &&
-            singleProduct.imageURL.map((val, index) => (
-              <img src={API_IMAGE_URL + val} alt="image" key={index} />
-            ))}
+          {singleProduct?.imageURL?.map((val, index) => (
+            <img src={API_IMAGE_URL + val} alt="product" key={index} />
+          ))}
         </section>
         <section className="right col-span-7 border-2">
-          {/* <h1>{singleProduct.name}</h1> */}
           <section>rating</section>
           <b>Brand : {singleProduct?.brand}</b>
           <hr />
@@ -67,26 +61,41 @@ const MoreAction = ({ newId }: IdProps) => {
           <hr />
           <p>{singleProduct?.color}</p>
 
-          <section className="border-2 h-full ">
-            <div className="flex">
+          <section className="border-2 h-full">
+            <div className="flex space-x-4">
               <button
-                onClick={openModal}
+                onClick={openAddModal}
+                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+              >
+                Add Discount
+              </button>
+              <button
+                onClick={openUpdateModal}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
               >
-                update discount
+                Update Discount
               </button>
 
-              <Modal isOpen={isModalOpen} onClose={closeModal}>
+              <Modal isOpen={isAddModalOpen} onClose={closeAddModal}>
                 <AddProductDiscount newId={newId} />
                 <button
-                  onClick={closeModal}
+                  onClick={closeAddModal}
+                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                >
+                  Close
+                </button>
+              </Modal>
+
+              <Modal isOpen={isUpdateModalOpen} onClose={closeUpdateModal}>
+                <UpdateProductDiscount newId={newId} />
+                <button
+                  onClick={closeUpdateModal}
                   className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
                 >
                   Close
                 </button>
               </Modal>
             </div>
-            <button></button>
           </section>
         </section>
       </section>

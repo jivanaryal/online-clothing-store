@@ -1,18 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage, FieldProps } from "formik";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { discountvalidation, discountField } from "./discount";
-import { post } from "../../services/api";
+import { getSingle, put } from "../../services/api";
 
-type AddProductDiscountProps = {
+type UpdateProductDiscountProps = {
   newId: number;
 };
 
-const AddProductDiscount: React.FC<AddProductDiscountProps> = ({ newId }) => {
+const EditProductDiscount: React.FC<UpdateProductDiscountProps> = ({
+  newId,
+}) => {
+  const [initialValues, setInitialValues] = useState({
+    product_id: newId,
+    discount_percentage: "",
+    start_date: "",
+    end_date: "",
+    description: "",
+  });
+
+  useEffect(() => {
+    const fetchDiscount = async () => {
+      const res = await getSingle(`/discounts/${newId}`);
+      setInitialValues(res.data);
+    };
+    fetchDiscount();
+  }, [newId]);
+
   const handleSubmit = async (values) => {
     try {
-      await post("/discounts", values);
+      await put(`/discounts/${newId}`, values);
     } catch (error) {
       console.log(error);
     }
@@ -23,16 +41,10 @@ const AddProductDiscount: React.FC<AddProductDiscountProps> = ({ newId }) => {
   return (
     <div className="max-w-2xl mx-auto bg-white p-8">
       <h2 className="text-2xl font-bold text-center mb-6">
-        Add Product Discount
+        Update Product Discount
       </h2>
       <Formik
-        initialValues={{
-          product_id: newId,
-          discount_percentage: "",
-          start_date: "",
-          end_date: "",
-          description: "",
-        }}
+        initialValues={initialValues}
         validationSchema={discountvalidation}
         onSubmit={handleSubmit}
         enableReinitialize
@@ -137,4 +149,4 @@ const AddProductDiscount: React.FC<AddProductDiscountProps> = ({ newId }) => {
   );
 };
 
-export default AddProductDiscount;
+export default EditProductDiscount;
