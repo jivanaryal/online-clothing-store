@@ -11,7 +11,7 @@ class Product {
     size,
     color,
     subcategory_id,
-    discount,
+
     stockQuantity
   ) {
     this.name = name;
@@ -23,14 +23,14 @@ class Product {
     this.size = size;
     this.color = color;
     this.subcategory_id = subcategory_id;
-    this.discount = discount;
+
     this.stockQuantity = stockQuantity;
   }
 
   async create() {
     const createSql = `
-      INSERT INTO products (name, category_id, price, description, imageURL, brand, size, color,subcategory_id,discount,stockQuantity)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?,?,?,?)`;
+      INSERT INTO products (name, category_id, price, description, imageURL, brand, size, color,subcategory_id,stockQuantity)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?,?,?)`;
     const values = [
       this.name,
       this.category_id,
@@ -41,7 +41,7 @@ class Product {
       this.size,
       this.color,
       this.subcategory_id,
-      this.discount,
+
       this.stockQuantity,
     ];
 
@@ -70,13 +70,13 @@ class Product {
       size,
       color,
       subcategory_id,
-      discount,
+
       stockQuantity,
     } = data;
     console.log(imageURLs, "from models");
     const updateSql = `
       UPDATE products
-      SET name = ?, category_id = ?, price = ?, description = ?, imageURL = ?, brand = ?, size = ?, color = ?, subcategory_id = ?, discount = ?,stockQuantity =?
+      SET name = ?, category_id = ?, price = ?, description = ?, imageURL = ?, brand = ?, size = ?, color = ?, subcategory_id = ?,stockQuantity =?
       WHERE product_id = ?`;
     const values = [
       name,
@@ -88,7 +88,7 @@ class Product {
       size,
       color,
       subcategory_id,
-      discount,
+
       stockQuantity,
       product_id,
     ];

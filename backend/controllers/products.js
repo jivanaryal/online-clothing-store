@@ -12,7 +12,7 @@ const createProduct = async (req, res) => {
       size,
       color,
       subcategory_id,
-      discount,
+
       stockQuantity,
     } = req.body;
 
@@ -32,7 +32,7 @@ const createProduct = async (req, res) => {
       size,
       color,
       subcategory_id,
-      discount,
+
       stockQuantity
     );
 
@@ -98,7 +98,7 @@ const updateProduct = async (req, res) => {
       size,
       color,
       subcategory_id,
-      discount,
+
       stockQuantity,
     } = req.body;
 
@@ -128,7 +128,7 @@ const updateProduct = async (req, res) => {
       size,
       color,
       subcategory_id,
-      discount,
+
       stockQuantity,
     };
 

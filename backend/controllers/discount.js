@@ -13,7 +13,7 @@ const postDiscount = async (req, res) => {
 
   try {
     const createRecord = await discountModel.create();
-    return res.status(201).json({
+    return res.status(200).json({
       createRecord,
       msg: "Discount added successfully",
     });
