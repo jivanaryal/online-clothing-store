@@ -1,16 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage, FieldProps } from "formik";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { discountvalidation, discountField } from "./discount";
+import { post, update } from "../../services/api"; // Assuming 'put' is your method for updating
+import { format } from "date-fns";
 
 type AddProductDiscountProps = {
   newId: number;
 };
 
 const AddProductDiscount: React.FC<AddProductDiscountProps> = ({ newId }) => {
-  const handleSubmit = (values) => {
-    console.log("Form values:", values);
+  const [isUpdate, setIsUpdate] = useState(false); // State to track if we're updating or inserting
+
+  const handleSubmit = async (values: any) => {
+    const formattedValues = {
+      ...values,
+      start_date: format(values.start_date, "yyyy-MM-dd"),
+      end_date: format(values.end_date, "yyyy-MM-dd"),
+    };
+
+    try {
+      if (isUpdate) {
+        // Update existing discount
+        await update(`/discounts/${newId}`, formattedValues); // Assuming put method and discount ID are correct
+      } else {
+        // Insert new discount
+        await post("/discounts", formattedValues);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const today = new Date();
@@ -18,7 +38,7 @@ const AddProductDiscount: React.FC<AddProductDiscountProps> = ({ newId }) => {
   return (
     <div className="max-w-2xl mx-auto bg-white p-8">
       <h2 className="text-2xl font-bold text-center mb-6">
-        Add Product Discount
+        {isUpdate ? "Update Product Discount" : "Add Product Discount"}
       </h2>
       <Formik
         initialValues={{
@@ -72,7 +92,7 @@ const AddProductDiscount: React.FC<AddProductDiscountProps> = ({ newId }) => {
                       {field.broswername}
                     </label>
                     <Field name={field.name}>
-                      {({ field, form }: FieldProps) => (
+                      {({ field }: FieldProps) => (
                         <DatePicker
                           {...field}
                           selected={
@@ -117,12 +137,20 @@ const AddProductDiscount: React.FC<AddProductDiscountProps> = ({ newId }) => {
                 );
               }
             })}
-            <div className="col-span-2">
+            <div className="col-span-2 flex justify-between">
               <button
-                type="submit"
-                className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-300"
+                type="button"
+                className="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-300"
+                onClick={() => setIsUpdate(false)} // Set to insert mode
               >
-                Submit
+                Insert Discount
+              </button>
+              <button
+                type="button"
+                className="bg-yellow-600 text-white py-2 px-4 rounded-md hover:bg-yellow-700 transition duration-300"
+                onClick={() => setIsUpdate(true)} // Set to update mode
+              >
+                Update Discount
               </button>
             </div>
           </Form>

@@ -40,7 +40,6 @@ export const validation = Yup.object({
     .required("Color is required")
     .matches(/^\S.*\S$/, "Color cannot be just spaces"),
   subcategory_id: Yup.string().required("Subcategory is required"),
-  discount: Yup.number().min(0, "Discount cannot be negative"),
   stockQuantity: Yup.number()
     .required("Stock Quantity is required")
     .min(0, "Stock Quantity cannot be negative"),
@@ -104,11 +103,7 @@ export const FormFields: IFormField[] = [
     name: "price",
     type: "number",
   },
-  {
-    broswername: "discount",
-    name: "discount",
-    type: "number",
-  },
+
   {
     broswername: "stock quantity",
     name: "stockQuantity",

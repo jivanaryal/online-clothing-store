@@ -9,6 +9,5 @@ export type TProduct = {
   size: string;
   color: string;
   subcategory_id: string;
-  discount?: number; // Optional field
   stockQuantity: number;
 };
