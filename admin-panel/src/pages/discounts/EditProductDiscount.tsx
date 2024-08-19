@@ -39,8 +39,8 @@ const EditProductDiscount: React.FC<UpdateProductDiscountProps> = ({
   const today = new Date();
 
   return (
-    <div className="max-w-2xl mx-auto bg-white p-8">
-      <h2 className="text-2xl font-bold text-center mb-6">
+    <div className="max-w-xl mx-auto bg-white shadow-lg rounded-lg p-8">
+      <h2 className="text-3xl font-semibold text-center text-gray-800 mb-8">
         Update Product Discount
       </h2>
       <Formik
@@ -50,14 +50,14 @@ const EditProductDiscount: React.FC<UpdateProductDiscountProps> = ({
         enableReinitialize
       >
         {({ setFieldValue }) => (
-          <Form className="grid grid-cols-2 gap-6">
+          <Form className="grid grid-cols-1 gap-6">
             {discountField.map((field, index) => {
               if (field.name === "product_id") {
                 return (
-                  <div key={index} className="col-span-2 sm:col-span-1">
+                  <div key={index} className="col-span-1">
                     <label
                       htmlFor={field.name}
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-lg font-medium text-gray-700"
                     >
                       {field.broswername}
                     </label>
@@ -67,12 +67,12 @@ const EditProductDiscount: React.FC<UpdateProductDiscountProps> = ({
                       type="number"
                       value={newId}
                       readOnly
-                      className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      className="mt-2 block w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
                     />
                     <ErrorMessage
                       name={field.name}
                       component="div"
-                      className="text-red-500 text-sm mt-1"
+                      className="text-red-500 text-sm mt-2"
                     />
                   </div>
                 );
@@ -81,10 +81,10 @@ const EditProductDiscount: React.FC<UpdateProductDiscountProps> = ({
                 field.name === "end_date"
               ) {
                 return (
-                  <div key={field.name} className="col-span-2 sm:col-span-1">
+                  <div key={field.name} className="col-span-1">
                     <label
                       htmlFor={field.name}
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-lg font-medium text-gray-700"
                     >
                       {field.broswername}
                     </label>
@@ -97,7 +97,7 @@ const EditProductDiscount: React.FC<UpdateProductDiscountProps> = ({
                           }
                           onChange={(val) => setFieldValue(field.name, val)}
                           minDate={today}
-                          className="mt-1 block w-[290px] p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                          className="mt-2 block w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
                           dateFormat="yyyy-MM-dd"
                         />
                       )}
@@ -105,16 +105,16 @@ const EditProductDiscount: React.FC<UpdateProductDiscountProps> = ({
                     <ErrorMessage
                       name={field.name}
                       component="div"
-                      className="text-red-500 text-sm mt-1"
+                      className="text-red-500 text-sm mt-2"
                     />
                   </div>
                 );
               } else {
                 return (
-                  <div key={field.name} className="col-span-2 sm:col-span-1">
+                  <div key={field.name} className="col-span-1">
                     <label
                       htmlFor={field.name}
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-lg font-medium text-gray-700"
                     >
                       {field.broswername}
                     </label>
@@ -123,23 +123,23 @@ const EditProductDiscount: React.FC<UpdateProductDiscountProps> = ({
                       type={field.type !== "textarea" ? field.type : undefined}
                       name={field.name}
                       id={field.name}
-                      className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      className="mt-2 block w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
                     />
                     <ErrorMessage
                       name={field.name}
                       component="div"
-                      className="text-red-500 text-sm mt-1"
+                      className="text-red-500 text-sm mt-2"
                     />
                   </div>
                 );
               }
             })}
-            <div className="col-span-2">
+            <div className="col-span-1">
               <button
                 type="submit"
-                className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-300"
+                className="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition duration-300"
               >
-                Submit
+                Update Discount
               </button>
             </div>
           </Form>
