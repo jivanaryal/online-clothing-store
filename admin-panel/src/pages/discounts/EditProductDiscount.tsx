@@ -3,7 +3,7 @@ import { Formik, Form, Field, ErrorMessage, FieldProps } from "formik";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { discountvalidation, discountField } from "./discount";
-import { getSingle, put } from "../../services/api";
+import { getSingle, update } from "../../services/api";
 
 type UpdateProductDiscountProps = {
   newId: number;
@@ -30,7 +30,7 @@ const EditProductDiscount: React.FC<UpdateProductDiscountProps> = ({
 
   const handleSubmit = async (values) => {
     try {
-      await put(`/discounts/${newId}`, values);
+      await update(`/discounts/${newId}`, values);
     } catch (error) {
       console.log(error);
     }
