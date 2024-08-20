@@ -39,7 +39,7 @@ const ViewCategories = () => {
       <div className="flex justify-between pb-5">
         <h1 className="text-2xl font-semibold text-gray-700 ">Category List</h1>
         <button
-          className="bg-blue-700 mt-3 text-sm font-semibold text-white py-2 px-3 flex items-center gap-2 rounded"
+          className="bg-blue-600 hover:bg-blue-700 hover:scale-[1.02] transition-all duration-200 delay-100 mt-3 text-sm font-semibold text-white py-2 px-3 flex items-center gap-2 rounded"
           onClick={() => navigate("/add-category")}
         >
           <FaPlus />

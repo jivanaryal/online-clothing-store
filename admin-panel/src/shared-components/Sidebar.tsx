@@ -1,10 +1,13 @@
-import { MdDashboard } from "react-icons/md";
+import { MdCategory, MdDashboard } from "react-icons/md";
 import { BsFillBagCheckFill } from "react-icons/bs";
 
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { FaCartArrowDown } from "react-icons/fa";
 import { useReducer } from "react";
+import { IoBagAdd } from "react-icons/io5";
+import { MdOutlineFormatListNumberedRtl } from "react-icons/md";
+import { BiSolidCategory } from "react-icons/bi";
 
 export const SidebarItem = [
   {
@@ -18,18 +21,25 @@ export const SidebarItem = [
     icons: <BsFillBagCheckFill />,
     path: "/products",
     extralist: [
-      { title: "add product", path: "/add-product" },
+      {
+        title: "add product",
+        path: "/products/add-product",
+        icons: <IoBagAdd />,
+      },
       {
         title: "product list",
         path: "/products", // Fixed typo here
+        icons: <MdOutlineFormatListNumberedRtl />,
       },
       {
         title: "category",
         path: "/categories",
+        icons: <MdCategory />,
       },
       {
         title: "sub-category",
         path: "/subcategories",
+        icons: <BiSolidCategory />,
       },
     ],
   },
@@ -43,6 +53,7 @@ export const SidebarItem = [
       {
         title: "order list",
         path: "/order-list", // Fixed typo here
+        icons: <IoBagAdd />,
       },
     ],
   },
@@ -78,7 +89,9 @@ const initialState = {
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [state, dispatch] = useReducer(reducer, initialState);
+  console.log(location.pathname[1]);
 
   return (
     <div>
@@ -95,10 +108,14 @@ const Sidebar = () => {
                     className="flex items-center gap-2"
                     onClick={() => navigate(items.path)}
                   >
-                    <span className="text-xl text-gray-600 group-hover:text-white">
+                    <span className="text-xl text-gray-700 group-hover:text-white">
                       {items.icons}
                     </span>
-                    <span className="capitalize font-medium text-base text-gray-700 group-hover:text-white">
+                    <span
+                      className={`capitalize font-medium text-base text-gray-800 group-hover:text-white ${
+                        location.pathname === items.path && `text-blue-600`
+                      }`}
+                    >
                       {items.title}
                     </span>
                   </li>
@@ -125,10 +142,13 @@ const Sidebar = () => {
                     {items.extralist?.map((val, i) => (
                       <ul
                         key={i}
-                        className="cursor-pointer text-gray-700 hover:text-blue-500"
+                        className={` flex items-center gap-1 mb-3 cursor-pointer text-gray-800 hover:text-blue-500 ${
+                          location.pathname == val.path && "text-blue-500"
+                        }`}
                         onClick={() => navigate(val.path)}
                       >
-                        <li className="capitalize text-[13px] leading-[20px] mt-2 font-medium">
+                        <li>{val.icons}</li>
+                        <li className="capitalize text-[13px] leading-[20px] font-medium">
                           {val.title}
                         </li>
                       </ul>
@@ -141,10 +161,10 @@ const Sidebar = () => {
                     {items.extralist?.map((val, i) => (
                       <ul
                         key={i}
-                        className="cursor-pointer text-gray-600 hover:text-blue-500"
+                        className="cursor-pointer text-gray-700 hover:text-blue-500"
                         onClick={() => navigate(val.path)}
                       >
-                        <li className="capitalize text-[13px] mt-2 font-medium">
+                        <li className="capitalize text-[13px]  font-medium">
                           {val.title}
                         </li>
                       </ul>
