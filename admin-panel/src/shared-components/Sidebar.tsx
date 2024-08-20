@@ -19,7 +19,7 @@ export const SidebarItem = [
   {
     title: "products",
     icons: <BsFillBagCheckFill />,
-    path: "/products",
+    path: null,
     extralist: [
       {
         title: "add product",
@@ -28,17 +28,17 @@ export const SidebarItem = [
       },
       {
         title: "product list",
-        path: "/products", // Fixed typo here
+        path: "/products/product-list", // Fixed typo here
         icons: <MdOutlineFormatListNumberedRtl />,
       },
       {
         title: "category",
-        path: "/categories",
+        path: "/products/categories",
         icons: <MdCategory />,
       },
       {
         title: "sub-category",
-        path: "/subcategories",
+        path: "/products/subcategories",
         icons: <BiSolidCategory />,
       },
     ],
@@ -47,7 +47,7 @@ export const SidebarItem = [
   {
     title: "orders",
     icons: <FaCartArrowDown />,
-    path: "/orders",
+    path: null,
     extralist: [
       { title: null, path: null },
       {
@@ -91,7 +91,8 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [state, dispatch] = useReducer(reducer, initialState);
-  console.log(location.pathname[1]);
+
+  const absoluteLocation = location.pathname?.split("/").filter(Boolean)[0];
 
   return (
     <div>
@@ -103,12 +104,14 @@ const Sidebar = () => {
           <nav className="mt-6 flex justify-center flex-col ml-4 gap-2 mr-3">
             {SidebarItem.map((items, index) => (
               <nav key={index}>
-                <ul className="flex items-center gap-2 cursor-pointer pl-4 rounded group hover:bg-[#5570F1] hover:text-white py-2">
-                  <li
-                    className="flex items-center gap-2"
-                    onClick={() => navigate(items.path)}
-                  >
-                    <span className="text-xl text-gray-700 group-hover:text-white">
+                <ul
+                  className={`flex items-center gap-2 cursor-pointer pl-4 rounded group hover:bg-[#5570F1]  py-2 ${
+                    absoluteLocation === items.title && "bg-blue-200 "
+                  }`}
+                  onClick={() => navigate(items.path)}
+                >
+                  <li className="flex items-center gap-2">
+                    <span className="text-xl text-gray-700 ">
                       {items.icons}
                     </span>
                     <span

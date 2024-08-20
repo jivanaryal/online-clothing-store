@@ -20,18 +20,24 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Dashboard />} />
-            <Route path="/products" element={<ViewProducts />} />
+            <Route path="/products/product-list" element={<ViewProducts />} />
             <Route path="/products/add-product" element={<AddProduct />} />
             <Route path="/products/action/:id" element={<MoreAction />} />
 
             <Route path="/products/edit/:id" element={<EditProduct />} />
-            <Route path="/categories/edit/:id" element={<EditCategory />} />
             <Route
-              path="/subcategories/edit/:id"
+              path="/products/categories/edit/:id"
+              element={<EditCategory />}
+            />
+            <Route
+              path="/products/subcategories/edit/:id"
               element={<EditSubCategories />}
             />
-            <Route path="/categories" element={<ViewCategories />} />
-            <Route path="/subcategories" element={<ViewSubCategories />} />
+            <Route path="products/categories" element={<ViewCategories />} />
+            <Route
+              path="/products/subcategories"
+              element={<ViewSubCategories />}
+            />
             <Route path="/add-category" element={<AddCategories />} />
             <Route path="/add-subcategory" element={<AddSubCategories />} />
           </Route>
