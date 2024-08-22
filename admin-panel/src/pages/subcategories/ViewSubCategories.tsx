@@ -46,7 +46,7 @@ const ViewSubCategories = () => {
         </h1>
         <button
           className="bg-blue-600 hover:bg-blue-700 hover:scale-[1.02] transition-all duration-200 delay-100 mt-3 text-sm font-semibold text-white py-2 px-3 flex items-center gap-2 rounded"
-          onClick={() => navigate("/add-subcategory")}
+          onClick={() => navigate("/products/add-subcategory")}
         >
           <FaPlus />
           <p>Create New</p>

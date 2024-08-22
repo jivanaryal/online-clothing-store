@@ -41,8 +41,11 @@ const App = () => {
               path="/products/subcategories"
               element={<ViewSubCategories />}
             />
-            <Route path="/add-category" element={<AddCategories />} />
-            <Route path="/add-subcategory" element={<AddSubCategories />} />
+            <Route path="/products/add-category" element={<AddCategories />} />
+            <Route
+              path="/products/add-subcategory"
+              element={<AddSubCategories />}
+            />
           </Route>
         </Routes>
       </Router>
