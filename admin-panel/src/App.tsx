@@ -22,7 +22,10 @@ const App = () => {
             <Route index element={<Dashboard />} />
             <Route path="/products/product-list" element={<ViewProducts />} />
             <Route path="/products/add-product" element={<AddProduct />} />
-            <Route path="/products/action/:id" element={<MoreAction />} />
+            <Route
+              path="products/product-list/action/:id"
+              element={<MoreAction />}
+            />
 
             <Route path="/products/edit/:id" element={<EditProduct />} />
             <Route
