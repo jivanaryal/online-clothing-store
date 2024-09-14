@@ -41,7 +41,7 @@ const AddCategories = () => {
             Create Category
           </h2>
           <button
-            onClick={() => navigate("/categories")}
+            onClick={() => navigate("/products/categories")}
             className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200"
           >
             View Categories
