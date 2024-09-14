@@ -1,14 +1,31 @@
 import { useParams } from "react-router-dom";
-import productData from "../data/products.json";
 import { IoIosStar, IoIosStarHalf, IoIosStarOutline } from "react-icons/io";
-import { FaMinus } from "react-icons/fa6";
-import { FaPlus } from "react-icons/fa6";
-import { useState } from "react";
+import { FaMinus, FaPlus } from "react-icons/fa";
+import { useState, useEffect } from "react";
 
 const HeroProduct = () => {
-  const [count, setCount] = useState(1);
+  const [product, setProduct] = useState<any>(null); // Update type as needed
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [count, setCount] = useState<number>(1);
   const { id } = useParams();
-  const product = productData.find((item) => item.id === id);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch(`http://localhost:5001/api/ocs/products/${id}`);
+        if (!response.ok) throw new Error("Failed to fetch product");
+        const data = await response.json();
+        setProduct(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
 
   // Helper function to render stars
   const renderStars = (rating: number) => {
@@ -31,20 +48,23 @@ const HeroProduct = () => {
     setCount(value);
   };
 
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   // Calculate discounted price
   const discountedPrice = product
-    ? (product.price - (product.price * product.discount) / 100).toLocaleString(
-        "en-IN"
-      )
+    ? (product.price - (product.price * product.discount_percentage) / 100).toLocaleString("en-IN")
     : 0;
 
   const originalPrice = product ? product.price.toLocaleString("en-IN") : 0;
+
+  console.log
 
   return (
     <div className="border md:grid grid-cols-2 gap-2">
       <div className="image h-[70vh]">
         <img
-          src={product?.images[0]}
+          src={`http://localhost:5001${product?.imageURL[0]}`} // Adjusted image URL
           alt={product?.name}
           className="h-full object-cover w-full"
         />
@@ -53,24 +73,27 @@ const HeroProduct = () => {
         <p className="font-medium text-2xl line-clamp-2">{product?.name}</p>
         <div className="flex text-sm gap-2 items-center">
           {renderStars(product?.avgRating || 0)}
-          <span>{product?.avgRating}</span>
-          <span className="text-muted-foreground">
-            ({product?.reviews.length})
-          </span>
+          <span>{product?.avgRating || "No rating"}</span>
+          {/* <span className="text-muted-foreground">
+            ({product?.review_rating.length || 0} reviews)
+          </span> */}
         </div>
         <div>
           <span className="text-gray-400">Brand :</span>{" "}
-          <span className="text-blue-600">GoldStar</span>
+          <span className="text-blue-600">{product?.brand || "Unknown"}</span>
         </div>
         <div className="border horizontal line"></div>
         <div className="py-4">
           <p className="font-medium text-2xl text-blue-600">
             Rs. {discountedPrice}
           </p>
-          <div className="flex gap-2">
-            <p className="text-gray-400 line-through">Rs. {originalPrice}</p>
-            <p>{product?.discount}%</p>
-          </div>
+          <div>{console.log(product)}</div>
+          {product?.discount_percentage > 0 && (
+            <div className="flex gap-2">
+              <p className="text-gray-400 line-through">Rs. {originalPrice}</p>
+              <p>{product?.discount_percentage}%</p>
+            </div>
+          )}
         </div>
         <div className="border horizontal line"></div>
         <div>
@@ -82,19 +105,17 @@ const HeroProduct = () => {
           </div>
         </div>
         <div className="h-14 w-14 cursor-pointer flex gap-2">
-          {product?.images.map((imgs, i) => {
-            return (
-              <img
-                key={i}
-                src={imgs}
-                alt="color"
-                className="w-full h-full object-contain border hover:border-blue-600"
-              />
-            );
-          })}
+          {product?.imageURL.map((imgs: string, i: number) => (
+            <img
+              key={i}
+              src={`http://localhost:5001${imgs}`} // Adjusted image URL
+              alt="color"
+              className="w-full h-full object-contain border hover:border-blue-600"
+            />
+          ))}
         </div>
-        {/* quantity section */}
-        <div className="flex gap-8 items-center py-3 ">
+        {/* Quantity section */}
+        <div className="flex gap-8 items-center py-3">
           <p className="text-gray-500">Quantity</p>
           <div className="flex items-center gap-2">
             <FaMinus
