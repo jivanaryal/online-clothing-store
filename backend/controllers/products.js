@@ -179,10 +179,25 @@ const deleteProduct = async (req, res) => {
   }
 };
 
+const getAllProductsWithReviewsAndDiscounts = async (req, res) => {
+  try {
+    const productsWithDetails = await Product.findWithReviewsAndDiscounts();
+    return res.status(200).json(productsWithDetails[0]);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      error: "Internal Server Error",
+      msg: error.message,
+    });
+  }
+};
+
+
 module.exports = {
   createProduct,
   getAllProducts,
   getProductById,
   updateProduct,
   deleteProduct,
+  getAllProductsWithReviewsAndDiscounts
 };

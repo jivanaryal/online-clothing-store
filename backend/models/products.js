@@ -54,7 +54,18 @@ class Product {
   }
 
   static async findById(product_id) {
-    const selectSql = "SELECT * FROM products WHERE product_id = ?";
+    const selectSql = `
+    SELECT p.*, 
+       d.discount_percentage,
+       AVG(r.rating) AS avgRating,
+       COUNT(r.rating) AS review_count
+FROM products p
+LEFT JOIN discounts d ON p.product_id = d.product_id
+LEFT JOIN reviews r ON p.product_id = r.product_id
+WHERE p.product_id = ?
+GROUP BY p.product_id, d.discount_percentage;
+
+    `;
     const values = [product_id];
     return db.execute(selectSql, values);
   }
@@ -101,6 +112,27 @@ class Product {
     const values = [product_id];
     return db.execute(deleteSql, values);
   }
+
+  static async findWithReviewsAndDiscounts() {
+    const selectSql = `
+      SELECT 
+  p.*,
+  COALESCE(r.rating, NULL) AS review_rating,
+  COALESCE(r.comment, NULL) AS review_comment,
+  COALESCE(d.discount_percentage, NULL) AS discount_percentage,
+  COALESCE(d.start_date, NULL) AS discount_start_date,
+  COALESCE(d.end_date, NULL) AS discount_end_date
+FROM 
+  products p
+LEFT JOIN 
+  reviews r ON p.product_id = r.product_id
+LEFT JOIN 
+  discounts d ON p.product_id = d.product_id
+    `;
+  
+    return db.execute(selectSql);
+  }
+  
 }
 
 module.exports = Product;

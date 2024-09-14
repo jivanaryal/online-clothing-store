@@ -6,6 +6,7 @@ const productController = require("../controllers/products");
 // Routes for handling products
 router.post("/", uploadMultiple, productController.createProduct);
 router.get("/", productController.getAllProducts);
+router.get("/all", productController.getAllProductsWithReviewsAndDiscounts);
 router.get("/:id", productController.getProductById);
 router.patch("/:id", uploadMultiple, productController.updateProduct);
 router.delete("/:id", productController.deleteProduct);
