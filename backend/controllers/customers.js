@@ -52,6 +52,7 @@ const signupCustomers = async (req, res) => {
 
 const loginCustomers = async (req, res) => {
   const { Email, Password } = req.body;
+  console.log(Email,Password)
 
   if (!Email || !Password) {
     return res.status(400).json({ error: "Email and Password are required" });
@@ -60,9 +61,11 @@ const loginCustomers = async (req, res) => {
   try {
     // Check if the customer exists
     const [results] = await pool.query(
-      "SELECT * FROM customers WHERE Email = ?",
+      "SELECT * FROM customers WHERE Email = ? ",
       [Email]
     );
+
+    console.log([results])
 
     if (results.length === 0) {
       return res.status(400).json({ error: "Invalid Email or Password" });
@@ -81,7 +84,7 @@ const loginCustomers = async (req, res) => {
       expiresIn: "1h",
     });
 
-    res.status(200).json({ message: "Login successful", token });
+    res.status(200).json({ message: "Login successful", token, CustomerID: customer.CustomerID });
   } catch (error) {
     console.error("Error logging in customer:", error);
     res.status(500).json({ error: "Internal server error" });

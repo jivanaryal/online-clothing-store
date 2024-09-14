@@ -1,39 +1,35 @@
-import React, {
-  createContext,
-  useState,
-  useContext,
-  useEffect,
-  ReactNode,
-} from "react";
-import VerifyToken from "../utils/VerifyToken"; // Adjust the path as necessary
+import React, { createContext, useState, useContext, useEffect, ReactNode } from "react";
+import VerifyToken from "../utils/VerifyToken";
 
-// Define types for the context
 interface AuthContextType {
   isAuthenticated: boolean;
-  setIsAuthenticated: (isAuthenticated: boolean) => void;
+  loading: boolean;
+  setIsAuthenticated: (auth: boolean) => void;
   logout: () => void;
 }
 
-// Create the context with default value as undefined
+// Initialize the context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true); // Loading state to ensure auth is checked before rendering
 
   useEffect(() => {
     const checkToken = async () => {
       const token = localStorage.getItem("token");
-      const user_id = localStorage.getItem("user_id");
-      if (token && user_id) {
+      
+      if (token) {
         const isValid = await VerifyToken(token);
-        setIsAuthenticated(isValid);
+        setIsAuthenticated(isValid); // Set authenticated if token is valid
+      } else {
+        setIsAuthenticated(false); // No token found, not authenticated
       }
-      setLoading(false);
+
+      setLoading(false); // Loading finished
     };
-    checkToken();
+
+    checkToken(); // Verify token on component mount
   }, []);
 
   const logout = () => {
@@ -43,18 +39,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   return (
-    <AuthContext.Provider
-      value={{ isAuthenticated, setIsAuthenticated, logout }}
-    >
-      {!loading && children}
+    <AuthContext.Provider value={{ isAuthenticated, loading, setIsAuthenticated, logout }}>
+      {loading ? <div>Loading...</div> : children} {/* Render children when not loading */}
     </AuthContext.Provider>
   );
 };
 
-// Custom hook to use the AuthContext
+// Custom hook to access the AuthContext
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;

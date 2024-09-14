@@ -22,9 +22,11 @@ const createCart = async (req, res) => {
 
 const getCartByCustomerId = async (req, res) => {
   const { customerId } = req.params;
+  console.log(customerId,"hello")
 
   try {
     const [cart] = await Cart.getCartByCustomerId(customerId);
+    console.log([cart])
     return res.status(200).json(cart);
   } catch (error) {
     console.log(error);
@@ -34,6 +36,7 @@ const getCartByCustomerId = async (req, res) => {
     });
   }
 };
+
 
 const deleteCart = async (req, res) => {
   const { cartId } = req.params;
@@ -52,6 +55,7 @@ const deleteCart = async (req, res) => {
 
 const addItemToCart = async (req, res) => {
   const { cart_id, product_id, quantity } = req.body;
+  console.log(cart_id,product_id,quantity)
   const cartItem = new CartItem(cart_id, product_id, quantity);
 
   try {
@@ -101,6 +105,7 @@ const updateCartItemQuantity = async (req, res) => {
 
 const deleteCartItem = async (req, res) => {
   const { id } = req.params;
+  console.log(id)
 
   try {
     await CartItem.deleteItem(id);
