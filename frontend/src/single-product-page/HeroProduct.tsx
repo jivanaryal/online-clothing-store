@@ -13,7 +13,9 @@ const HeroProduct = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await fetch(`http://localhost:5001/api/ocs/products/${id}`);
+        const response = await fetch(
+          `http://localhost:5001/api/ocs/products/${id}`
+        );
         if (!response.ok) throw new Error("Failed to fetch product");
         const data = await response.json();
         setProduct(data);
@@ -51,14 +53,15 @@ const HeroProduct = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
-  // Calculate discounted price
+  // Calculate discounted price per item
   const discountedPrice = product
-    ? (product.price - (product.price * product.discount_percentage) / 100).toLocaleString("en-IN")
+    ? product.price - (product.price * product.discount_percentage) / 100
     : 0;
 
-  const originalPrice = product ? product.price.toLocaleString("en-IN") : 0;
+  // Calculate total price based on the selected quantity
+  const totalPrice = discountedPrice * count;
 
-  console.log
+  const originalPrice = product ? product.price.toLocaleString("en-IN") : 0;
 
   return (
     <div className="border md:grid grid-cols-2 gap-2">
@@ -71,12 +74,11 @@ const HeroProduct = () => {
       </div>
       <div className="flex flex-col gap-2 p-4">
         <p className="font-medium text-2xl line-clamp-2">{product?.name}</p>
-        <div className="flex text-sm gap-2 items-center">
+        <div className="flex text-sm gap-2 items-center text-yellow-400">
           {renderStars(product?.avgRating || 0)}
-          <span>{product?.avgRating || "No rating"}</span>
-          {/* <span className="text-muted-foreground">
-            ({product?.review_rating.length || 0} reviews)
-          </span> */}
+          <span className="text-black">
+            {product?.avgRating || "No rating"}
+          </span>
         </div>
         <div>
           <span className="text-gray-400">Brand :</span>{" "}
@@ -84,14 +86,14 @@ const HeroProduct = () => {
         </div>
         <div className="border horizontal line"></div>
         <div className="py-4">
+          {/* Update the total price dynamically */}
           <p className="font-medium text-2xl text-blue-600">
-            Rs. {discountedPrice}
+            Rs. {totalPrice.toLocaleString("en-IN")}
           </p>
-          <div>{console.log(product )}</div>
           {product?.discount_percentage > 0 && (
             <div className="flex gap-2">
               <p className="text-gray-400 line-through">Rs. {originalPrice}</p>
-              <p>{product?.discount_percentage}%</p>
+              <p className="text-red-500">{product?.discount_percentage}%</p>
             </div>
           )}
         </div>

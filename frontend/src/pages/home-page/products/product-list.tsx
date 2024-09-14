@@ -16,7 +16,9 @@ const ProductList = ({ varient }: Props) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`http://localhost:5001/api/ocs/products/all`);
+        const response = await fetch(
+          `http://localhost:5001/api/ocs/products/all`
+        );
         if (!response.ok) throw new Error("Failed to fetch products");
         const data: Tproduct[] = await response.json();
         setProducts(data);
@@ -54,23 +56,17 @@ const ProductList = ({ varient }: Props) => {
 
 export default ProductList;
 
-
-
-
 type SimilarProductProps = {
   products: Tproduct[];
 };
 
 function SimilarProduct({ products }: SimilarProductProps) {
-
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 gap-6">
       {products.map((product, i) => (
-        
         <div key={i}>
           <div className="max-h-80 p-1 border rounded-md hover:shadow-lg cursor-pointer">
             <div className="image h-44 rounded-md">
-            
               <img
                 src={product.images[0]}
                 sizes={"100vw"}
@@ -120,7 +116,6 @@ function AllProducts({ products }: AllProductsProps) {
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
       {products.map((product, i) => (
         <Link key={i} to={`products/${product.product_id}`}>
-        
           <div>
             <div className="max-h-80 p-1 border rounded-md hover:shadow-lg cursor-pointer">
               <div className="image h-44 rounded-md">
@@ -132,16 +127,14 @@ function AllProducts({ products }: AllProductsProps) {
                 />
               </div>
               <div className="content text-black p-1">
-                <p className="text-lg line-clamp-2 leading-5">
-                  {product.name}
-                </p>
-               
+                <p className="text-lg line-clamp-2 leading-5">{product.name}</p>
 
                 {product.discount_percentage > 0 ? (
                   <>
                     <p className="text-xl font-semibold text-blue-600">
                       Rs.{" "}
-                      {product.price - (product.price * product.discount_percentage) / 100}
+                      {product.price -
+                        (product.price * product.discount_percentage) / 100}
                     </p>
                     <div className="flex items-center gap-2">
                       <p className="text-gray-600 line-through">
