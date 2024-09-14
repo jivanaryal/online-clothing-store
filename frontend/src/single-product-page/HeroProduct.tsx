@@ -1,7 +1,8 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { IoIosStar, IoIosStarHalf, IoIosStarOutline } from "react-icons/io";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 const HeroProduct = () => {
   const [product, setProduct] = useState<any>(null); // Update type as needed
@@ -9,6 +10,7 @@ const HeroProduct = () => {
   const [error, setError] = useState<string | null>(null);
   const [count, setCount] = useState<number>(1);
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -27,7 +29,6 @@ const HeroProduct = () => {
     fetchProduct();
   }, [id]);
 
-  // Helper function to render stars
   const renderStars = (rating: number) => {
     const stars = [];
     for (let i = 0; i < 5; i++) {
@@ -42,23 +43,48 @@ const HeroProduct = () => {
     return stars;
   };
 
-  // Function to handle quantity change
   const handleQuantityChange = (e: { target: { value: string } }) => {
     const value = Math.max(1, Math.min(15, parseInt(e.target.value) || 1));
     setCount(value);
   };
 
+  // Function to handle Add to Cart
+  const handleAddToCart = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      // Redirect to login page with the return path as state
+      navigate("/login", { state: { from: "/cart" } });
+      return;
+    }
+
+    try {
+      // Fetch or create cart
+      const response = await axios.get(`http://localhost:5001/api/ocs/carts/customer/${localStorage.getItem("CustomerID")}`);
+      const cartId = response.data.cart_id;
+
+      // Add item to cart
+      await axios.post('http://localhost:5001/api/ocs/carts/items', {
+        cart_id: 1,
+        product_id: product.product_id,
+        quantity: count
+      });
+
+      // Redirect to cart page
+      navigate("/cart");
+    } catch (error) {
+      console.error('Error adding item to cart:', error);
+      alert('Failed to add item to cart.');
+    }
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
-  // Calculate discounted price
   const discountedPrice = product
     ? (product.price - (product.price * product.discount_percentage) / 100).toLocaleString("en-IN")
     : 0;
 
   const originalPrice = product ? product.price.toLocaleString("en-IN") : 0;
-
-  console.log
 
   return (
     <div className="border md:grid grid-cols-2 gap-2">
@@ -74,9 +100,6 @@ const HeroProduct = () => {
         <div className="flex text-sm gap-2 items-center">
           {renderStars(product?.avgRating || 0)}
           <span>{product?.avgRating || "No rating"}</span>
-          {/* <span className="text-muted-foreground">
-            ({product?.review_rating.length || 0} reviews)
-          </span> */}
         </div>
         <div>
           <span className="text-gray-400">Brand :</span>{" "}
@@ -87,7 +110,6 @@ const HeroProduct = () => {
           <p className="font-medium text-2xl text-blue-600">
             Rs. {discountedPrice}
           </p>
-          <div>{console.log(product )}</div>
           {product?.discount_percentage > 0 && (
             <div className="flex gap-2">
               <p className="text-gray-400 line-through">Rs. {originalPrice}</p>
@@ -138,7 +160,10 @@ const HeroProduct = () => {
         </div>
         {/* Add to cart and buy now button */}
         <div className="grid grid-cols-2 place-items-center justify-between text-white gap-3">
-          <button className="bg-blue-600 w-full py-2 rounded-md">
+          <button
+            className="bg-blue-600 w-full py-2 rounded-md"
+            onClick={handleAddToCart}
+          >
             Add to Cart
           </button>
           <button className="w-full bg-green-600 py-2 rounded-md">

@@ -9,6 +9,7 @@ import Login from "./auth/Login";
 import Signup from "./auth/Signup";
 import { AuthProvider } from "./auth/AuthContext";
 import PrivateRoute from "./auth/PrivateRoute";
+import CartPage from "./pages/cart-page/CartPage";
 
 const App = () => {
   return (
@@ -31,14 +32,14 @@ const App = () => {
               </PrivateRoute>
             }
           />
-          {/* <Route
-            path="/shop"
+           <Route
+            path="/cart"
             element={
               <PrivateRoute>
-                <Shop />
+                <CartPage />
               </PrivateRoute>
             }
-          /> */}
+          /> 
         </Routes>
       </AuthProvider>
     </Router>

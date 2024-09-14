@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { IoSearchSharp } from "react-icons/io5";
 import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { FaRegHeart } from "react-icons/fa";
@@ -12,6 +12,7 @@ import "./nav.css";
 const SecondNav = () => {
   // console.log(SecondNavData);
   const [sidebar, setSidebar] = useState(false);
+  const navigate = useNavigate();
   return (
     <div>
       <nav className="flex py-1 md:py-3 shadow-md justify-between items-center px-2  md:px-3">
@@ -56,7 +57,7 @@ const SecondNav = () => {
               placeholder="Search for clothes"
               className="h-full outline-none border-none max-w-40"
             />
-            <HiOutlineShoppingBag className="cursor-pointer text-2xl" />
+            <HiOutlineShoppingBag className="cursor-pointer text-2xl" onClick={()=>navigate("/cart")} />
           </div>
           <div className="hidden md:flex gap-2 items-center">
             <div className="p-2 rounded-full border-2">

@@ -1,7 +1,7 @@
 import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -28,6 +28,10 @@ const validationSchema = Yup.object({
 const Login: React.FC = () => {
   const { setIsAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();  // Get the previous location
+
+  // Extract the redirect path from state, defaulting to homepage
+  const from = (location.state as { from: string })?.from || "/";
 
   // Handle form submission
   const handleLogin = async (
@@ -35,24 +39,41 @@ const Login: React.FC = () => {
     { setSubmitting, resetForm }: FormikHelpers<MyFormValues>
   ) => {
     try {
+      // Perform the login request
       const response = await axios.post(
         "http://localhost:5001/api/auth/ocs/customers/login",
         values
       );
-      toast.success(response.data.message);
-
-      resetForm();
+      
+      // Check if the login was successful
       if (response.data.message === "Login successful") {
+        console.log(response.data);
+        toast.success(response.data.message);
+        
+        // Store the token in local storage
         localStorage.setItem("token", response.data.token);
+        localStorage.setItem('CustomerID', response.data.CustomerID);
+        
+        // Mark the user as authenticated
         setIsAuthenticated(true);
-        navigate("/");
+        
+        // Redirect to the previous or default page
+        navigate(from);
+        
+        // Reset the form
+        resetForm();
+      } else {
+        toast.error("Unexpected response from the server");
       }
+      
     } catch (error) {
-      toast.error(error.response?.data?.message || "An error occurred");
+      console.error("Login Error:", error);
+      toast.error(error.response?.data?.message || "An error occurred during login.");
     } finally {
       setSubmitting(false);
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
