@@ -87,7 +87,7 @@ const HeroProduct = () => {
           <p className="font-medium text-2xl text-blue-600">
             Rs. {discountedPrice}
           </p>
-          <div>{console.log(product)}</div>
+          <div>{console.log(product )}</div>
           {product?.discount_percentage > 0 && (
             <div className="flex gap-2">
               <p className="text-gray-400 line-through">Rs. {originalPrice}</p>
