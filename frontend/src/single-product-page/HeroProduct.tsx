@@ -85,7 +85,7 @@ const HeroProduct = () => {
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
-
+  const originalPrice = product?.price || 0;
   const discountedPrice = product
     ? product.price - (product.price * product.discount_percentage) / 100
     : 0;
