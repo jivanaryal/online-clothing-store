@@ -132,6 +132,23 @@ LEFT JOIN
   
     return db.execute(selectSql);
   }
+  static async findAllCatSubCat() {
+    const selectSql = `
+      SELECT 
+        c.category_id AS category_id,
+        c.name AS category_name,
+        s.subcategory_id AS subcategory_id,
+        s.name AS subcategory_name,
+        p.product_id AS product_id,
+        p.name AS product_name
+      FROM categories c
+      LEFT JOIN subcategories s ON c.category_id = s.category_id
+      LEFT JOIN products p ON s.subcategory_id = p.subcategory_id
+      ORDER BY c.category_id, s.subcategory_id, p.product_id;
+    `;
+  
+    return db.execute(selectSql);
+  }
   
 }
 

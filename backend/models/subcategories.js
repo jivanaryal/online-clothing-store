@@ -75,6 +75,18 @@ class Subcategory {
     const [rows] = await db.execute(query, [category_id]);
     return rows;
   }
+  static async findProductsBySubcategoryId(subcategory_id) {
+    console.log(subcategory_id);
+    const query = `
+      SELECT p.* 
+      FROM products p
+      INNER JOIN subcategories sc ON p.subcategory_id = sc.subcategory_id
+      WHERE sc.subcategory_id = ?`;
+    const [rows] = await db.execute(query, [subcategory_id]);
+    console.log(rows);
+    return rows;
+  }
+  
 }
 
 module.exports = Subcategory;

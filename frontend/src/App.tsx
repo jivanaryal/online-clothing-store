@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./hoc/layout/Layout";
 import HomePage from "./pages/home-page";
-import NewArrivals from "./pages/New Arrivals/NewArrivals";
+// import NewArrivals from "./pages/New Arrivals/NewArrivals";
 import Sales from "./pages/sales-page/Sales";
 import Shop from "./pages/shop-page/Shop";
 import HeroProduct from "./single-product-page/HeroProduct";
@@ -10,6 +10,7 @@ import Signup from "./auth/Signup";
 import { AuthProvider } from "./auth/AuthContext";
 import PrivateRoute from "./auth/PrivateRoute";
 import CartPage from "./pages/cart-page/CartPage";
+import SubcategoryProducts from "./shared-components/all-products/SubCategoriesProduct";
 
 const App = () => {
   return (
@@ -18,7 +19,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<HomePage />} />
-            <Route path="/new-arrivals" element={<NewArrivals />} />
+            <Route path="/subcategory/:id" element={<SubcategoryProducts />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/products/:id" element={<HeroProduct />} />
             <Route path="/login" element={<Login />} />

@@ -155,7 +155,7 @@ function AllProducts({ products }: AllProductsProps) {
                     Rs. {product.price}
                   </p>
                 )}
-                <div>{console.log(product)}</div>
+               
                 {product.review_rating > 0 ? (
                   <div className="flex items-center gap-2">
                     <RatingStars rating={product.review_rating} />

@@ -1,3 +1,57 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* Base styles for dropdown visibility */
+.group-hover\:block {
+    display: none;
+  }
+  
+  /* Show dropdowns on hover */
+  .group:hover .group-hover\:block {
+    display: block;
+  }
+  
+  /* Dropdown menu styles */
+  .group-hover\:block {
+    position: absolute; /* Ensure the dropdown is positioned relative to its container */
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 0.25rem; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* High z-index to ensure it is on top */
+  }
+  
+  /* Width and position adjustments for the main dropdown */
+  .group-hover\:block {
+    width: 16rem; /* Adjust the width as needed */
+  }
+  
+  /* Subcategory dropdown styles */
+  .group-hover\:block ul {
+    position: absolute;
+    top: 0; /* Align with the top of the parent item */
+    left: 100%; /* Position to the right of the parent item */
+    margin-top: 0.25rem; /* Small margin for spacing */
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 12rem; /* Adjust the width as needed */
+    z-index: 1000; /* Ensure it's on top */
+  }
+  
+  /* Product dropdown styles */
+  .group-hover\:block ul ul {
+    left: 100%; /* Position to the right of the subcategory dropdown */
+    top: 0; /* Align with the top of the subcategory dropdown */
+    width: 10rem; /* Adjust the width as needed */
+    z-index: 1000; /* Ensure it's on top */
+  }
+  
+  /* Prevent text wrapping */
+  .group-hover\:block li {
+    white-space: nowrap;
+  }
+  

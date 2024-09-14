@@ -3,7 +3,7 @@ const Subcategory = require("../models/subcategories");
 const postSubcategoryData = async (req, res) => {
   try {
     const { name, category_id, description } = req.body;
-    console.log(req.body);
+    
     const subcategoryModel = new Subcategory(name, category_id, description);
 
     if (await subcategoryModel.exists()) {
@@ -30,7 +30,7 @@ const postSubcategoryData = async (req, res) => {
 const getAllSubcategories = async (req, res) => {
   try {
     const { category_id } = req.query;
-    console.log(category_id);
+    
     let subcategories;
 
     if (category_id) {
@@ -94,6 +94,8 @@ const getSubcategoryById = async (req, res) => {
   }
 };
 
+
+
 const deleteSubcategoryData = async (req, res) => {
   try {
     const { id } = req.params;
@@ -152,6 +154,23 @@ const updateSubcategoryData = async (req, res) => {
   }
 };
 
+const getSubcategoryProducts = async (req, res) => {
+
+  const { id } = req.params;
+
+ 
+   console.log(req.params)
+  try {
+    const products = await Subcategory.findProductsBySubcategoryId(id);
+    if (products.length === 0) {
+      return res.status(404).json({ message: 'No products found for this subcategory.' });
+    }
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve products.' });
+  }
+};
+
 module.exports = {
   postSubcategoryData,
   getAllCategoryandSubCategory,
@@ -159,4 +178,5 @@ module.exports = {
   getSubcategoryById,
   deleteSubcategoryData,
   updateSubcategoryData,
+  getSubcategoryProducts
 };
