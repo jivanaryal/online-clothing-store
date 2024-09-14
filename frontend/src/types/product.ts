@@ -3,13 +3,13 @@ import { TCategory } from "./category";
 
 export type Tproduct = {
   avgRating: number;
-  id: string;
+  product_id: string;
   name: string;
   description: string;
   price: number;
   category: TCategory;
   imageURL: string;
-  discount: number;
+  discount_percentage: number;
   stockQuantity: number;
   images: string[];
   reviews: TReview[];

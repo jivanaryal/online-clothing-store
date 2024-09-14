@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import TopNav from "../../shared-components/navbar/TopNav";
 import SecondNav from "../../shared-components/navbar/SecondNav";
+import Footer from "@/shared-components/footer/Footer";
 
 const Layout = () => {
   return (
@@ -13,6 +14,7 @@ const Layout = () => {
       <section className="my-3 px-4">
         <Outlet />
       </section>
+      <Footer />
     </main>
   );
 };

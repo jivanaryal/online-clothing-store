@@ -15,7 +15,9 @@ const HeroProduct = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await fetch(`http://localhost:5001/api/ocs/products/${id}`);
+        const response = await fetch(
+          `http://localhost:5001/api/ocs/products/${id}`
+        );
         if (!response.ok) throw new Error("Failed to fetch product");
         const data = await response.json();
         setProduct(data);
@@ -59,32 +61,37 @@ const HeroProduct = () => {
 
     try {
       // Fetch or create cart
-      const response = await axios.get(`http://localhost:5001/api/ocs/carts/customer/${localStorage.getItem("CustomerID")}`);
+      const response = await axios.get(
+        `http://localhost:5001/api/ocs/carts/customer/${localStorage.getItem(
+          "CustomerID"
+        )}`
+      );
       const cartId = response.data.cart_id;
 
       // Add item to cart
-      await axios.post('http://localhost:5001/api/ocs/carts/items', {
+      await axios.post("http://localhost:5001/api/ocs/carts/items", {
         cart_id: 1,
         product_id: product.product_id,
-        quantity: count
+        quantity: count,
       });
 
       // Redirect to cart page
       navigate("/cart");
     } catch (error) {
-      console.error('Error adding item to cart:', error);
-      alert('Failed to add item to cart.');
+      console.error("Error adding item to cart:", error);
+      alert("Failed to add item to cart.");
     }
   };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
-
+  const originalPrice = product?.price || 0;
   const discountedPrice = product
-    ? (product.price - (product.price * product.discount_percentage) / 100).toLocaleString("en-IN")
+    ? product.price - (product.price * product.discount_percentage) / 100
     : 0;
 
-  const originalPrice = product ? product.price.toLocaleString("en-IN") : 0;
+  // Calculate total price based on the selected quantity
+  const totalPrice = discountedPrice * count;
 
   return (
     <div className="border md:grid grid-cols-2 gap-2">
@@ -97,7 +104,7 @@ const HeroProduct = () => {
       </div>
       <div className="flex flex-col gap-2 p-4">
         <p className="font-medium text-2xl line-clamp-2">{product?.name}</p>
-        <div className="flex text-sm gap-2 items-center">
+        <div className="flex text-sm gap-2 items-center text-yellow-400">
           {renderStars(product?.avgRating || 0)}
           <span>{product?.avgRating || "No rating"}</span>
         </div>
@@ -107,13 +114,14 @@ const HeroProduct = () => {
         </div>
         <div className="border horizontal line"></div>
         <div className="py-4">
+          {/* Update the total price dynamically */}
           <p className="font-medium text-2xl text-blue-600">
-            Rs. {discountedPrice}
+            Rs. {totalPrice.toLocaleString("en-IN")}
           </p>
           {product?.discount_percentage > 0 && (
             <div className="flex gap-2">
               <p className="text-gray-400 line-through">Rs. {originalPrice}</p>
-              <p>{product?.discount_percentage}%</p>
+              <p className="text-red-500">{product?.discount_percentage}%</p>
             </div>
           )}
         </div>
