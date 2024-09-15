@@ -1,51 +1,44 @@
-import React from "react";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
-} from "@/components/ui/carousel";
-import { CarouselType } from "../../../types/Carousel";
-import CarouselData from "./Carousel.json";
-import { Card, CardContent } from "@/components/ui/card";
+// import React from "react";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+// import images from "../carousel/Carousel.json"
+import sn from "@/assets/sliderone.png"
+import sm from '@/assets/slidertwo.png';
 
-type Props = {};
 
-const CarouselSection: React.FC<Props> = () => {
+const images = [
+   sn,
+   sm
+];
+
+const ImageSlider = () => {
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+  };
+
   return (
-    <div className="container flex justify-center items-center md:py-2">
-      <Carousel
-        className="w-full md:w-11/12 cursor-pointer"
-        opts={{
-          align: "start",
-          loop: true,
-        }}
-      >
-        <CarouselContent>
-          {(CarouselData as CarouselType[]).map((carousel, i) => {
-            return (
-              <CarouselItem key={i} className="h-16 sm:h-20 md:h-[40vh]">
-                <div>
-                  <Card className="w-full md:mx-auto h-16 sm:h-[20vh] md:h-[40vh] flex items-center  border-0">
-                    <CardContent className="flex items-center justify-center p-0 ">
-                      <img
-                        src={carousel.imageURL}
-                        className="h-full w-full object-contain rounded-2xl"
-                        alt={`slider image ${i + 1}`}
-                      />
-                    </CardContent>
-                  </Card>
-                </div>
-              </CarouselItem>
-            );
-          })}
-        </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
-      </Carousel>
+    <div className="w-full mx-auto ">
+      <Slider {...settings}>
+        {images.map((image, index) => (
+          <div key={index} className="flex justify-center items-center">
+            <img
+              src={image}
+              alt={`Slide ${index}`}
+              className="rounded-lg shadow-lg w-full object-fill"
+              style={{ maxHeight: "500px" }}
+            />
+          </div>
+        ))}
+      </Slider>
     </div>
   );
 };
 
-export default CarouselSection;
+export default ImageSlider;

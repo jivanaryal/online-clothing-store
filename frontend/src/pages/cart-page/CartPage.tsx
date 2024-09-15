@@ -10,7 +10,7 @@ const CartPage = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await axios.get(`http://localhost:5001/api/ocs/carts/customer/${id}`);
+        const res = await axios.get(`http://localhost:5001/api/ocs/carts/all/${id}`);
         console.log(res.data);
         setCartItem(res.data);
       } catch (error) {

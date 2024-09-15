@@ -11,6 +11,8 @@ import { AuthProvider } from "./auth/AuthContext";
 import PrivateRoute from "./auth/PrivateRoute";
 import CartPage from "./pages/cart-page/CartPage";
 import SubcategoryProducts from "./shared-components/all-products/SubCategoriesProduct";
+import AboutUs from "./pages/About-page/About";
+
 
 const App = () => {
   return (
@@ -21,6 +23,7 @@ const App = () => {
             <Route index element={<HomePage />} />
             <Route path="/subcategory/:id" element={<SubcategoryProducts />} />
             <Route path="/shop" element={<Shop />} />
+            <Route path="/about" element={<AboutUs />} />
             <Route path="/products/:id" element={<HeroProduct />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />

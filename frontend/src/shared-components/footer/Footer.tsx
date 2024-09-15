@@ -27,31 +27,95 @@ const Footer = (props: Props) => {
         <div className="middle flex flex-wrap gap-8 md:gap-12 mb-8 md:mb-0">
           <div className="shop-section flex flex-col gap-2">
             <p className="font-semibold text-lg text-black">Shop</p>
-            <a href="#" className="hover:text-blue-600 transition duration-300">
+            <a className="hover:text-blue-600 cursor-pointer transition duration-300"  onClick={()=>{
+              window.scrollTo({
+                top:0,
+                behavior:"smooth"
+
+              }
+                
+              );
+            }}>
               Product
             </a>
-            <a href="#" className="hover:text-blue-600 transition duration-300">
+            <a className="hover:text-blue-600 cursor-pointer       transition duration-300" onClick={()=>{
+              window.scrollTo({
+                top:0,
+                behavior:"smooth"
+
+              }
+                
+              );
+            }}>
               Overview
             </a>
-            <a href="#" className="hover:text-blue-600 transition duration-300">
+            <a className="hover:text-blue-600 cursor-pointer       transition duration-300" onClick={()=>{
+              window.scrollTo({
+                top:0,
+                behavior:"smooth"
+
+              }
+                
+              );
+            }}>
               Pricing
             </a>
-            <a href="#" className="hover:text-blue-600 transition duration-300">
+            <a className="hover:text-blue-600 cursor-pointer       transition duration-300" onClick={()=>{
+              window.scrollTo({
+                top:0,
+                behavior:"smooth"
+
+              }
+                
+              );
+            }}>
               Releases
             </a>
           </div>
           <div className="company-section flex flex-col gap-2">
             <p className="font-semibold text-lg text-black">Company</p>
-            <a href="#" className="hover:text-blue-600 transition duration-300">
+            <a className="hover:text-blue-600 cursor-pointer       transition duration-300" onClick={()=>{
+              window.scrollTo({
+                top:0,
+                behavior:"smooth"
+
+              }
+                
+              );
+            }}>
               About Us
             </a>
-            <a href="#" className="hover:text-blue-600 transition duration-300">
+            <a className="hover:text-blue-600 cursor-pointer       transition duration-300" onClick={()=>{
+              window.scrollTo({
+                top:0,
+                behavior:"smooth"
+
+              }
+                
+              );
+            }}>
               Contact
             </a>
-            <a href="#" className="hover:text-blue-600 transition duration-300">
+            <a className="hover:text-blue-600 cursor-pointer       transition duration-300" onClick={()=>{
+              window.scrollTo({
+                top:0,
+                behavior:"smooth"
+
+              }
+                
+              );
+            }}>
               News
             </a>
-            <a href="#" className="hover:text-blue-600 transition duration-300">
+            <a className="hover:text-blue-600 cursor-pointer       transition duration-300" onClick={()=>{
+              window.scrollTo({
+                top:0,
+                behavior:"smooth"
+
+              }
+                
+              );
+            }}>
               Support
             </a>
           </div>

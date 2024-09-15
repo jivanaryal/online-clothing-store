@@ -59,6 +59,7 @@ const Login: React.FC = () => {
         
         // Redirect to the previous or default page
         navigate(from);
+        window.location.reload()
         
         // Reset the form
         resetForm();

@@ -34,6 +34,11 @@ const HeroProduct = () => {
   }, [id]);
 
   const handleBuyNow = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login", { state: { from: `/products/${product.product_id}` } });
+      return;
+    }
     setShowPayPal(true);
   };
 
@@ -69,7 +74,7 @@ const HeroProduct = () => {
       const cartResponse = await axios.get(
         `http://localhost:5001/api/ocs/carts/customer/${localStorage.getItem("CustomerID")}`
       );
-      console.log("Cart Response:", cartResponse.data[0].cart_id); // Debugging line
+      console.log("Cart Response:", cartResponse); // Debugging line
 
       const cartId = cartResponse.data[0].cart_id;
       if (!cartId) {

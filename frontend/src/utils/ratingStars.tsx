@@ -7,3 +7,4 @@ export const RatingStars = ({ rating }: { rating: number }) => {
     ));
     return <div>{stars}</div>;
   };
+  

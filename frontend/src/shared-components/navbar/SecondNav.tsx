@@ -3,10 +3,9 @@ import { IoSearchSharp } from "react-icons/io5";
 import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { FaRegHeart } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { MdPersonOutline } from "react-icons/md";
-import { useState, useEffect } from "react";
+import { MdPersonOutline, MdLogout } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
-import "./nav.css";
+import { useState, useEffect } from "react";
 
 interface Subcategory {
   id: number;
@@ -23,9 +22,27 @@ const SecondNav = () => {
   const [sidebar, setSidebar] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track user login state
+  const [username, setUsername] = useState<string | null>(null); // Store username
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Simulate user authentication check
+    const checkUserAuth = async () => {
+      const token = localStorage.getItem("token");
+      const id = localStorage.getItem("CustomerID");
+      
+      if (token || id) {
+        setIsLoggedIn(true);
+        // Simulate fetching username
+        setUsername("User"); // Replace with actual user fetch
+      } else {
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkUserAuth();
+
     fetch('http://localhost:5001/api/ocs/products/catsub')
       .then((res) => res.json())
       .then((data) => {
@@ -70,41 +87,97 @@ const SecondNav = () => {
     );
   };
 
+  const handleLogout = async () => {
+    try {
+    
+      localStorage.removeItem("token");
+      localStorage.removeItem("CustomerID");
+      setIsLoggedIn(false);
+      setUsername(null);
+      navigate('/'); // Redirect to login page after logout
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+  };
+
   return (
     <div>
-      <nav className="flex py-1 md:py-3 shadow-md justify-between items-center px-2 md:px-3">
-        <div className="logo">
-          <p className="md:text-2xl cursor-pointer font-semibold" onClick={() => navigate("/")}>Fashion</p>
+      <nav className="flex items-center justify-between py-3 px-6 shadow-md bg-white">
+        <div className="flex items-center space-x-4">
+          <p className="text-2xl font-bold cursor-pointer text-gray-800 hover:text-blue-600 mr-32" onClick={() => navigate("/")}>Fashion</p>
+          <NavLink to="/" className="text-lg font-bold text-gray-700 hover:text-blue-600">Home</NavLink>
+          <NavLink to="/about" className="text-lg text-gray-700 font-bold hover:text-blue-600">About Us</NavLink>
         </div>
 
-        <div>
-          <ul
-            className={`${
-              sidebar
-                ? "fixed right-0 top-0 z-[1000] text-xl block h-screen w-[250px] px-4 py-6 leading-10 text-black shadow-sm backdrop-blur-md"
-                : "hidden"
-            } gap-4 font-normal md:flex md:gap-4 md:font-medium lg:gap-10`}
-          >
-            <div className="sm:hidden" onClick={() => setSidebar(false)}>
-              <IoMdClose className="text-4xl" />
-            </div>
+        <div className="hidden md:flex flex-grow justify-center space-x-8">
+          {loading ? (
+            <p>Loading...</p>
+          ) : (
+            categories.map((category) => (
+              <div key={category.id} className="relative group">
+                <span className="text-lg font-medium cursor-pointer text-gray-800 hover:text-gray-600">{category.name}</span>
+                <ul className="absolute left-0 hidden -mt-[0.8px] bg-white shadow-lg rounded-md group-hover:block">
+                  {category.subcategories.map((subcategory) => (
+                    <li key={subcategory.id} className="border-b last:border-b-0">
+                      <NavLink
+                        to={`/subcategory/${subcategory.id}`}
+                        className="block px-4 py-2 text-black hover:bg-gray-100"
+                      >
+                        {subcategory.name}
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          )}
+        </div>
 
+        <div className="flex items-center space-x-4">
+          {!isLoggedIn ? (
+            <div className="flex space-x-4">
+              <NavLink to="/login" className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Login</NavLink>
+              <NavLink to="/signup" className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">Signup</NavLink>
+            </div>
+          ) : (
+            <div className="flex items-center space-x-4">
+              <p className="text-sm font-medium text-gray-800">{username}</p>
+              <NavLink to="/profile" className="text-xl text-gray-800 hover:text-blue-600">
+                <MdPersonOutline />
+              </NavLink>
+              <button onClick={handleLogout} className="text-xl text-red-600 hover:text-red-800">
+                <MdLogout />
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="md:hidden">
+          <GiHamburgerMenu
+            className="text-2xl cursor-pointer text-gray-800 hover:text-blue-600"
+            onClick={() => setSidebar(true)}
+          />
+        </div>
+
+        <div
+          className={`fixed top-0 right-0 h-screen w-64 bg-white shadow-md transition-transform duration-300 ease-in-out ${sidebar ? "translate-x-0" : "translate-x-full"}`}
+        >
+          <div className="flex justify-end p-4">
+            <IoMdClose className="text-2xl cursor-pointer text-gray-800 hover:text-blue-600" onClick={() => setSidebar(false)} />
+          </div>
+          <ul className="space-y-4 p-4">
             {loading ? (
               <li>Loading...</li>
             ) : (
               categories.map((category) => (
                 <li key={category.id} className="relative group">
-                  <span className="text-black text-xl font-medium hover:text-gray-600 transition-colors duration-200 cursor-pointer">
-                    {category.name}
-                  </span>
-
-                  {/* Dropdown for subcategories */}
-                  <ul className="absolute text-lg bg-white text-black shadow-xl -mt-1 rounded-md w-[500px] z-[2000] hidden group-hover:block ">
+                  <span className="text-lg font-medium cursor-pointer text-gray-800 hover:text-gray-600">{category.name}</span>
+                  <ul className="absolute left-0 hidden mt-2 bg-white shadow-lg rounded-md group-hover:block">
                     {category.subcategories.map((subcategory) => (
                       <li key={subcategory.id} className="border-b last:border-b-0">
                         <NavLink
-                          to={`/subcategory/${subcategory.id}`} // Adjust path as necessary
-                          className="block px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
+                          to={`/subcategory/${subcategory.id}`}
+                          className="block px-4 py-2 text-black hover:bg-gray-100"
                         >
                           {subcategory.name}
                         </NavLink>
@@ -115,37 +188,6 @@ const SecondNav = () => {
               ))
             )}
           </ul>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="search flex items-center border-2 px-2 h-9 gap-2 rounded-md">
-            <IoSearchSharp className="text-xl cursor-pointer" />
-            <input
-              type="text"
-              placeholder="Search for clothes"
-              className="h-full outline-none border-none max-w-40"
-            />
-            <HiOutlineShoppingBag
-              className="cursor-pointer text-2xl"
-              onClick={() => navigate("/cart")}
-            />
-          </div>
-
-          <div className="hidden md:flex gap-2 items-center">
-            <div className="p-2 rounded-full border-2">
-              <FaRegHeart className="text-xl cursor-pointer" />
-            </div>
-            <div className="p-2 rounded-full border-2">
-              <MdPersonOutline className="text-2xl cursor-pointer" />
-            </div>
-          </div>
-        </div>
-
-        <div className="md:hidden">
-          <GiHamburgerMenu
-            className="text-2xl w-fit"
-            onClick={() => setSidebar(true)}
-          />
         </div>
       </nav>
     </div>

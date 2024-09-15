@@ -18,6 +18,7 @@ const SubcategoryProducts = () => {
   const { id } = useParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sortOrder, setSortOrder] = useState<string>(''); // Default to empty string for no sorting
 
   const subcategory_id = id;
 
@@ -36,16 +37,42 @@ const SubcategoryProducts = () => {
     fetchData();
   }, [subcategory_id]);
 
+  // Sorting logic
+  const sortedProducts = [...products].sort((a, b) => {
+    const priceA = parseFloat(a.price);
+    const priceB = parseFloat(b.price);
+    
+    if (sortOrder === 'low-to-high') {
+      return priceA - priceB;
+    } else if (sortOrder === 'high-to-low') {
+      return priceB - priceA;
+    }
+    return 0; // No sorting
+  });
+
   return (
-    <div className="container mx-auto px-4 py-6">
+    <div className="container mx-auto px-4 py-6 min-h-[80vh]">
       <h1 className="text-2xl font-bold mb-4">Products</h1>
+      <div className="mb-4">
+        <label htmlFor="sort" className="mr-2">Sort by:</label>
+        <select
+          id="sort"
+          value={sortOrder}
+          onChange={(e) => setSortOrder(e.target.value)}
+          className="p-2 border rounded"
+        >
+          <option value="">Default</option>
+          <option value="low-to-high">Price: Low to High</option>
+          <option value="high-to-low">Price: High to Low</option>
+        </select>
+      </div>
       {loading ? (
         <p>Loading...</p>
-      ) : products.length === 0 ? (
+      ) : sortedProducts.length === 0 ? (
         <p>No products available for this subcategory.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products.map((product) => (
+          {sortedProducts.map((product) => (
             <Link key={product.id} to={`/products/${product.product_id}`}>
               <div className="max-h-80 p-1 border rounded-md hover:shadow-lg cursor-pointer">
                 <div className="image h-44 rounded-md">
@@ -57,11 +84,10 @@ const SubcategoryProducts = () => {
                 </div>
                 <div className="content text-black p-1">
                   <p className="text-lg line-clamp-2 leading-5">{product.name}</p>
-
                   {product.discount_percentage > 0 ? (
                     <>
                       <p className="text-xl font-semibold text-blue-600">
-                        Rs. {product.price - (product.price * product.discount_percentage) / 100}
+                        Rs. {parseFloat(product.price) - (parseFloat(product.price) * product.discount_percentage) / 100}
                       </p>
                       <div className="flex items-center gap-2">
                         <p className="text-gray-600 line-through">Rs. {product.price}</p>
@@ -71,10 +97,8 @@ const SubcategoryProducts = () => {
                   ) : (
                     <p className="text-xl font-semibold text-blue-600">Rs. {product.price}</p>
                   )}
-
                   {product.review_rating > 0 ? (
                     <div className="flex items-center gap-2">
-                      {/* Assuming you have a RatingStars component */}
                       <RatingStars rating={product.review_rating} />
                       <span className="text-muted-foreground">({product.review_rating} reviews)</span>
                     </div>
