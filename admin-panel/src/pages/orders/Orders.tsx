@@ -39,6 +39,9 @@ const Orders = () => {
             <p className="mb-1"><strong>Quantity:</strong> {order.quantity}</p>
             <p className="mb-1"><strong>Unit Price:</strong> ${order.unit_price}</p>
             <p className="mb-1"><strong>Product Price:</strong> ${order.product_price}</p>
+            <button className="mb-1"><strong>Status:</strong> {order.order_status}</button>
+             
+               
           </div>
         ))}
       </div>
