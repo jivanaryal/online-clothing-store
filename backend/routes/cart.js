@@ -7,6 +7,7 @@ const {
   getItemsByCartId,
   updateCartItemQuantity,
   deleteCartItem,
+  getAllCartByCustomerId,
 } = require("../controllers/cart");
 
 const router = Router();
@@ -16,6 +17,7 @@ router.route("/").post(createCart);
 
 // Route for getting a cart by customer ID
 router.route("/customer/:customerId").get(getCartByCustomerId);
+router.route("/all/:customerId").get(getAllCartByCustomerId);
 
 // Route for deleting a cart
 router.route("/:cartId").delete(deleteCart);

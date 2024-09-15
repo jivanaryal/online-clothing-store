@@ -38,21 +38,30 @@ const signupCustomers = async (req, res) => {
     const hashedPassword = await bcrypt.hash(Password, 10);
 
     // Insert the new customer into the database
-    await pool.query(
+    const [newCustomer] = await pool.query(
       "INSERT INTO customers (FirstName, LastName, Email, Password, PhoneNumber) VALUES (?, ?, ?, ?, ?)",
       [FirstName, LastName, Email, hashedPassword, PhoneNumber]
     );
 
-    res.status(201).json({ message: "Customer signed up successfully" });
+    const customerId = newCustomer.insertId;
+
+    // Create a cart for the new customer
+    await pool.query(
+      "INSERT INTO cart (customer_id) VALUES (?)",
+      [customerId]
+    );
+
+    res.status(201).json({ message: "Customer signed up and cart created successfully" });
   } catch (error) {
     console.error("Error signing up customer:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
 
+
 const loginCustomers = async (req, res) => {
   const { Email, Password } = req.body;
-  console.log(Email,Password)
+  console.log(Email, Password);
 
   if (!Email || !Password) {
     return res.status(400).json({ error: "Email and Password are required" });
@@ -65,7 +74,7 @@ const loginCustomers = async (req, res) => {
       [Email]
     );
 
-    console.log([results])
+    console.log([results]);
 
     if (results.length === 0) {
       return res.status(400).json({ error: "Invalid Email or Password" });
@@ -79,6 +88,20 @@ const loginCustomers = async (req, res) => {
       return res.status(400).json({ error: "Invalid Email or Password" });
     }
 
+    // Check if the customer already has a cart
+    const [existingCart] = await pool.query(
+      "SELECT * FROM cart WHERE customer_id = ?",
+      [customer.CustomerID]
+    );
+
+    if (existingCart.length === 0) {
+      // Create a cart if it doesn't exist
+      await pool.query(
+        "INSERT INTO cart (customer_id) VALUES (?)",
+        [customer.CustomerID]
+      );
+    }
+
     // Generate JWT token
     const token = jwt.sign({ CustomerID: customer.CustomerID }, JWT_SECRET, {
       expiresIn: "1h",
@@ -90,6 +113,7 @@ const loginCustomers = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 const verifyToken = async (req, res) => {
   const { token } = req.body;

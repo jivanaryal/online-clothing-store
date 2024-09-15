@@ -35,7 +35,7 @@ const createOrder = async (req, res) => {
 
         // Insert order item
         await connection.execute(
-            'INSERT INTO order_items (order_id, product_id, quantity, unit_price) VALUES (?, ?, ?, ?)',
+            'INSERT INTO order_items (order_id, product_id, quantity, unit_price,order_status) VALUES (?, ?, ?, ?,"pending")',
             [orderId, productId, quantity, totalPrice / quantity]
         );
 
@@ -71,6 +71,7 @@ const getAllOrderDetails = async (req, res) => {
                 o.total_amount,
                 oi.quantity,
                 oi.unit_price,
+                oi.order_status,
                 p.name AS product_name,
                 p.price AS product_price
             FROM 

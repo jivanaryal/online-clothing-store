@@ -20,12 +20,34 @@ const createCart = async (req, res) => {
   }
 };
 
-const getCartByCustomerId = async (req, res) => {
+
+const getAllCartByCustomerId = async (req, res) => {
   const { customerId } = req.params;
   console.log(customerId,"hello")
 
   try {
     const [cart] = await Cart.getCartByCustomerId(customerId);
+    console.log(cart)
+ 
+    return res.status(200).json(cart);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      error: "Internal Server Error",
+      msg: error.message,
+    });
+  }
+};
+
+
+
+const getCartByCustomerId = async (req, res) => {
+  const { customerId } = req.params;
+  console.log(customerId,"hello")
+
+  try {
+    const [cart] = await Cart.getCartByCustomerIds(customerId);
+    console.log(cart)
  
     return res.status(200).json(cart);
   } catch (error) {
@@ -128,4 +150,5 @@ module.exports = {
   getItemsByCartId,
   updateCartItemQuantity,
   deleteCartItem,
+  getAllCartByCustomerId,
 };

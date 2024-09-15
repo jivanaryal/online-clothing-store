@@ -10,6 +10,19 @@ class Cart {
     return db.execute(createSql, [this.customer_id]);
   }
 
+  static async getCartByCustomerIds(customer_id) {
+    console.log(customer_id,"something")
+    const sql = `
+      SELECT cart_id FROM cart WHERE customer_id = ?
+    `;
+    return db.execute(sql, [customer_id]);
+  }
+  static async deleteCart(cart_id) {
+    const deleteCartSql = "DELETE FROM Cart WHERE cart_id = ?";
+    return db.execute(deleteCartSql, [cart_id]);
+  }
+
+
   static async getCartByCustomerId(customer_id) {
     const getByCustomerIdSql = `
    SELECT 
@@ -33,10 +46,9 @@ WHERE c.customer_id = ?
     `;
     return db.execute(getByCustomerIdSql, [customer_id]);
   }
-  static async deleteCart(cart_id) {
-    const deleteCartSql = "DELETE FROM Cart WHERE cart_id = ?";
-    return db.execute(deleteCartSql, [cart_id]);
-  }
+
+
+
 }
 
 module.exports = Cart;
