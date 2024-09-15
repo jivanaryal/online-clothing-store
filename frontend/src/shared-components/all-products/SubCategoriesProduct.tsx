@@ -46,7 +46,7 @@ const SubcategoryProducts = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {products.map((product) => (
-            <Link key={product.id} to={`products/${product.id}`}>
+            <Link key={product.id} to={`/products/${product.product_id}`}>
               <div className="max-h-80 p-1 border rounded-md hover:shadow-lg cursor-pointer">
                 <div className="image h-44 rounded-md">
                   <img

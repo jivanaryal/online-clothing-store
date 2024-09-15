@@ -8,6 +8,7 @@ const productRoutes = require("./routes/products");
 const reviewRoutes = require("./routes/reviews");
 const discountRoutes = require("./routes/discount");
 const cartRoutes = require("./routes/cart");
+const orderRoutes = require("./routes/orders");
 const cors = require("cors");
 
 const app = express();
@@ -23,6 +24,7 @@ app.use("/api/ocs/products", productRoutes);
 app.use("/api/ocs/reviews", reviewRoutes);
 app.use("/api/ocs/discounts", discountRoutes);
 app.use("/api/ocs/carts", cartRoutes);
+app.use("/api/ocs/orders", orderRoutes);
 
 const port = 5001;
 

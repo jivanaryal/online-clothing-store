@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { IoIosStar, IoIosStarHalf, IoIosStarOutline } from "react-icons/io";
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -9,6 +10,7 @@ const HeroProduct = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [count, setCount] = useState<number>(1);
+  const [showPayPal, setShowPayPal] = useState<boolean>(false);
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -30,6 +32,11 @@ const HeroProduct = () => {
 
     fetchProduct();
   }, [id]);
+
+
+  const handleBuyNow = () => {
+    setShowPayPal(true);
+  };
 
   const renderStars = (rating: number) => {
     const stars = [];
@@ -91,7 +98,28 @@ const HeroProduct = () => {
     : 0;
 
   // Calculate total price based on the selected quantity
-  const totalPrice = discountedPrice * count;
+  let totalPrice:number = discountedPrice * count;
+
+  console.log(totalPrice)
+
+  const handlePaymentSuccess = async (orderId: string) => {
+    try {
+      // Replace with your backend API endpoint
+      await axios.post('http://localhost:5001/api/ocs/orders', {
+        customerId: localStorage.getItem("CustomerID"),
+        productId: product.product_id,
+        quantity: count,
+        totalPrice: totalPrice
+      });
+      alert('Order placed successfully!');
+     
+    } catch (error) {
+      console.error('Error placing order:', error);
+      alert('Failed to place order.');
+    }
+  };
+
+
 
   return (
     <div className="border md:grid grid-cols-2 gap-2">
@@ -174,9 +202,45 @@ const HeroProduct = () => {
           >
             Add to Cart
           </button>
-          <button className="w-full bg-green-600 py-2 rounded-md">
-            Buy Now
-          </button>
+          <button
+          className="w-full bg-green-600 py-2 rounded-md"
+          onClick={handleBuyNow}
+        >
+          Buy Now
+        </button>
+
+        {showPayPal && (
+        <div className="paypal-container">
+          <PayPalScriptProvider options={{ "client-id": "AafP6rfk8Zra_2aXEs1RdOCcE4Gjxf0oO-j9oCDO8VkIpzcERj1MR43zmczrEQHtM06ERlVdr8y9wdfl" }}>
+  <PayPalButtons
+    createOrder={(data, actions) => {
+      console.log('Creating order with total price:', totalPrice.toFixed(2)); // Debugging line
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+           value:totalPrice
+          },
+        }],
+      });
+    }}
+    onApprove={async (data, actions) => {
+      await actions.order.capture();
+      // Handle successful payment here
+
+      alert('Payment successful!');
+      await handlePaymentSuccess(data.orderID);
+      setShowPayPal(false);
+    }}
+    onError={(err) => {
+      console.error('PayPal error:', err);
+      alert('Payment failed!');
+      setShowPayPal(false);
+    }}
+  />
+</PayPalScriptProvider>
+
+        </div>
+      )}
         </div>
       </div>
     </div>
