@@ -26,7 +26,7 @@ const getCartByCustomerId = async (req, res) => {
 
   try {
     const [cart] = await Cart.getCartByCustomerId(customerId);
-    console.log([cart])
+ 
     return res.status(200).json(cart);
   } catch (error) {
     console.log(error);
@@ -55,7 +55,7 @@ const deleteCart = async (req, res) => {
 
 const addItemToCart = async (req, res) => {
   const { cart_id, product_id, quantity } = req.body;
-  console.log(cart_id,product_id,quantity)
+ 
   const cartItem = new CartItem(cart_id, product_id, quantity);
 
   try {
@@ -75,6 +75,7 @@ const addItemToCart = async (req, res) => {
 
 const getItemsByCartId = async (req, res) => {
   const { cartId } = req.params;
+  console.log(cartId)
 
   try {
     const [items] = await CartItem.getItemsByCartId(cartId);

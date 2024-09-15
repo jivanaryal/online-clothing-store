@@ -1,5 +1,4 @@
 const mysql = require('mysql2/promise');
-
 const pool = require('../database/connect'); // Adjust path as needed
 
 const createOrder = async (req, res) => {
@@ -21,7 +20,7 @@ const createOrder = async (req, res) => {
             return res.status(404).json({ error: 'Product not found' });
         }
 
-        const currentStock = product[0].stock_quantity;
+        const currentStock = product[0].stockQuantity; // Ensure column name matches the database
         if (currentStock < quantity) {
             await connection.rollback();
             return res.status(400).json({ error: 'Insufficient stock' });
@@ -60,14 +59,45 @@ const createOrder = async (req, res) => {
     }
 };
 
-
+const getAllOrderDetails = async (req, res) => {
+    console.log("hello")
+    try {
+        const [rows] = await pool.execute(`
+            SELECT 
+                c.FirstName,
+                c.LastName,
+                c.PhoneNumber,
+                o.order_id,
+                o.total_amount,
+                oi.quantity,
+                oi.unit_price,
+                p.name AS product_name,
+                p.price AS product_price
+            FROM 
+                orders o
+            INNER JOIN 
+                customers c ON o.customer_id = c.CustomerID
+            INNER JOIN 
+                order_items oi ON o.order_id = oi.order_id
+            INNER JOIN 
+                products p ON oi.product_id = p.product_id
+            ORDER BY 
+                o.order_id;
+        `);
+        res.json(rows);
+    } catch (error) {
+        console.error('Error retrieving order details:', error);
+        res.status(500).json({ error: 'Failed to retrieve order details' });
+    }
+};
 
 const getOrderDetails = async (req, res) => {
     const { orderId } = req.params;
+    console.log("hello")
 
     try {
-        const [order] = await db.execute('SELECT * FROM orders WHERE order_id = ?', [orderId]);
-        const [orderItems] = await db.execute('SELECT * FROM order_items WHERE order_id = ?', [orderId]);
+        const [order] = await pool.execute('SELECT * FROM orders WHERE order_id = ?', [orderId]);
+        const [orderItems] = await pool.execute('SELECT * FROM order_items WHERE order_id = ?', [orderId]);
 
         if (order.length === 0) {
             return res.status(404).json({ error: 'Order not found' });
@@ -83,4 +113,5 @@ const getOrderDetails = async (req, res) => {
 module.exports = {
     createOrder,
     getOrderDetails,
+    getAllOrderDetails
 };

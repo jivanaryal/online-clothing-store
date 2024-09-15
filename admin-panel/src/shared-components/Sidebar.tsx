@@ -48,7 +48,7 @@ export const SidebarItem = [
     subItems: [
       {
         title: "order list",
-        path: "/order-list",
+        path: "/orders",
         icon: <IoBagAdd />,
       },
     ],

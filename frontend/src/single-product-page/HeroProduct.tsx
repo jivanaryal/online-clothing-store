@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 const HeroProduct = () => {
-  const [product, setProduct] = useState<any>(null); // Update type as needed
+  const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [count, setCount] = useState<number>(1);
@@ -33,7 +33,6 @@ const HeroProduct = () => {
     fetchProduct();
   }, [id]);
 
-
   const handleBuyNow = () => {
     setShowPayPal(true);
   };
@@ -57,33 +56,51 @@ const HeroProduct = () => {
     setCount(value);
   };
 
-  // Function to handle Add to Cart
   const handleAddToCart = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
-      // Redirect to login page with the return path as state
       navigate("/login", { state: { from: "/cart" } });
       return;
     }
 
     try {
-      // Fetch or create cart
-      const response = await axios.get(
-        `http://localhost:5001/api/ocs/carts/customer/${localStorage.getItem(
-          "CustomerID"
-        )}`
+
+      console.log(localStorage.getItem("CustomerID"));
+      const cartResponse = await axios.get(
+        `http://localhost:5001/api/ocs/carts/customer/${localStorage.getItem("CustomerID")}`
       );
-      const cartId = response.data.cart_id;
+      console.log("Cart Response:", cartResponse.data[0].cart_id); // Debugging line
 
-      // Add item to cart
-      await axios.post("http://localhost:5001/api/ocs/carts/items", {
-        cart_id: 1,
-        product_id: product.product_id,
-        quantity: count,
-      });
+      const cartId = cartResponse.data[0].cart_id;
+      if (!cartId) {
+        console.error("Cart ID is not available");
+        alert("Failed to retrieve cart information.");
+        return;
+      }
+      console.log("Cart ID:", cartId); // Debugging line
 
-      // Redirect to cart page
-      navigate("/cart");
+      const cartItemsResponse = await axios.get(
+        `http://localhost:5001/api/ocs/carts/items/${cartId}`
+      );
+      const cartItems = cartItemsResponse.data;
+
+      const isProductInCart = cartItems.some(
+        (item: any) => item.product_id === product.product_id
+      );
+
+      console.log("Is Product In Cart:", isProductInCart); // Debugging line
+
+      if (isProductInCart) {
+        alert("Product is already in the cart.");
+      } else {
+        await axios.post("http://localhost:5001/api/ocs/carts/items", {
+          cart_id: cartId,
+          product_id: product.product_id,
+          quantity: count,
+        });
+
+        navigate("/cart");
+      }
     } catch (error) {
       console.error("Error adding item to cart:", error);
       alert("Failed to add item to cart.");
@@ -92,19 +109,16 @@ const HeroProduct = () => {
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
+  
   const originalPrice = product?.price || 0;
   const discountedPrice = product
     ? product.price - (product.price * product.discount_percentage) / 100
     : 0;
 
-  // Calculate total price based on the selected quantity
-  let totalPrice:number = discountedPrice * count;
-
-  console.log(totalPrice)
+  let totalPrice: number = discountedPrice * count;
 
   const handlePaymentSuccess = async (orderId: string) => {
     try {
-      // Replace with your backend API endpoint
       await axios.post('http://localhost:5001/api/ocs/orders', {
         customerId: localStorage.getItem("CustomerID"),
         productId: product.product_id,
@@ -112,20 +126,17 @@ const HeroProduct = () => {
         totalPrice: totalPrice
       });
       alert('Order placed successfully!');
-     
     } catch (error) {
       console.error('Error placing order:', error);
       alert('Failed to place order.');
     }
   };
 
-
-
   return (
     <div className="border md:grid grid-cols-2 gap-2">
       <div className="image h-[70vh]">
         <img
-          src={`http://localhost:5001${product?.imageURL[0]}`} // Adjusted image URL
+          src={`http://localhost:5001${product?.imageURL[0]}`} 
           alt={product?.name}
           className="h-full object-cover w-full"
         />
@@ -142,7 +153,6 @@ const HeroProduct = () => {
         </div>
         <div className="border horizontal line"></div>
         <div className="py-4">
-          {/* Update the total price dynamically */}
           <p className="font-medium text-2xl text-blue-600">
             Rs. {totalPrice.toLocaleString("en-IN")}
           </p>
@@ -166,13 +176,12 @@ const HeroProduct = () => {
           {product?.imageURL.map((imgs: string, i: number) => (
             <img
               key={i}
-              src={`http://localhost:5001${imgs}`} // Adjusted image URL
+              src={`http://localhost:5001${imgs}`} 
               alt="color"
               className="w-full h-full object-contain border hover:border-blue-600"
             />
           ))}
         </div>
-        {/* Quantity section */}
         <div className="flex gap-8 items-center py-3">
           <p className="text-gray-500">Quantity</p>
           <div className="flex items-center gap-2">
@@ -194,7 +203,6 @@ const HeroProduct = () => {
             />
           </div>
         </div>
-        {/* Add to cart and buy now button */}
         <div className="grid grid-cols-2 place-items-center justify-between text-white gap-3">
           <button
             className="bg-blue-600 w-full py-2 rounded-md"
@@ -203,44 +211,33 @@ const HeroProduct = () => {
             Add to Cart
           </button>
           <button
-          className="w-full bg-green-600 py-2 rounded-md"
-          onClick={handleBuyNow}
-        >
-          Buy Now
-        </button>
-
-        {showPayPal && (
-        <div className="paypal-container">
-          <PayPalScriptProvider options={{ "client-id": "AafP6rfk8Zra_2aXEs1RdOCcE4Gjxf0oO-j9oCDO8VkIpzcERj1MR43zmczrEQHtM06ERlVdr8y9wdfl" }}>
-  <PayPalButtons
-    createOrder={(data, actions) => {
-      console.log('Creating order with total price:', totalPrice.toFixed(2)); // Debugging line
-      return actions.order.create({
-        purchase_units: [{
-          amount: {
-           value:totalPrice
-          },
-        }],
-      });
-    }}
-    onApprove={async (data, actions) => {
-      await actions.order.capture();
-      // Handle successful payment here
-
-      alert('Payment successful!');
-      await handlePaymentSuccess(data.orderID);
-      setShowPayPal(false);
-    }}
-    onError={(err) => {
-      console.error('PayPal error:', err);
-      alert('Payment failed!');
-      setShowPayPal(false);
-    }}
-  />
-</PayPalScriptProvider>
-
-        </div>
-      )}
+            className="w-full bg-green-600 py-2 rounded-md"
+            onClick={handleBuyNow}
+          >
+            Buy Now
+          </button>
+          {showPayPal && (
+            <div className="paypal-container">
+              <PayPalScriptProvider options={{ "client-id": "AafP6rfk8Zra_2aXEs1RdOCcE4Gjxf0oO-j9oCDO8VkIpzcERj1MR43zmczrEQHtM06ERlVdr8y9wdfl" }}>
+                <PayPalButtons
+                  createOrder={(data, actions) => {
+                    console.log('Creating order with total price:', totalPrice.toFixed(2));
+                    return actions.order.create({
+                      purchase_units: [{
+                        amount: {
+                          value: totalPrice.toFixed(2),
+                        },
+                      }],
+                    });
+                  }}
+                  onApprove={async (data, actions) => {
+                    await actions.order.capture();
+                    handlePaymentSuccess(data.orderID);
+                  }}
+                />
+              </PayPalScriptProvider>
+            </div>
+          )}
         </div>
       </div>
     </div>
