@@ -111,8 +111,42 @@ const getOrderDetails = async (req, res) => {
     }
 };
 
+
+const updateOrderStatus = async (req, res) => {
+    const { id } = req.params; // Order ID from the URL
+    const { order_status } = req.body; // New status from the request body
+
+    // Validate that the order_status is provided
+    if (!order_status) {
+        return res.status(400).json({ error: 'Order status is required' });
+    }
+
+    try {
+        const connection = await pool.getConnection();
+
+        // Check if the order exists
+        const [order] = await connection.execute('SELECT * FROM order_items WHERE order_id = ?', [id]);
+
+        if (order.length === 0) {
+            return res.status(404).json({ error: 'Order not found' });
+        }
+
+        // Update the order status
+        await connection.execute('UPDATE order_items SET order_status = ? WHERE order_id = ?', [order_status, id]);
+
+        connection.release();
+
+        res.status(200).json({ message: 'Order status updated successfully' });
+    } catch (error) {
+        console.error('Error updating order status:', error);
+        res.status(500).json({ error: 'Failed to update order status' });
+    }
+};
+
+
 module.exports = {
     createOrder,
     getOrderDetails,
-    getAllOrderDetails
+    getAllOrderDetails,
+    updateOrderStatus
 };
