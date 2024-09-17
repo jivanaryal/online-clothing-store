@@ -69,8 +69,8 @@ function reducer(state, action) {
 }
 
 const initialState = {
-  products: false,
-  orders: false,
+  products: true,
+  orders: true,
 };
 
 const Sidebar = () => {
@@ -85,7 +85,7 @@ const Sidebar = () => {
   const isActive = (path: string | null) => location.pathname === path;
 
   const renderSubItems = (subItems: any[]) => (
-    <section className="ml-8 mt-1">
+    <section className="ml-8 mt-1 ">
       {subItems.map((item, i) => (
         <ul
           key={i}

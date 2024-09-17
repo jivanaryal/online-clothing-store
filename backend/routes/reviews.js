@@ -4,12 +4,14 @@ const {
   getAllReviews,
   getReviewsByProduct,
   deleteReview,
+  checkRatingAuth,
 } = require("../controllers/reviews");
 
 const router = Router();
 
 // Route for getting all reviews
 router.route("/").get(getAllReviews);
+router.route("/auth/:id").get(checkRatingAuth)
 
 // Route for posting a review and getting reviews for a specific product
 router

@@ -4,7 +4,7 @@ import { FaBoxOpen, FaClipboardList, FaPlus, FaTags, FaShoppingCart } from "reac
 
 const Dashboard = () => {
   return (
-    <div className="flex justify-center items-center flex-wrap gap-6 p-8">
+    <div className="flex mt-20 ml-10  flex-wrap gap-6 p-8 ap">
       <Link to="/products/add-product" className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4">
         <div className="bg-blue-500 text-white rounded-lg shadow-lg p-6 flex flex-col items-center justify-center hover:bg-blue-600 transition duration-300">
           <FaPlus size={48} className="mb-4" />

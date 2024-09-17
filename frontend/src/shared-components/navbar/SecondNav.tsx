@@ -1,10 +1,8 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { IoSearchSharp } from "react-icons/io5";
-import { HiOutlineShoppingBag } from "react-icons/hi2";
-import { FaRegHeart } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { MdPersonOutline, MdLogout } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
+import { FaCartPlus } from "react-icons/fa";
 import { useState, useEffect } from "react";
 
 interface Subcategory {
@@ -104,7 +102,7 @@ const SecondNav = () => {
     <div>
       <nav className="flex items-center justify-between py-3 px-6 shadow-md bg-white">
         <div className="flex items-center space-x-4">
-          <p className="text-2xl font-bold cursor-pointer text-gray-800 hover:text-blue-600 mr-32" onClick={() => navigate("/")}>Fashion</p>
+          <p className="text-2xl animate-bounce font-bold cursor-pointer text-gray-800 hover:text-blue-600 mr-32" onClick={() => navigate("/")}>Fashion</p>
           <NavLink to="/" className="text-lg font-bold text-gray-700 hover:text-blue-600">Home</NavLink>
           <NavLink to="/about" className="text-lg text-gray-700 font-bold hover:text-blue-600">About Us</NavLink>
         </div>
@@ -135,7 +133,10 @@ const SecondNav = () => {
 
         <div className="flex items-center space-x-4">
           {!isLoggedIn ? (
-            <div className="flex space-x-4">
+            <div className="flex space-x-4 items-center">
+              <NavLink to={"/cart"} >
+              <FaCartPlus className="text-3xl text-gray-600 font-bold"/>
+              </NavLink>
               <NavLink to="/login" className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Login</NavLink>
               <NavLink to="/signup" className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">Signup</NavLink>
             </div>

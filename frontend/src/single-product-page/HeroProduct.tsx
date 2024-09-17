@@ -4,6 +4,7 @@ import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Rating from "@/components/rating/Rating";
 
 const HeroProduct = () => {
   const [product, setProduct] = useState<any>(null);
@@ -138,6 +139,7 @@ const HeroProduct = () => {
   };
 
   return (
+    <main>
     <div className="border md:grid grid-cols-2 gap-2">
       <div className="image h-[70vh]">
         <img
@@ -246,6 +248,9 @@ const HeroProduct = () => {
         </div>
       </div>
     </div>
+
+    <Rating />
+    </main>
   );
 };
 

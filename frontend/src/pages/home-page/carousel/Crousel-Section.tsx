@@ -20,7 +20,7 @@ const ImageSlider = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 3000,
+    autoplaySpeed: 1500,
   };
 
   return (
@@ -31,7 +31,7 @@ const ImageSlider = () => {
             <img
               src={image}
               alt={`Slide ${index}`}
-              className="rounded-lg shadow-lg w-full object-fill"
+              className="rounded-lg shadow-lg animate-in w-full object-fill"
               style={{ maxHeight: "500px" }}
             />
           </div>

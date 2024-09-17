@@ -1,4 +1,5 @@
 const Review = require("../models/reviews");
+const pool = require("../database/connect");
 
 const postReview = async (req, res) => {
   const { product_id, CustomerID, rating, comment } = req.body;
@@ -18,6 +19,48 @@ const postReview = async (req, res) => {
     });
   }
 };
+
+const checkRatingAuth = async(req,res)=>{
+  const {id} = req.params;
+
+  const product_id = id;
+
+  try { 
+     
+      const connection =await pool.getConnection();
+
+
+      const [order] = await connection.execute(
+        "SELECT * FROM order_items WHERE order_status = ? AND product_id = ?",
+        ['complete', product_id]
+      );
+      
+      connection.release();
+
+        if(order.length === 0){
+          return res.send(false);
+        }else{
+          return res.send(true);
+        }   
+  } catch (error) {
+   res.status(400).json({error:"internal server error",error:error.message})
+  }
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+}
 
 const getAllReviews = async (req, res) => {
   console.log("hello are you called");
@@ -66,4 +109,5 @@ module.exports = {
   getAllReviews,
   getReviewsByProduct,
   deleteReview,
+  checkRatingAuth,
 };
