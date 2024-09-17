@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { discountvalidation, discountField } from "./discount";
 import { getSingle, update } from "../../services/api";
+import axios from "axios";
 
 type UpdateProductDiscountProps = {
   newId: number;
@@ -13,24 +14,47 @@ const EditProductDiscount: React.FC<UpdateProductDiscountProps> = ({
   newId,
 }) => {
   const [initialValues, setInitialValues] = useState({
-    product_id: newId,
+    product_id: "",
     discount_percentage: "",
     start_date: "",
     end_date: "",
     description: "",
   });
 
+  const[disId,setDidID] = useState(null);
+
   useEffect(() => {
     const fetchDiscount = async () => {
-      const res = await getSingle(`/discounts/${newId}`);
-      setInitialValues(res.data);
-    };
+      try {
+      const res = await axios.get(`http://localhost:5001/api/ocs/discounts/products/${newId}`);
+
+      // console.log(res.data)
+      setDidID(res.data[0].discount_id);
+      const fetchedData = {
+        product_id: res.data[0].product_id || "",
+        discount_percentage: res.data[0].discount_percentage || "",
+        start_date: res.data[0].start_date || "",
+        end_date: res.data[0].end_date || "",
+        description: res.data[0].description || ""
+      };
+    
+      setInitialValues(prevValues=>{
+        if(JSON.stringify(prevValues) != JSON.stringify(fetchedData)){
+          return fetchedData
+        }
+         return prevValues;
+      });
+      console.log(initialValues)
+    } catch(error){
+      console.error("Error fetching discount data:", error);
+    }
+  }
     fetchDiscount();
   }, [newId]);
 
   const handleSubmit = async (values) => {
     try {
-      await update(`/discounts/${newId}`, values);
+      await update(`/discounts/${disId}`, values);
     } catch (error) {
       console.log(error);
     }
@@ -65,7 +89,7 @@ const EditProductDiscount: React.FC<UpdateProductDiscountProps> = ({
                       name={field.name}
                       id={field.name}
                       type="number"
-                      value={newId}
+                      
                       readOnly
                       className="mt-2 block w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
                     />
