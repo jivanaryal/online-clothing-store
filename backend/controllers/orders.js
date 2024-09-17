@@ -126,6 +126,7 @@ const updateOrderStatus = async (req, res) => {
 
         // Check if the order exists
         const [order] = await connection.execute('SELECT * FROM order_items WHERE order_id = ?', [id]);
+        console.log(order,"hello")
 
         if (order.length === 0) {
             return res.status(404).json({ error: 'Order not found' });

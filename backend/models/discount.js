@@ -28,13 +28,25 @@ class Discount {
     return db.execute(createSql, values);
   }
 
+   async updateDis(discount_id){
+    const updateSQL = "Update discounts set discount_percentage = ?, start_date = ?, end_date = ?, description = ? where discount_id = ?";
+    const values = [
+      this.discount_percentage,
+      this.start_date,
+      this.end_date,
+      this.description,
+      discount_id
+    ]
+    return db.execute(updateSQL,values);
+  }
+
   static async getAll() {
     const getAllSql = "SELECT * FROM discounts";
     return db.execute(getAllSql);
   }
 
   static async getByProductId(product_id) {
-    const getByProductIdSql = "SELECT * FROM discounts WHERE product_id = ?";
+    const getByProductIdSql = "SELECT discount_id, product_id, discount_percentage,DATE_FORMAT(start_date, '%Y-%m-%d') AS start_date,DATE_FORMAT(end_date,'%Y-%m-%d') AS end_date,description  FROM discounts WHERE product_id = ?";
     return db.execute(getByProductIdSql, [product_id]);
   }
 

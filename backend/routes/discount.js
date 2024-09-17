@@ -4,6 +4,7 @@ const {
   getAllDiscounts,
   getDiscountsByProduct,
   deleteDiscount,
+  updateDiscount,
 } = require("../controllers/discount");
 
 const router = Router();
@@ -19,5 +20,7 @@ router.route("/products/:productId").get(getDiscountsByProduct);
 
 // Route for deleting a discount
 router.route("/:discountId").delete(deleteDiscount);
+
+router.route("/:discountId").patch(updateDiscount)
 
 module.exports = router;
