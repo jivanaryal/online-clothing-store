@@ -61,7 +61,7 @@ const signupCustomers = async (req, res) => {
 
 const loginCustomers = async (req, res) => {
   const { Email, Password } = req.body;
-  console.log(Email, Password);
+  // console.log(Email, Password);
 
   if (!Email || !Password) {
     return res.status(400).json({ error: "Email and Password are required" });
@@ -74,7 +74,7 @@ const loginCustomers = async (req, res) => {
       [Email]
     );
 
-    console.log([results]);
+    // console.log([results]);
 
     if (results.length === 0) {
       return res.status(400).json({ error: "Invalid Email or Password" });
@@ -119,7 +119,7 @@ const verifyToken = async (req, res) => {
   const { token } = req.body;
 
   const name = token;
-  console.log(name);
+  // console.log(name);
 
   try {
     jwt.verify(token, JWT_SECRET);

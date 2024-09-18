@@ -23,11 +23,11 @@ const createCart = async (req, res) => {
 
 const getAllCartByCustomerId = async (req, res) => {
   const { customerId } = req.params;
-  console.log(customerId,"hello")
+  // console.log(customerId,"hello")
 
   try {
     const [cart] = await Cart.getCartByCustomerId(customerId);
-    console.log(cart)
+    // console.log(cart)
  
     return res.status(200).json(cart);
   } catch (error) {
@@ -43,11 +43,11 @@ const getAllCartByCustomerId = async (req, res) => {
 
 const getCartByCustomerId = async (req, res) => {
   const { customerId } = req.params;
-  console.log(customerId,"hello")
+  // console.log(customerId,"hello")
 
   try {
     const [cart] = await Cart.getCartByCustomerIds(customerId);
-    console.log(cart)
+    // console.log(cart)
  
     return res.status(200).json(cart);
   } catch (error) {
@@ -128,7 +128,7 @@ const updateCartItemQuantity = async (req, res) => {
 
 const deleteCartItem = async (req, res) => {
   const { id } = req.params;
-  console.log(id)
+  // console.log(id)
 
   try {
     await CartItem.deleteItem(id);

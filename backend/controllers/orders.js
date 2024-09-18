@@ -60,7 +60,7 @@ const createOrder = async (req, res) => {
 };
 
 const getAllOrderDetails = async (req, res) => {
-    console.log("hello")
+    // console.log("hello")
     try {
         const [rows] = await pool.execute(`
             SELECT 

@@ -103,7 +103,7 @@ GROUP BY p.product_id, d.discount_percentage;
       stockQuantity,
       product_id,
     ];
-    console.log(values, "console loggine value");
+    // console.log(values, "console loggine value");
     return db.execute(updateSql, values);
   }
 

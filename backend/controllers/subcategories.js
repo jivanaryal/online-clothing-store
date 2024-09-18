@@ -35,7 +35,7 @@ const getAllSubcategories = async (req, res) => {
 
     if (category_id) {
       subcategories = await Subcategory.findByCategoryId(category_id);
-      console.log(subcategories);
+      // console.log(subcategories);
     } else {
       subcategories = await Subcategory.findAll();
       console.log(subcategories);
@@ -159,7 +159,7 @@ const getSubcategoryProducts = async (req, res) => {
   const { id } = req.params;
 
  
-   console.log(req.params)
+  //  console.log(req.params)
   try {
     const products = await Subcategory.findProductsBySubcategoryId(id);
     if (products.length === 0) {

@@ -10,7 +10,7 @@ const postDiscount = async (req, res) => {
    const new_start_date = start_date.slice(0,10);
    const new_end_date = end_date.slice(0,10);
 
-    console.log(product_id,discount_percentage,start_date,end_date)
+    // console.log(product_id,discount_percentage,start_date,end_date)
   const discountModel = new Discount(
     product_id,
     discount_percentage,
@@ -79,7 +79,7 @@ const updateDiscount = async (req,res)=>{
   
     const {discountId} = req.params;
     const {product_id,discount_percentage,start_date,end_date,description} = req.body;
-    console.log(req.body,discountId)
+    // console.log(req.body,discountId)
 
     const date = new Date(start_date);
     const date1 = new Date(end_date);

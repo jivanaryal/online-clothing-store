@@ -2,8 +2,9 @@ const Review = require("../models/reviews");
 const pool = require("../database/connect");
 
 const postReview = async (req, res) => {
-  const { product_id, CustomerID, rating, comment } = req.body;
-  const reviewModel = new Review(product_id, CustomerID, rating, comment);
+  // console.log(req.body)
+  const { product_id, customer_id, rating, comment } = req.body;
+  const reviewModel = new Review(product_id, customer_id, rating, comment);
 
   try {
     const createRecord = await reviewModel.create();
@@ -20,50 +21,59 @@ const postReview = async (req, res) => {
   }
 };
 
-const checkRatingAuth = async(req,res)=>{
-  const {id} = req.params;
+const checkRatingAuth = async (req, res) => {
+  const { product_id, ConsumerID } = req.query;
+  // console.log(product_id, ConsumerID);
 
-  const product_id = id;
+  try {
+    const connection = await pool.getConnection();
 
-  try { 
-     
-      const connection =await pool.getConnection();
+    // Step 1: Find all orders by this customer
+    const [orders] = await connection.execute(
+      "SELECT order_id FROM orders WHERE customer_id = ?", 
+      [ConsumerID]
+    );
 
+    // console.log("Orders:", orders);
 
-      const [order] = await connection.execute(
-        "SELECT * FROM order_items WHERE order_status = ? AND product_id = ?",
-        ['complete', product_id]
-      );
-      
+    if (orders.length === 0) {
+      // If no orders are found, return false
       connection.release();
+      return res.send(false);
+    }
 
-        if(order.length === 0){
-          return res.send(false);
-        }else{
-          return res.send(true);
-        }   
+    // Step 2: Check if the product was ordered in those orders and the order is complete
+    const orderIds = orders.map(order => order.order_id); // Extract order_ids
+    // console.log("Order IDs:", orderIds);
+
+    // Use query instead of execute to handle multiple order IDs properly
+    const [orderItems] = await connection.query(
+      `SELECT * FROM order_items 
+       WHERE order_status = ? 
+       AND product_id = ? 
+       AND order_id IN (?)`, 
+      ['complete', product_id, orderIds]
+    );
+
+    // console.log("Order Items:", orderItems);
+
+    connection.release();
+
+    // Step 3: If no order items are found, return false
+    if (orderItems.length === 0) {
+      return res.send(false);
+    } else {
+      return res.send(true);
+    }
   } catch (error) {
-   res.status(400).json({error:"internal server error",error:error.message})
+    console.log("Error occurred:", error);
+    return res.status(400).json({ error: "Internal server error", details: error.message });
   }
-    
+};
 
-
-
-
-
-
-
-
-
-
-
-
-
-   
-}
 
 const getAllReviews = async (req, res) => {
-  console.log("hello are you called");
+  // console.log("hello are you called");
   try {
     const [reviews] = await Review.getAll();
     return res.status(200).json(reviews);

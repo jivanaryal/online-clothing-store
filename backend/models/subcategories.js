@@ -28,12 +28,12 @@ class Subcategory {
     const createSql =
       "INSERT INTO subcategories (name,category_id, description) VALUES (?, ?,?)";
     const values = [this.name, this.category_id, this.description];
-    console.log(this.name, this.category_id, this.description);
+    // console.log(this.name, this.category_id, this.description);
     return db.execute(createSql, values);
   }
 
   async updateSubcategory(id) {
-    console.log(this.name, this.category_id, this.description, id);
+    // console.log(this.name, this.category_id, this.description, id);
     const updateSql =
       "UPDATE subcategories SET name = ?, category_id = ?, description = ? WHERE subcategory_id = ?";
     const values = [this.name, this.category_id, this.description, id];
@@ -76,14 +76,14 @@ class Subcategory {
     return rows;
   }
   static async findProductsBySubcategoryId(subcategory_id) {
-    console.log(subcategory_id);
+    // console.log(subcategory_id);
     const query = `
       SELECT p.* 
       FROM products p
       INNER JOIN subcategories sc ON p.subcategory_id = sc.subcategory_id
       WHERE sc.subcategory_id = ?`;
     const [rows] = await db.execute(query, [subcategory_id]);
-    console.log(rows);
+    // console.log(rows);
     return rows;
   }
   

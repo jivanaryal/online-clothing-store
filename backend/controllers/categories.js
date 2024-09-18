@@ -1,7 +1,7 @@
 const Category = require("../models/categories");
 
 const postCategoryData = async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   try {
     const { name, description } = req.body;
     const categoryModel = new Category(name, description);
@@ -63,7 +63,7 @@ const getCategoryById = async (req, res) => {
 };
 
 const deleteCategoryData = async (req, res) => {
-  console.log(req.params);
+  // console.log(req.params);
   try {
     const { id } = req.params;
     const categoryModel = new Category();
@@ -91,7 +91,7 @@ const deleteCategoryData = async (req, res) => {
 
 const updateCategoryData = async (req, res) => {
   const { id } = req.params;
-  console.log(req.body, req.params, "hello jivan");
+  // console.log(req.body, req.params, "hello jivan");
 
   try {
     const { name, description } = req.body;

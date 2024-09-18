@@ -36,7 +36,7 @@ const createProduct = async (req, res) => {
       stockQuantity
     );
 
-    console.log(imageURLs);
+    // console.log(imageURLs);
     const createRecord = await productModel.create();
     return res.status(201).json({
       createRecord,
@@ -104,7 +104,7 @@ const updateProduct = async (req, res) => {
 
     let imageURLs;
     if (req.files && req.files.length > 0) {
-      console.log(req.files);
+      // console.log(req.files);
       imageURLs = req.files.map((file) => `/uploads/${file.filename}`);
     } else {
       // Fetch existing imageURLs if no new images are provided

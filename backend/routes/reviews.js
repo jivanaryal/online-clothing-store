@@ -10,14 +10,17 @@ const {
 const router = Router();
 
 // Route for getting all reviews
+// console.log("routes")
 router.route("/").get(getAllReviews);
-router.route("/auth/:id").get(checkRatingAuth)
+console.log("routes")
+router.route("/auth").get(checkRatingAuth)
 
 // Route for posting a review and getting reviews for a specific product
 router
-  .route("/products/:productId/reviews")
-  .post(postReview)
-  .get(getReviewsByProduct);
+  .route("/here")
+  .post(postReview);
+
+  router.route("/:productId").get(getReviewsByProduct);
 
 // Route for deleting a review
 router.route("/:reviewId").delete(deleteReview);
