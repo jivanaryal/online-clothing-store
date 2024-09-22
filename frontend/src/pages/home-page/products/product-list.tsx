@@ -16,9 +16,7 @@ const ProductList = ({ varient }: Props) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:5001/api/ocs/products/all`
-        );
+        const response = await fetch(`http://localhost:5001/api/ocs/products/all`);
         if (!response.ok) throw new Error("Failed to fetch products");
         const data: Tproduct[] = await response.json();
         setProducts(data);
@@ -62,8 +60,6 @@ type SimilarProductProps = {
 
 function SimilarProduct({ products }: SimilarProductProps) {
   return (
-      <div>
-       
     <div className="grid grid-cols-2 bg-red-500 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 gap-6">
       {products.map((product, i) => (
         <div key={i}>
@@ -80,15 +76,15 @@ function SimilarProduct({ products }: SimilarProductProps) {
               <p className="text-lg line-clamp-2 leading-5">{product.name}</p>
               {product.discount_percentage > 0 && (
                 <p className="text-xl font-semibold text-blue-600">
-                  Rs. {product.price - (product.price * product.discount) / 100}
+                  Rs. {product.price - (product.price * product.discount_percentage) / 100}
                 </p>
               )}
-              {product.discount > 0 && (
+              {product.discount_percentage > 0 && (
                 <div className="flex items-center gap-2">
                   <p className="text-gray-600 line-through">
                     Rs. {product.price}
                   </p>
-                  <p>{product.discount}%</p>
+                  <p>{product.discount_percentage}%</p>
                 </div>
               )}
               {product.avgRating > 0 && (
@@ -105,7 +101,6 @@ function SimilarProduct({ products }: SimilarProductProps) {
         </div>
       ))}
     </div>
-    </div>
   );
 }
 
@@ -115,59 +110,52 @@ type AllProductsProps = {
 };
 
 function AllProducts({ products }: AllProductsProps) {
+  // Filter products to show only those with discounts
+  const discountedProducts = products.filter(product => product.discount_percentage > 0);
+
   return (
-    
-<div>
-    <h1 className="text-3xl font-bold mb-6">For You</h1>
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10 p-4">
-      
-    {products.map((product) => (
-      <Link key={product.product_id} to={`products/${product.product_id}`} className="transform transition-transform duration-300 hover:scale-105">
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-          <div className="relative">
-            <img
-              src={`http://localhost:5001${product.imageURL}`}
-              alt={product.name}
-              className="w-full h-48 object-cover rounded-t-lg"
-            />
-            {product.discount_percentage > 0 && (
-              <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
-                {product.discount_percentage}% OFF
-              </span>
-            )}
-          </div>
-          <div className="p-4">
-            <h3 className="text-lg font-semibold text-gray-800 truncate">{product.name}</h3>
-            <div className="flex items-center mt-2 mb-2">
-              {product.discount_percentage > 0 ? (
-                <>
-                  <p className="text-xl font-bold text-blue-600">
-                    Rs. {product.price - (product.price * product.discount_percentage) / 100}
-                  </p>
-                  <p className="text-sm text-gray-500 line-through ml-2">
-                    Rs. {product.price}
-                  </p>
-                </>
-              ) : (
-                <p className="text-xl font-bold text-orange-400">
-                  Rs. {product.price}
-                </p>
-              )}
-            </div>
-            
-            {/* {product.review_rating?.length > 0 ? (
-              <div className="flex items-center text-sm text-gray-600">
-                <RatingStars rating={product.review_rating.length} />
-                <span className="ml-2">({product.review_rating.length} reviews)</span>
+    <div>
+      <h1 className="text-3xl font-bold mb-6">Discounted Products</h1>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10 p-4">
+        {discountedProducts.length > 0 ? (
+          discountedProducts.map((product) => (
+            <Link key={product.product_id} to={`products/${product.product_id}`} className="transform transition-transform duration-300 hover:scale-105">
+              <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div className="relative">
+                  <img
+                    src={`http://localhost:5001${product.imageURL}`}
+                    alt={product.name}
+                    className="w-full h-48 object-cover rounded-t-lg"
+                  />
+                  <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+                    {product.discount_percentage}% OFF
+                  </span>
+                </div>
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold text-gray-800 truncate">{product.name}</h3>
+                  <div className="flex items-center mt-2 mb-2">
+                    <p className="text-xl font-bold text-blue-600">
+                      Rs. {product.price - (product.price * product.discount_percentage) / 100}
+                    </p>
+                    <p className="text-sm text-gray-500 line-through ml-2">
+                      Rs. {product.price}
+                    </p>
+                  </div>
+                  
+                  {product.review_rating?.length > 0 && (
+                    <div className="flex items-center text-sm text-gray-600">
+                      <RatingStars rating={product.review_rating.length} />
+                      <span className="ml-2">({product.review_rating.length} reviews)</span>
+                    </div>
+                  )}
+                </div>
               </div>
-            ) : (
-              <p className="text-sm text-gray-500">No reviews</p>
-            )} */}
-          </div>
-        </div>
-      </Link>
-    ))}
-  </div>
-  </div>
+            </Link>
+          ))
+        ) : (
+          <p>No discounted products available.</p>
+        )}
+      </div>
+    </div>
   );
 }

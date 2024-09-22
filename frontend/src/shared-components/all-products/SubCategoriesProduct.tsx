@@ -1,24 +1,28 @@
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 import { RatingStars } from '@/utils/ratingStars';
+import { AiOutlineGroup, AiOutlineUnorderedList } from 'react-icons/ai'; // Import icons
 
 interface Product {
   id: number;
   name: string;
   description: string;
-  price: string; // Use string if price is a string in the response
-  imageURL: string; // Assuming the API returns the image URL
+  price: string;
+  imageURL: string[];
   discount_percentage: number;
   review_rating: number;
+  brand: string;
+  category_id: number;
+  color: string;
 }
 
 const SubcategoryProducts = () => {
   const { id } = useParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [sortOrder, setSortOrder] = useState<string>(''); // Default to empty string for no sorting
+  const [sortOrder, setSortOrder] = useState<string>('');
+  const [viewType, setViewType] = useState<'grid' | 'list'>('grid'); // State for view type
 
   const subcategory_id = id;
 
@@ -26,6 +30,7 @@ const SubcategoryProducts = () => {
     async function fetchData() {
       try {
         const res = await axios.get(`http://localhost:5001/api/ocs/subcategories/new/${subcategory_id}`);
+        console.log(res.data);
         setProducts(res.data);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -53,37 +58,49 @@ const SubcategoryProducts = () => {
   return (
     <div className="container mx-auto px-4 py-6 min-h-[80vh]">
       <h1 className="text-2xl font-bold mb-4">Products</h1>
-      <div className="mb-4">
-        <label htmlFor="sort" className="mr-2">Sort by:</label>
-        <select
-          id="sort"
-          value={sortOrder}
-          onChange={(e) => setSortOrder(e.target.value)}
-          className="p-2 border rounded"
-        >
-          <option value="">Default</option>
-          <option value="low-to-high">Price: Low to High</option>
-          <option value="high-to-low">Price: High to Low</option>
-        </select>
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <label htmlFor="sort" className="mr-2">Sort by:</label>
+          <select
+            id="sort"
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value)}
+            className="p-2 border rounded"
+          >
+            <option value="">Default</option>
+            <option value="low-to-high">Price: Low to High</option>
+            <option value="high-to-low">Price: High to Low</option>
+          </select>
+        </div>
+        <div className="flex space-x-2">
+          <button onClick={() => setViewType('grid')} aria-label="Grid view">
+            <AiOutlineGroup className={`w-6 h-6 ${viewType === 'grid' ? 'text-blue-600' : 'text-gray-600'}`} />
+          </button>
+          <button onClick={() => setViewType('list')} aria-label="List view">
+            <AiOutlineUnorderedList className={`w-6 h-6 ${viewType === 'list' ? 'text-blue-600' : 'text-gray-600'}`} />
+          </button>
+        </div>
       </div>
+
       {loading ? (
         <p>Loading...</p>
       ) : sortedProducts.length === 0 ? (
         <p>No products available for this subcategory.</p>
-      ) : (
+      ) : viewType === 'grid' ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {sortedProducts.map((product) => (
             <Link key={product.id} to={`/products/${product.product_id}`}>
-              <div className="max-h-80 p-1 border rounded-md hover:shadow-lg cursor-pointer">
-                <div className="image h-44 rounded-md">
+              <div className="max-h-80 p-4 border rounded-md hover:shadow-lg cursor-pointer bg-white transition-shadow duration-300">
+                <div className="image h-44 rounded-md mb-2">
                   <img
-                    src={`http://localhost:5001${product.imageURL}`} // Adjust this based on the actual response data
+                    src={`http://localhost:5001${product.imageURL[0]}`} 
                     alt={product.name}
                     className="h-full w-full object-cover rounded-md"
                   />
                 </div>
-                <div className="content text-black p-1">
-                  <p className="text-lg line-clamp-2 leading-5">{product.name}</p>
+                <div className="content text-black">
+                  <h3 className="text-lg font-semibold line-clamp-2">{product.name}</h3>
+                  <p className="text-gray-600 text-sm">{product.description}</p>
                   {product.discount_percentage > 0 ? (
                     <>
                       <p className="text-xl font-semibold text-blue-600">
@@ -91,21 +108,40 @@ const SubcategoryProducts = () => {
                       </p>
                       <div className="flex items-center gap-2">
                         <p className="text-gray-600 line-through">Rs. {product.price}</p>
-                        <p>{product.discount_percentage}%</p>
                       </div>
                     </>
                   ) : (
                     <p className="text-xl font-semibold text-blue-600">Rs. {product.price}</p>
                   )}
-                  {product.review_rating > 0 ? (
-                    <div className="flex items-center gap-2">
-                      <RatingStars rating={product.review_rating} />
-                      <span className="text-muted-foreground">({product.review_rating} reviews)</span>
-                    </div>
-                  ) : (
-                    <p className="text-gray-600">No reviews</p>
-                  )}
                 </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col space-y-4">
+          {sortedProducts.map((product) => (
+            <Link key={product.id} to={`/products/${product.product_id}`} className="flex border rounded-md p-4 hover:shadow-lg bg-white transition-shadow duration-300">
+              <img
+                src={`http://localhost:5001${product.imageURL[0]}`} 
+                alt={product.name}
+                className="h-24 w-24 object-cover rounded-md mr-4"
+              />
+              <div className="flex-grow">
+                <h3 className="text-lg font-semibold">{product.name}</h3>
+                <p className="text-gray-600 text-sm">{product.description}</p>
+                {product.discount_percentage > 0 ? (
+                  <>
+                    <p className="text-xl font-semibold text-blue-600">
+                      Rs. {parseFloat(product.price) - (parseFloat(product.price) * product.discount_percentage) / 100}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-gray-600 line-through">Rs. {product.price}</p>
+                    </div>
+                  </>
+                ) : (
+                  <p className="text-xl font-semibold text-blue-600">Rs. {product.price}</p>
+                )}
               </div>
             </Link>
           ))}

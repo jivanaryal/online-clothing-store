@@ -227,6 +227,7 @@ const HeroProduct = () => {
         <h2 className="font-bold text-3xl my-3">Product Details</h2>
         <div>{product?.description}</div>
       </div>
+          <Rating />
     </main>
   );
 };
