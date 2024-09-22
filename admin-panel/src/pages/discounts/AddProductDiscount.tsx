@@ -13,6 +13,7 @@ const AddProductDiscount: React.FC<AddProductDiscountProps> = ({ newId }) => {
   const handleSubmit = async (values) => {
     try {
       await post("/discounts", values);
+      location.reload();
     } catch (error) {
       console.log(error);
     }

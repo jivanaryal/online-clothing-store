@@ -20,8 +20,9 @@ const SecondNav = () => {
   const [sidebar, setSidebar] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track user login state
-  const [username, setUsername] = useState<string | null>(null); // Store username
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState<string | null>(null);
+  const [cartItemCount, setCartItemCount] = useState(0); // Track cart items
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,10 +30,9 @@ const SecondNav = () => {
     const checkUserAuth = async () => {
       const token = localStorage.getItem("token");
       const id = localStorage.getItem("CustomerID");
-      
+
       if (token || id) {
         setIsLoggedIn(true);
-        // Simulate fetching username
         setUsername("User"); // Replace with actual user fetch
       } else {
         setIsLoggedIn(false);
@@ -52,6 +52,10 @@ const SecondNav = () => {
         console.error('Error fetching categories:', error);
         setLoading(false);
       });
+
+    // Simulate cart item count fetch
+    const cartCount = localStorage.getItem("cartItemCount") || 0;
+    setCartItemCount(Number(cartCount)); // Replace with actual cart count fetch
   }, []);
 
   const transformAndFilterData = (data: any[]): Category[] => {
@@ -87,7 +91,6 @@ const SecondNav = () => {
 
   const handleLogout = async () => {
     try {
-    
       localStorage.removeItem("token");
       localStorage.removeItem("CustomerID");
       setIsLoggedIn(false);
@@ -101,12 +104,16 @@ const SecondNav = () => {
   return (
     <div>
       <nav className="flex items-center justify-between py-3 px-6 shadow-md bg-white">
+        {/* Left - Branding & Navigation Links */}
         <div className="flex items-center space-x-4">
-          <p className="text-2xl animate-bounce font-bold cursor-pointer text-gray-800 hover:text-blue-600 mr-32" onClick={() => navigate("/")}>Fashion</p>
+          <p className="text-2xl animate-bounce font-bold cursor-pointer text-gray-800 hover:text-blue-600 mr-32" onClick={() => navigate("/")}>
+            Fashion
+          </p>
           <NavLink to="/" className="text-lg font-bold text-gray-700 hover:text-blue-600">Home</NavLink>
-          <NavLink to="/about" className="text-lg text-gray-700 font-bold hover:text-blue-600">About Us</NavLink>
+          <NavLink to="/about" className="text-lg font-bold text-gray-700 hover:text-blue-600">About Us</NavLink>
         </div>
 
+        {/* Center - Category Dropdowns */}
         <div className="hidden md:flex flex-grow justify-center space-x-8">
           {loading ? (
             <p>Loading...</p>
@@ -131,12 +138,19 @@ const SecondNav = () => {
           )}
         </div>
 
+        {/* Right - User Icons & Cart */}
         <div className="flex items-center space-x-4">
+          <NavLink to="/cart" className="relative">
+            <FaCartPlus className="text-3xl text-gray-600 hover:text-blue-600" />
+            {cartItemCount > 0 && (
+              <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
+                {cartItemCount}
+              </span>
+            )}
+          </NavLink>
+
           {!isLoggedIn ? (
             <div className="flex space-x-4 items-center">
-              <NavLink to={"/cart"} >
-              <FaCartPlus className="text-3xl text-gray-600 font-bold"/>
-              </NavLink>
               <NavLink to="/login" className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Login</NavLink>
               <NavLink to="/signup" className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">Signup</NavLink>
             </div>
@@ -153,6 +167,7 @@ const SecondNav = () => {
           )}
         </div>
 
+        {/* Hamburger Menu for Mobile */}
         <div className="md:hidden">
           <GiHamburgerMenu
             className="text-2xl cursor-pointer text-gray-800 hover:text-blue-600"
@@ -160,6 +175,7 @@ const SecondNav = () => {
           />
         </div>
 
+        {/* Mobile Sidebar */}
         <div
           className={`fixed top-0 right-0 h-screen w-64 bg-white shadow-md transition-transform duration-300 ease-in-out ${sidebar ? "translate-x-0" : "translate-x-full"}`}
         >

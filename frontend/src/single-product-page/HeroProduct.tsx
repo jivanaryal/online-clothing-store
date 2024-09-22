@@ -23,6 +23,7 @@ const HeroProduct = () => {
         );
         if (!response.ok) throw new Error("Failed to fetch product");
         const data = await response.json();
+        console.log(data);
         setProduct(data);
       } catch (err) {
         setError(err.message);
@@ -58,7 +59,7 @@ const HeroProduct = () => {
   };
 
   const handleQuantityChange = (e: { target: { value: string } }) => {
-    const value = Math.max(1, Math.min(15, parseInt(e.target.value) || 1));
+    const value = Math.max(1, Math.min(product?.stockQuantity || 1, parseInt(e.target.value) || 1));
     setCount(value);
   };
 
@@ -70,20 +71,15 @@ const HeroProduct = () => {
     }
 
     try {
-
-      console.log(localStorage.getItem("CustomerID"));
       const cartResponse = await axios.get(
         `http://localhost:5001/api/ocs/carts/customer/${localStorage.getItem("CustomerID")}`
       );
-      console.log("Cart Response:", cartResponse); // Debugging line
 
       const cartId = cartResponse.data[0].cart_id;
       if (!cartId) {
-        console.error("Cart ID is not available");
         alert("Failed to retrieve cart information.");
         return;
       }
-      console.log("Cart ID:", cartId); // Debugging line
 
       const cartItemsResponse = await axios.get(
         `http://localhost:5001/api/ocs/carts/items/${cartId}`
@@ -93,8 +89,6 @@ const HeroProduct = () => {
       const isProductInCart = cartItems.some(
         (item: any) => item.product_id === product.product_id
       );
-
-      console.log("Is Product In Cart:", isProductInCart); // Debugging line
 
       if (isProductInCart) {
         alert("Product is already in the cart.");
@@ -108,14 +102,13 @@ const HeroProduct = () => {
         navigate("/cart");
       }
     } catch (error) {
-      console.error("Error adding item to cart:", error);
       alert("Failed to add item to cart.");
     }
   };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
-  
+
   const originalPrice = product?.price || 0;
   const discountedPrice = product
     ? product.price - (product.price * product.discount_percentage) / 100
@@ -133,123 +126,107 @@ const HeroProduct = () => {
       });
       alert('Order placed successfully!');
     } catch (error) {
-      console.error('Error placing order:', error);
       alert('Failed to place order.');
     }
   };
 
   return (
     <main>
-    <div className="border md:grid grid-cols-2 gap-2">
-      <div className="image h-[70vh]">
-        <img
-          src={`http://localhost:5001${product?.imageURL[0]}`} 
-          alt={product?.name}
-          className="h-full object-cover w-full"
-        />
-      </div>
-      <div className="flex flex-col gap-2 p-4">
-        <p className="font-medium text-2xl line-clamp-2">{product?.name}</p>
-        <div className="flex text-sm gap-2 items-center text-yellow-400">
-          {renderStars(product?.avgRating || 0)}
-          <span>{product?.avgRating || "No rating"}</span>
+      <div className="border md:grid grid-cols-2 gap-2">
+        <div className="image h-[70vh]">
+          <img
+            src={`http://localhost:5001${product?.imageURL[0]}`}
+            alt={product?.name}
+            className="h-full object-cover w-full"
+          />
         </div>
-        <div>
-          <span className="text-gray-400">Brand :</span>{" "}
-          <span className="text-blue-600">{product?.brand || "Unknown"}</span>
-        </div>
-        <div className="border horizontal line"></div>
-        <div className="py-4">
-          <p className="font-medium text-2xl text-blue-600">
-            Rs. {totalPrice.toLocaleString("en-IN")}
-          </p>
-          {product?.discount_percentage > 0 && (
-            <div className="flex gap-2">
-              <p className="text-gray-400 line-through">Rs. {originalPrice}</p>
-              <p className="text-red-500">{product?.discount_percentage}%</p>
-            </div>
-          )}
-        </div>
-        <div className="border horizontal line"></div>
-        <div>
-          <div className="flex items-center gap-2">
-            <p className="text-gray-400">Color family : </p>
-            <p className="text-sm text-gray-400">
-              Please select the color option
+        <div className="flex flex-col gap-2 p-4">
+          <p className="font-medium text-2xl line-clamp-2">{product?.name}</p>
+          <div className="flex text-sm gap-2 items-center text-yellow-400">
+            {renderStars(product?.avgRating || 0)}
+            <span>{product?.avgRating || "No rating"}</span>
+          </div>
+          <div>
+            <span className="text-gray-400">Brand :</span>{" "}
+            <span className="text-blue-600">{product?.brand || "Unknown"}</span>
+          </div>
+          <div className="border horizontal line"></div>
+          <div className="py-4">
+            <p className="font-medium text-2xl text-blue-600">
+              Rs. {totalPrice.toLocaleString("en-IN")}
             </p>
+            {product?.discount_percentage > 0 && (
+              <div className="flex gap-2">
+                <p className="text-gray-400 line-through">Rs. {originalPrice}</p>
+                <p className="text-red-500">{product?.discount_percentage}%</p>
+              </div>
+            )}
           </div>
-        </div>
-        <div className="h-14 w-14 cursor-pointer flex gap-2">
-          {product?.imageURL.map((imgs: string, i: number) => (
-            <img
-              key={i}
-              src={`http://localhost:5001${imgs}`} 
-              alt="color"
-              className="w-full h-full object-contain border hover:border-blue-600"
-            />
-          ))}
-        </div>
-        <div className="flex gap-8 items-center py-3">
-          <p className="text-gray-500">Quantity</p>
-          <div className="flex items-center gap-2">
-            <FaMinus
-              className="text-gray-400 cursor-pointer"
-              onClick={() => setCount(Math.max(1, count - 1))}
-            />
-            <input
-              type="number"
-              className="outline-none w-11 text-center"
-              value={count}
-              onChange={handleQuantityChange}
-              min={1}
-              max={15}
-            />
-            <FaPlus
-              className="text-gray-400 cursor-pointer"
-              onClick={() => setCount(Math.min(15, count + 1))}
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-2 place-items-center justify-between text-white gap-3">
-          <button
-            className="bg-blue-600 w-full py-2 rounded-md"
-            onClick={handleAddToCart}
-          >
-            Add to Cart
-          </button>
-          <button
-            className="w-full bg-green-600 py-2 rounded-md"
-            onClick={handleBuyNow}
-          >
-            Buy Now
-          </button>
-          {showPayPal && (
-            <div className="paypal-container">
-              <PayPalScriptProvider options={{ "client-id": "AafP6rfk8Zra_2aXEs1RdOCcE4Gjxf0oO-j9oCDO8VkIpzcERj1MR43zmczrEQHtM06ERlVdr8y9wdfl" }}>
-                <PayPalButtons
-                  createOrder={(data, actions) => {
-                    console.log('Creating order with total price:', totalPrice.toFixed(2));
-                    return actions.order.create({
-                      purchase_units: [{
-                        amount: {
-                          value: totalPrice.toFixed(2),
-                        },
-                      }],
-                    });
-                  }}
-                  onApprove={async (data, actions) => {
-                    await actions.order.capture();
-                    handlePaymentSuccess(data.orderID);
-                  }}
-                />
-              </PayPalScriptProvider>
+          <div className="border horizontal line"></div>
+          <div className="flex gap-8 items-center py-3">
+            <p className="text-gray-500">Quantity</p>
+            <div className="flex items-center gap-2">
+              <FaMinus
+                className="text-gray-400 cursor-pointer"
+                onClick={() => setCount(Math.max(1, count - 1))}
+              />
+              <input
+                type="number"
+                className="outline-none w-11 text-center"
+                value={count}
+                onChange={handleQuantityChange}
+                min={1}
+                max={product?.stockQuantity || 1}
+              />
+              <FaPlus
+                className="text-gray-400 cursor-pointer"
+                onClick={() => setCount(Math.min(product?.stockQuantity || 1, count + 1))}
+              />
             </div>
-          )}
+          </div>
+          <div className="grid grid-cols-2 place-items-center justify-between text-white gap-3">
+            <button
+              className={`w-full py-2 rounded-md ${product?.stockQuantity === 0 ? 'bg-gray-400' : 'bg-blue-600'}`}
+              onClick={handleAddToCart}
+              disabled={product?.stockQuantity === 0}
+            >
+              Add to Cart
+            </button>
+            <button
+              className={`w-full py-2 rounded-md ${product?.stockQuantity === 0 ? 'bg-gray-400' : 'bg-green-600'}`}
+              onClick={handleBuyNow}
+              disabled={product?.stockQuantity === 0}
+            >
+              Buy Now
+            </button>
+            {showPayPal && (
+              <div className="paypal-container">
+                <PayPalScriptProvider options={{ "client-id": "AafP6rfk8Zra_2aXEs1RdOCcE4Gjxf0oO-j9oCDO8VkIpzcERj1MR43zmczrEQHtM06ERlVdr8y9wdfl" }}>
+                  <PayPalButtons
+                    createOrder={(data, actions) => {
+                      return actions.order.create({
+                        purchase_units: [{
+                          amount: {
+                            value: totalPrice.toFixed(2),
+                          },
+                        }],
+                      });
+                    }}
+                    onApprove={async (data, actions) => {
+                      await actions.order.capture();
+                      handlePaymentSuccess(data.orderID);
+                    }}
+                  />
+                </PayPalScriptProvider>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
-
-    <Rating />
+      <div className="description">
+        <h2 className="font-bold text-3xl my-3">Product Details</h2>
+        <div>{product?.description}</div>
+      </div>
     </main>
   );
 };

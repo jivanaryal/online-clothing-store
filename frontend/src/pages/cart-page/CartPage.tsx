@@ -2,10 +2,12 @@ import SecondNav from "@/shared-components/navbar/SecondNav";
 import TopNav from "@/shared-components/navbar/TopNav";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CartPage = () => {
   const [cartItem, setCartItem] = useState([]);
   const id = localStorage.getItem("CustomerID");
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchData() {
@@ -46,9 +48,10 @@ const CartPage = () => {
                
             <div
               key={item.product_id}
-              className="bg-white shadow-lg rounded-lg flex p-6 items-center justify-between"
+                className="bg-white  shadow-lg rounded-lg flex p-6 cursor-pointer items-center justify-between"
+              
             >
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-4"   onClick={()=>navigate(`/products/${item.product_id}`)}>
                 {/* Product Image */}
                 {item.product_imageURL && item.product_imageURL.length > 0 && (
                   <img
