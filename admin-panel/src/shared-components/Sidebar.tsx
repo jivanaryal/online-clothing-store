@@ -1,4 +1,4 @@
-import { MdCategory, MdDashboard, MdKeyboardArrowLeft } from "react-icons/md";
+import { MdCategory, MdDashboard, MdKeyboardArrowLeft, MdOutlinePending } from "react-icons/md";
 import { BsFillBagCheckFill } from "react-icons/bs";
 import { FaCartArrowDown } from "react-icons/fa";
 import { IoBagAdd } from "react-icons/io5";
@@ -6,6 +6,7 @@ import { MdOutlineFormatListNumberedRtl } from "react-icons/md";
 import { BiSolidCategory } from "react-icons/bi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useReducer } from "react";
+import { GrCompliance } from "react-icons/gr";
 
 export const SidebarItem = [
   {
@@ -47,9 +48,14 @@ export const SidebarItem = [
     path: null,
     subItems: [
       {
-        title: "order list",
+        title: "pending order list",
         path: "/orders",
-        icon: <IoBagAdd />,
+        icon: <MdOutlinePending />,
+      },
+      {
+        title: "completed order",
+        path: "/orders/complete",
+        icon: <GrCompliance />,
       },
     ],
   },
@@ -89,13 +95,13 @@ const Sidebar = () => {
       {subItems.map((item, i) => (
         <ul
           key={i}
-          className={`flex items-center gap-1 mb-3 cursor-pointer hover:text-blue-500 ${
+          className={`flex items-center gap-2 my-4 cursor-pointer hover:text-blue-500 ${
             isActive(item.path) ? "text-blue-500" : "text-gray-800"
           }`}
           onClick={() => handleNavigation(item.path)}
         >
-          <li>{item.icon}</li>
-          <li className="capitalize text-[13px] leading-[20px] font-medium">
+          <li className="text-xl">{item.icon}</li>
+          <li className="capitalize text-[15px] leading-[20px] font-medium">
             {item.title}
           </li>
         </ul>
@@ -120,11 +126,11 @@ const Sidebar = () => {
                   onClick={() => handleNavigation(item.path)}
                 >
                   <li className="flex items-center gap-2">
-                    <span className="text-xl text-gray-700 group-hover:text-white">
+                    <span className="text-2xl text-gray-700 group-hover:text-white">
                       {item.icon}
                     </span>
                     <span
-                      className={`capitalize font-medium text-base text-gray-800 group-hover:text-white ${
+                      className={`capitalize font-medium text-lg text-gray-800 group-hover:text-white ${
                         isActive(item.path) && "text-blue-600"
                       }`}
                     >

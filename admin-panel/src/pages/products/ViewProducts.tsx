@@ -72,7 +72,7 @@ const ViewProducts: React.FC = () => {
                   <img
                     src={`http://localhost:5001${product.imageURL[0]}`}
                     alt={product.name}
-                    className="object-cover h-full hover:scale-105 transition-all delay-100 duration-300"
+                    className="object-cover h-full w-full px-10 hover:scale-105 transition-all delay-100 duration-300"
                   />
                 </div>
                 <section className="text-sm mt-4">

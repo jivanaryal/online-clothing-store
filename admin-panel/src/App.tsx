@@ -12,6 +12,7 @@ import AddSubCategories from "./pages/subcategories/AddSubCategories";
 import EditSubCategories from "./pages/subcategories/EditSubCategories";
 import MoreAction from "./pages/products/MoreAction";
 import Orders from "./pages/orders/Orders";
+import CompletedOrders from "./pages/orders/CompletedOrders";
 // import AddProductDiscount from "./pages/discounts/AddProductDiscount";
 
 const App = () => {
@@ -24,6 +25,7 @@ const App = () => {
             <Route path="/products/product-list" element={<ViewProducts />} />
             <Route path="/products/add-product" element={<AddProduct />} />
             <Route path="/orders" element={<Orders />} />
+            <Route path="/orders/complete" element={<CompletedOrders />} />
             <Route
               path="products/product-list/action/:id"
               element={<MoreAction />}
