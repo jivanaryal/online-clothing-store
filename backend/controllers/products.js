@@ -8,11 +8,8 @@ const createProduct = async (req, res) => {
       category_id,
       price,
       description,
-      brand,
       size,
-      color,
       subcategory_id,
-
       stockQuantity,
     } = req.body;
 
@@ -28,11 +25,8 @@ const createProduct = async (req, res) => {
       price,
       description,
       imageURLs,
-      brand,
       size,
-      color,
       subcategory_id,
-
       stockQuantity
     );
 
@@ -94,9 +88,7 @@ const updateProduct = async (req, res) => {
       category_id,
       price,
       description,
-      brand,
       size,
-      color,
       subcategory_id,
 
       stockQuantity,
@@ -124,9 +116,9 @@ const updateProduct = async (req, res) => {
       price,
       description,
       imageURLs, // This should be an array
-      brand,
+    
       size,
-      color,
+    
       subcategory_id,
 
       stockQuantity,

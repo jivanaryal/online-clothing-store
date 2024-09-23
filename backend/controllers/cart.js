@@ -97,10 +97,11 @@ const addItemToCart = async (req, res) => {
 
 const getItemsByCartId = async (req, res) => {
   const { cartId } = req.params;
-  console.log(cartId)
+  console.log(cartId,"2 aayo ni hana")
 
   try {
     const [items] = await CartItem.getItemsByCartId(cartId);
+    console.log(items)
     return res.status(200).json(items);
   } catch (error) {
     console.log(error);

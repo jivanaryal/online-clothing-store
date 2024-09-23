@@ -75,6 +75,8 @@ const HeroProduct = () => {
         `http://localhost:5001/api/ocs/carts/customer/${localStorage.getItem("CustomerID")}`
       );
 
+      console.log(cartResponse);
+
       const cartId = cartResponse.data[0].cart_id;
       if (!cartId) {
         alert("Failed to retrieve cart information.");
@@ -89,6 +91,10 @@ const HeroProduct = () => {
       const isProductInCart = cartItems.some(
         (item: any) => item.product_id === product.product_id
       );
+
+     console.log(cartItems)
+
+      console.log(isProductInCart)
 
       if (isProductInCart) {
         alert("Product is already in the cart.");
@@ -133,7 +139,7 @@ const HeroProduct = () => {
   return (
     <main>
       <div className="border md:grid grid-cols-2 gap-2">
-        <div className="image h-[70vh]">
+        <div className="image h-[80vh]">
           <img
             src={`http://localhost:5001${product?.imageURL[0]}`}
             alt={product?.name}

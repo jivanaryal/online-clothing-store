@@ -7,9 +7,7 @@ class Product {
     price,
     description,
     imageURLs,
-    brand,
     size,
-    color,
     subcategory_id,
 
     stockQuantity
@@ -19,9 +17,7 @@ class Product {
     this.price = price;
     this.description = description;
     this.imageURLs = imageURLs;
-    this.brand = brand;
     this.size = size;
-    this.color = color;
     this.subcategory_id = subcategory_id;
 
     this.stockQuantity = stockQuantity;
@@ -29,17 +25,15 @@ class Product {
 
   async create() {
     const createSql = `
-      INSERT INTO products (name, category_id, price, description, imageURL, brand, size, color,subcategory_id,stockQuantity)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?,?,?)`;
+      INSERT INTO products (name, category_id, price, description, imageURL, size,subcategory_id,stockQuantity)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
     const values = [
       this.name,
       this.category_id,
       this.price,
       this.description,
       JSON.stringify(this.imageURLs),
-      this.brand,
       this.size,
-      this.color,
       this.subcategory_id,
 
       this.stockQuantity,
@@ -87,7 +81,7 @@ GROUP BY p.product_id, d.discount_percentage;
     console.log(imageURLs, "from models");
     const updateSql = `
       UPDATE products
-      SET name = ?, category_id = ?, price = ?, description = ?, imageURL = ?, brand = ?, size = ?, color = ?, subcategory_id = ?,stockQuantity =?
+      SET name = ?, category_id = ?, price = ?, description = ?, imageURL = ?, size = ?, subcategory_id = ?,stockQuantity =?
       WHERE product_id = ?`;
     const values = [
       name,
@@ -95,11 +89,8 @@ GROUP BY p.product_id, d.discount_percentage;
       price,
       description,
       JSON.stringify(imageURLs),
-      brand,
       size,
-      color,
       subcategory_id,
-
       stockQuantity,
       product_id,
     ];

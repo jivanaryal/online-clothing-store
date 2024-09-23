@@ -11,7 +11,6 @@ class Cart {
   }
 
   static async getCartByCustomerIds(customer_id) {
-    console.log(customer_id,"something")
     const sql = `
       SELECT cart_id FROM cart WHERE customer_id = ?
     `;

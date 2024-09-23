@@ -130,9 +130,7 @@ const EditProduct = () => {
               price: location.state.price,
               description: location.state.description,
               imageURL: location.state.imageURL,
-              brand: location.state.brand,
               size: location.state.size,
-              color: location.state.color,
               discount: location.state.discount,
               stockQuantity: location.state.stockQuantity,
             }}

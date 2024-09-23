@@ -15,7 +15,8 @@ class CartItem {
 
   static async getItemsByCartId(cart_id) {
     const getByCartIdSql = "SELECT * FROM cart_items WHERE cart_id = ?";
-    return db.execute(getByCartIdSql, [cart_id]);
+     return db.execute(getByCartIdSql, [cart_id]);
+     
   }
 
   static async updateItemQuantity(id, quantity) {

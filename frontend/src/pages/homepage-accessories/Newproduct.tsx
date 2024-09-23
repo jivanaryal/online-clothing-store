@@ -62,7 +62,7 @@ const Newproduct: React.FC = () => {
       {loading ? (
         <p>Loading...</p>
       ) : newProducts.length > 0 ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 lg:gap-12">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 lg:gap-12">
           {newProducts.map((product) => (
             <Link
               key={product.product_id}
@@ -71,7 +71,7 @@ const Newproduct: React.FC = () => {
             >
               <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 relative">
                 {isNewProduct(product.created_at) && (
-                  <span className="absolute top-2 left-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
+                  <span className="absolute z-50 top-2 left-2 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
                     New
                   </span>
                 )}
@@ -79,7 +79,7 @@ const Newproduct: React.FC = () => {
                   <img
                     src={`http://localhost:5001${product.imageURL}`}
                     alt={product.name}
-                    className="w-full h-48 object-cover rounded-t-lg"
+                    className="w-full h-64 object-cover rounded-t-lg"
                   />
                 </div>
                 <div className="p-4">

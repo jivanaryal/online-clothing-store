@@ -22,18 +22,27 @@ const SubcategoryProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState<string>('');
-  const [viewType, setViewType] = useState<'grid' | 'list'>('grid'); // State for view type
+  const [viewType, setViewType] = useState<'grid' | 'list'>('grid');
+  const [noProductsMessage, setNoProductsMessage] = useState<string>(''); // New state for message
 
   const subcategory_id = id;
 
   useEffect(() => {
     async function fetchData() {
+      setLoading(true);
+      setProducts([]);  // Clear products when switching subcategories
+      setNoProductsMessage('');  // Clear message when switching subcategories
+      
       try {
         const res = await axios.get(`http://localhost:5001/api/ocs/subcategories/new/${subcategory_id}`);
-        console.log(res.data);
-        setProducts(res.data);
+        if (res.data.length === 0) {
+          setNoProductsMessage('No products available for this subcategory.'); // Set no products message
+        } else {
+          setProducts(res.data);
+        }
       } catch (error) {
         console.error('Error fetching products:', error);
+        setNoProductsMessage('No products available for this  subcategory.'); // Handle error message
       } finally {
         setLoading(false);
       }
@@ -42,7 +51,6 @@ const SubcategoryProducts = () => {
     fetchData();
   }, [subcategory_id]);
 
-  // Sorting logic
   const sortedProducts = [...products].sort((a, b) => {
     const priceA = parseFloat(a.price);
     const priceB = parseFloat(b.price);
@@ -52,7 +60,7 @@ const SubcategoryProducts = () => {
     } else if (sortOrder === 'high-to-low') {
       return priceB - priceA;
     }
-    return 0; // No sorting
+    return 0;
   });
 
   return (
@@ -84,8 +92,8 @@ const SubcategoryProducts = () => {
 
       {loading ? (
         <p>Loading...</p>
-      ) : sortedProducts.length === 0 ? (
-        <p>No products available for this subcategory.</p>
+      ) : noProductsMessage ? (
+        <p>{noProductsMessage}</p> // Display message when no products are found
       ) : viewType === 'grid' ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {sortedProducts.map((product) => (
@@ -152,3 +160,4 @@ const SubcategoryProducts = () => {
 };
 
 export default SubcategoryProducts;
+

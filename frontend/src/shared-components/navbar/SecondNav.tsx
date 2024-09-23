@@ -119,21 +119,24 @@ const SecondNav = () => {
             <p>Loading...</p>
           ) : (
             categories.map((category) => (
-              <div key={category.id} className="relative group">
-                <span className="text-lg font-medium cursor-pointer text-gray-800 hover:text-gray-600">{category.name}</span>
-                <ul className="absolute left-0 hidden -mt-[0.8px] bg-white shadow-lg rounded-md group-hover:block">
-                  {category.subcategories.map((subcategory) => (
-                    <li key={subcategory.id} className="border-b last:border-b-0">
-                      <NavLink
-                        to={`/subcategory/${subcategory.id}`}
-                        className="block px-4 py-2 text-black hover:bg-gray-100"
-                      >
-                        {subcategory.name}
-                      </NavLink>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            <div key={category.id} className="relative group">
+  <span className="text-lg font-medium cursor-pointer text-gray-800 hover:text-gray-600">
+    {category.name}
+  </span>
+  <ul className="absolute left-0 top-8 hidden  bg-white shadow-lg rounded-md group-hover:block transform group-hover:scale-105 min-w-[400px] p-4">
+    {category.subcategories.map((subcategory) => (
+      <li key={subcategory.id} className="border-b last:border-b-0">
+        <NavLink
+          to={`/subcategory/${subcategory.id}`}
+          className="block px-4 py-2 text-black hover:bg-gray-100"
+        >
+          {subcategory.name}
+        </NavLink>
+      </li>
+    ))}
+  </ul>
+</div>
+
             ))
           )}
         </div>

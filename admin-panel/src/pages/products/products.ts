@@ -7,9 +7,7 @@ export const initialValues = {
   price: "",
   description: "",
   imageURL: "",
-  brand: "",
   size: "",
-  color: "",
   discount: "",
   stockQuantity: "",
 };
@@ -27,18 +25,10 @@ export const validation = Yup.object({
     .trim("Description cannot contain leading or trailing spaces")
     .required("Description is required")
     .matches(/^\S.*\S$/, "Description cannot be just spaces"),
-  brand: Yup.string()
-    .trim("Brand cannot contain leading or trailing spaces")
-    .required("Brand is required")
-    .matches(/^\S.*\S$/, "Brand cannot be just spaces"),
   size: Yup.string()
     .trim("Size cannot contain leading or trailing spaces")
     .required("Size is required")
     .matches(/^\S.*\S$/, "Size cannot be just spaces"),
-  color: Yup.string()
-    .trim("Color cannot contain leading or trailing spaces")
-    .required("Color is required")
-    .matches(/^\S.*\S$/, "Color cannot be just spaces"),
   subcategory_id: Yup.string().required("Subcategory is required"),
   stockQuantity: Yup.number()
     .required("Stock Quantity is required")
@@ -84,20 +74,11 @@ export const FormFields: IFormField[] = [
   },
 
   {
-    broswername: "product brand",
-    name: "brand",
-    type: "text",
-  },
-  {
     broswername: "product size",
     name: "size",
     type: "text",
   },
-  {
-    broswername: "product color",
-    name: "color",
-    type: "text",
-  },
+
   {
     broswername: "product price",
     name: "price",
