@@ -23,12 +23,9 @@ const createCart = async (req, res) => {
 
 const getAllCartByCustomerId = async (req, res) => {
   const { customerId } = req.params;
-  // console.log(customerId,"hello")
 
   try {
     const [cart] = await Cart.getCartByCustomerId(customerId);
-    // console.log(cart)
- 
     return res.status(200).json(cart);
   } catch (error) {
     console.log(error);
@@ -43,11 +40,9 @@ const getAllCartByCustomerId = async (req, res) => {
 
 const getCartByCustomerId = async (req, res) => {
   const { customerId } = req.params;
-  // console.log(customerId,"hello")
 
   try {
     const [cart] = await Cart.getCartByCustomerIds(customerId);
-    // console.log(cart)
  
     return res.status(200).json(cart);
   } catch (error) {
@@ -77,6 +72,8 @@ const deleteCart = async (req, res) => {
 
 const addItemToCart = async (req, res) => {
   const { cart_id, product_id, quantity } = req.body;
+
+  console.log(req.body)
  
   const cartItem = new CartItem(cart_id, product_id, quantity);
 
@@ -97,11 +94,11 @@ const addItemToCart = async (req, res) => {
 
 const getItemsByCartId = async (req, res) => {
   const { cartId } = req.params;
-  console.log(cartId,"2 aayo ni hana")
+  // console.log(cartId,"2 aayo ni hana")
 
   try {
     const [items] = await CartItem.getItemsByCartId(cartId);
-    console.log(items)
+    // console.log(items)
     return res.status(200).json(items);
   } catch (error) {
     console.log(error);
@@ -113,10 +110,11 @@ const getItemsByCartId = async (req, res) => {
 };
 
 const updateCartItemQuantity = async (req, res) => {
-  const { id, quantity } = req.body;
+  const { cart_id, quantity } = req.body;
+  // console.log(req.body)
 
   try {
-    await CartItem.updateItemQuantity(id, quantity);
+    await CartItem.updateItemQuantity(cart_id, quantity);
     return res.status(200).json({ msg: "Item quantity updated successfully" });
   } catch (error) {
     console.log(error);

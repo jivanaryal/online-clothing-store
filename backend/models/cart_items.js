@@ -20,6 +20,7 @@ class CartItem {
   }
 
   static async updateItemQuantity(id, quantity) {
+    console.log(id,quantity)
     const updateSql = "UPDATE cart_items SET quantity = ? WHERE id = ?";
     return db.execute(updateSql, [quantity, id]);
   }

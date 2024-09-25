@@ -33,9 +33,7 @@ class Cart {
   p.price AS product_price,
   p.description AS product_description,
   p.imageURL AS product_imageURL,
-  p.brand AS product_brand,
   p.size AS product_size,
-  p.color AS product_color,
   p.subcategory_id AS product_subcategory_id,
   p.stockQuantity AS product_stockQuantity
 FROM cart_items ci

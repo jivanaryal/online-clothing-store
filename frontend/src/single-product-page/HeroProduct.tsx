@@ -8,6 +8,7 @@ import Rating from "@/components/rating/Rating";
 
 const HeroProduct = () => {
   const [product, setProduct] = useState<any>(null);
+  const [CartItem, setCartItem] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [count, setCount] = useState<number>(1);
@@ -63,54 +64,58 @@ const HeroProduct = () => {
     setCount(value);
   };
 
-  const handleAddToCart = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login", { state: { from: "/cart" } });
+const handleAddToCart = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    navigate("/login", { state: { from: "/cart" } });
+    return;
+  }
+
+  try {
+    const cartResponse = await axios.get(
+      `http://localhost:5001/api/ocs/carts/customer/${localStorage.getItem("CustomerID")}`
+    );
+
+    const cartId = cartResponse.data[0].cart_id;
+    if (!cartId) {
+      alert("Failed to retrieve cart information.");
       return;
     }
 
-    try {
-      const cartResponse = await axios.get(
-        `http://localhost:5001/api/ocs/carts/customer/${localStorage.getItem("CustomerID")}`
-      );
+    const cartItemsResponse = await axios.get(
+      `http://localhost:5001/api/ocs/carts/items/${cartId}`
+    );
 
-      console.log(cartResponse);
+    const cartItems = cartItemsResponse.data;
 
-      const cartId = cartResponse.data[0].cart_id;
-      if (!cartId) {
-        alert("Failed to retrieve cart information.");
-        return;
-      }
+    // Check if the product is already in the cart
+    const isProductInCart = cartItems.some(
+      (item: any) => item.product_id === product.product_id
+    );
 
-      const cartItemsResponse = await axios.get(
-        `http://localhost:5001/api/ocs/carts/items/${cartId}`
-      );
-      const cartItems = cartItemsResponse.data;
-
-      const isProductInCart = cartItems.some(
-        (item: any) => item.product_id === product.product_id
-      );
-
-     console.log(cartItems)
-
-      console.log(isProductInCart)
-
-      if (isProductInCart) {
-        alert("Product is already in the cart.");
-      } else {
-        await axios.post("http://localhost:5001/api/ocs/carts/items", {
-          cart_id: cartId,
-          product_id: product.product_id,
-          quantity: count,
-        });
-
-        navigate("/cart");
-      }
-    } catch (error) {
-      alert("Failed to add item to cart.");
+    if (isProductInCart) {
+      // Update quantity if product is already in cart
+      const filterData = cartItems.filter((item) => item.product_id === product.product_id);
+      const id = filterData[0].id;
+      await axios.patch("http://localhost:5001/api/ocs/carts/items", {
+        cart_id: id,
+        quantity: count,
+      });
+    } else {
+      // Add product to cart if not present
+      await axios.post("http://localhost:5001/api/ocs/carts/items", {
+        cart_id: cartId,
+        product_id: product.product_id,
+        quantity: count,
+      });
     }
-  };
+
+    navigate("/cart");
+  } catch (error) {
+    alert("Failed to add item to cart.");
+  }
+};
+
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
