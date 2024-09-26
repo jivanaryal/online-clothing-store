@@ -14,44 +14,55 @@ import MoreAction from "./pages/products/MoreAction";
 import Orders from "./pages/orders/Orders";
 import CompletedOrders from "./pages/orders/CompletedOrders";
 // import AddProductDiscount from "./pages/discounts/AddProductDiscount";
+import UserAuthContextApi from "./hoc/UserAuthContextApi"; // Import the context provider
+import Login from "./services/Login"; // Assuming you have a login page
 
 const App = () => {
   return (
     <div className="">
       <Router>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="/products/product-list" element={<ViewProducts />} />
-            <Route path="/products/add-product" element={<AddProduct />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/orders/complete" element={<CompletedOrders />} />
-            <Route
-              path="products/product-list/action/:id"
-              element={<MoreAction />}
-            />
+        {/* Move UserAuthContextApi inside Router */}
+        <UserAuthContextApi>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/login" element={<Login />} />
 
-            <Route path="/products/edit/:id" element={<EditProduct />} />
-            <Route
-              path="/products/categories/edit/:id"
-              element={<EditCategory />}
-            />
-            <Route
-              path="/products/subcategories/edit/:id"
-              element={<EditSubCategories />}
-            />
-            <Route path="products/categories" element={<ViewCategories />} />
-            <Route
-              path="/products/subcategories"
-              element={<ViewSubCategories />}
-            />
-            <Route path="/products/add-category" element={<AddCategories />} />
-            <Route
-              path="/products/add-subcategory"
-              element={<AddSubCategories />}
-            />
-          </Route>
-        </Routes>
+            {/* Protected Routes */}
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="/products/product-list" element={<ViewProducts />} />
+              <Route path="/products/add-product" element={<AddProduct />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="/orders/complete" element={<CompletedOrders />} />
+              <Route
+                path="products/product-list/action/:id"
+                element={<MoreAction />}
+              />
+              <Route path="/products/edit/:id" element={<EditProduct />} />
+              <Route
+                path="/products/categories/edit/:id"
+                element={<EditCategory />}
+              />
+              <Route
+                path="/products/subcategories/edit/:id"
+                element={<EditSubCategories />}
+              />
+              <Route path="products/categories" element={<ViewCategories />} />
+              <Route
+                path="/products/subcategories"
+                element={<ViewSubCategories />}
+              />
+              <Route
+                path="/products/add-category"
+                element={<AddCategories />}
+              />
+              <Route
+                path="/products/add-subcategory"
+                element={<AddSubCategories />}
+              />
+            </Route>
+          </Routes>
+        </UserAuthContextApi>
       </Router>
     </div>
   );

@@ -88,10 +88,26 @@ const Sidebar = () => {
     if (path) navigate(path);
   };
 
+    const handleLogout = () => {
+    // Remove the token from localStorage
+    localStorage.removeItem("token1");
+    
+    // Navigate to the login page
+    navigate("/login");
+  };
+
   const isActive = (path: string | null) => location.pathname === path;
 
   const renderSubItems = (subItems: any[]) => (
     <section className="ml-8 mt-1 ">
+      <button className="absolute bottom-0 cursor-pointer left-0 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg w-full text-center py-3 font-semibold tracking-wide shadow-lg hover:from-purple-600 hover:to-blue-500 transition-all duration-300 ease-in-out transform"
+        onClick={handleLogout }
+      
+      
+      >
+  Logout
+</button>
+
       {subItems.map((item, i) => (
         <ul
           key={i}
