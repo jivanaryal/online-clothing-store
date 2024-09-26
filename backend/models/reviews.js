@@ -25,10 +25,25 @@ class Review {
     return db.execute(getAllSql);
   }
 
-  static async getByProductId(product_id) {
-    const getByProductIdSql = "SELECT * FROM reviews WHERE product_id = ?";
+static async getByProductId(product_id) {
+    const getByProductIdSql = `   
+    SELECT 
+        reviews.comment,
+        reviews.rating,
+        customers.FirstName,
+        customers.LastName
+    FROM 
+        reviews
+    JOIN 
+        customers ON reviews.CustomerID = customers.CustomerID
+    WHERE 
+        reviews.product_id = ?;   
+    `;
     return db.execute(getByProductIdSql, [product_id]);
   }
+  
+  
+
 
   static async deleteById(reviewId) {
     const deleteByIdSql = "DELETE FROM reviews WHERE review_id = ?";

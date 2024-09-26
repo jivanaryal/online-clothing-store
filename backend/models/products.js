@@ -106,19 +106,22 @@ GROUP BY p.product_id, d.discount_percentage;
 
   static async findWithReviewsAndDiscounts() {
     const selectSql = `
-      SELECT 
+    SELECT 
   p.*,
-  COALESCE(r.rating, NULL) AS review_rating,
-  COALESCE(r.comment, NULL) AS review_comment,
-  COALESCE(d.discount_percentage, NULL) AS discount_percentage,
-  COALESCE(d.start_date, NULL) AS discount_start_date,
-  COALESCE(d.end_date, NULL) AS discount_end_date
+  COALESCE(AVG(r.rating), NULL) AS review_rating, -- Average rating for the product
+  COALESCE(GROUP_CONCAT(r.comment SEPARATOR ', '), NULL) AS review_comments, -- Concatenate all comments
+  MAX(d.discount_percentage) AS discount_percentage, -- Use MAX to get discount percentage
+  MAX(d.start_date) AS discount_start_date, -- Use MAX to get start date
+  MAX(d.end_date) AS discount_end_date -- Use MAX to get end date
 FROM 
   products p
 LEFT JOIN 
   reviews r ON p.product_id = r.product_id
 LEFT JOIN 
   discounts d ON p.product_id = d.product_id
+GROUP BY 
+  p.product_id; -- Group by product ID to ensure each product is unique
+
     `;
   
     return db.execute(selectSql);

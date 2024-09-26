@@ -1,3 +1,4 @@
+
 const Router = require("express");
 const {
   postReview,
@@ -5,6 +6,7 @@ const {
   getReviewsByProduct,
   deleteReview,
   checkRatingAuth,
+  checkReview,
 } = require("../controllers/reviews");
 
 const router = Router();
@@ -20,7 +22,13 @@ router
   .route("/here")
   .post(postReview);
 
-  router.route("/:productId").get(getReviewsByProduct);
+router.route("/:productId").get(getReviewsByProduct);
+
+
+router.route("/check/:productId/:customerId").get(checkReview);
+
+
+
 
 // Route for deleting a review
 router.route("/:reviewId").delete(deleteReview);

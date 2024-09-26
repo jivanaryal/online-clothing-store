@@ -61,6 +61,13 @@ const createOrder = async (req, res) => {
 
 const getAllOrderDetails = async (req, res) => {
     // console.log("hello")
+
+   
+
+
+
+
+
     try {
         const [rows] = await pool.execute(`
             SELECT 
@@ -110,6 +117,49 @@ const getOrderDetails = async (req, res) => {
         res.status(500).json({ error: 'Failed to retrieve order details' });
     }
 };
+const getOrderDetailsByCustomer = async (req, res) => {
+    const { customerId } = req.params;
+    console.log(req.params)
+
+    try {
+        const [order] = await pool.execute(` 
+            
+             SELECT 
+                c.FirstName,
+                c.LastName,
+                c.PhoneNumber,
+                o.total_amount,
+                oi.quantity,
+                oi.unit_price,
+                oi.order_status,
+                p.name AS product_name
+            FROM 
+                orders o
+            INNER JOIN 
+                customers c ON o.customer_id = c.CustomerID
+            INNER JOIN 
+                order_items oi ON o.order_id = oi.order_id
+            INNER JOIN 
+                products p ON oi.product_id = p.product_id
+             where 
+             o.customer_id = ?
+            
+            
+            
+            `, [customerId]);
+        // const [orderItems] = await pool.execute('SELECT * FROM order_items WHERE order_id = ?', [customerId]);
+        console.log(order,"hello sir ")
+
+        if (order.length === 0) {
+            return res.status(404).json({ error: 'Order not found' });
+        }
+
+        res.status(200).json(order);
+    } catch (error) {
+        console.error('Error retrieving order details:', error);
+        res.status(500).json({ error: 'Failed to retrieve order details' });
+    }
+};
 
 
 const updateOrderStatus = async (req, res) => {
@@ -149,5 +199,6 @@ module.exports = {
     createOrder,
     getOrderDetails,
     getAllOrderDetails,
+    getOrderDetailsByCustomer,
     updateOrderStatus
 };

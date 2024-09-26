@@ -90,6 +90,7 @@ const getReviewsByProduct = async (req, res) => {
   const { productId } = req.params;
   try {
     const [reviews] = await Review.getByProductId(productId);
+    console.log(reviews);
     return res.status(200).json(reviews);
   } catch (error) {
     console.log(error);
@@ -114,10 +115,47 @@ const deleteReview = async (req, res) => {
   }
 };
 
+
+
+const checkReview = async (req, res) => {
+  const { productId, customerId } = req.params;
+
+  // Log parameters to verify they are being passed correctly
+  console.log('Product ID:', productId);
+  console.log('Customer ID:', customerId);
+
+  const query = 'SELECT * FROM reviews WHERE product_id = ? AND CustomerID = ?';
+
+  try {
+    const connection = await pool.getConnection();
+
+    // Using execute() with async/await instead of query()
+    const [results] = await connection.execute(query, [productId, customerId]);
+
+    // Log the results of the query
+    console.log('Query results:', results);
+
+    connection.release(); // Release connection back to pool
+
+    if (results.length > 0) {
+      console.log("User has reviewed this product");
+      return res.status(200).json({ hasReviewed: true });
+    } else {
+      console.log("User has not reviewed this product");
+      return res.status(200).json({ hasReviewed: false });
+    }
+  } catch (error) {
+    console.error('Database query error:', error);
+    return res.status(500).json({ message: 'Error checking review.', error });
+  }
+};
+
+
 module.exports = {
   postReview,
   getAllReviews,
   getReviewsByProduct,
   deleteReview,
   checkRatingAuth,
+  checkReview
 };
