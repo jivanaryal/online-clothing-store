@@ -15,8 +15,7 @@ export const discountvalidation = Yup.object({
     .max(100, "Discount percentage cannot exceed 100"),
 
   start_date: Yup.date()
-    .required("Start date is required")
-    .min(new Date(), "Start date cannot be in the past"),
+    .required("Start date is required"),
 
   end_date: Yup.date()
     .required("End date is required")
