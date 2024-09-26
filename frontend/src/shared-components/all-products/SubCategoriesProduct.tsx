@@ -42,7 +42,7 @@ const SubcategoryProducts = () => {
         }
       } catch (error) {
         console.error('Error fetching products:', error);
-        setNoProductsMessage('No products available for this  subcategory.'); // Handle error message
+        setNoProductsMessage('No products available for this subcategory.'); // Handle error message
       } finally {
         setLoading(false);
       }
@@ -91,15 +91,15 @@ const SubcategoryProducts = () => {
       </div>
 
       {loading ? (
-        <p>Loading...</p>
+        <p className="text-gray-700">Loading...</p>
       ) : noProductsMessage ? (
-        <p>{noProductsMessage}</p> // Display message when no products are found
+        <p className="text-gray-700">{noProductsMessage}</p> // Display message when no products are found
       ) : viewType === 'grid' ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {sortedProducts.map((product) => (
-            <Link key={product.id} to={`/products/${product.product_id}`}>
-              <div className="max-h-80 p-4 border rounded-md hover:shadow-lg cursor-pointer bg-white transition-shadow duration-300">
-                <div className="image h-44 rounded-md mb-2">
+            <Link key={product.product_id} to={`/products/${product.product_id}`}>
+              <div className="p-4 border rounded-md bg-white transition-colors duration-300 hover:bg-gray-100">
+                <div className="image h-44 mb-2">
                   <img
                     src={`http://localhost:5001${product.imageURL[0]}`} 
                     alt={product.name}
@@ -108,7 +108,7 @@ const SubcategoryProducts = () => {
                 </div>
                 <div className="content text-black">
                   <h3 className="text-lg font-semibold line-clamp-2">{product.name}</h3>
-                  <p className="text-gray-600 text-sm">{product.description}</p>
+                  <p className="text-gray-600 text-sm line-clamp-3">{product.description}</p>
                   {product.discount_percentage > 0 ? (
                     <>
                       <p className="text-xl font-semibold text-blue-600">
@@ -129,7 +129,7 @@ const SubcategoryProducts = () => {
       ) : (
         <div className="flex flex-col space-y-4">
           {sortedProducts.map((product) => (
-            <Link key={product.id} to={`/products/${product.product_id}`} className="flex border rounded-md p-4 hover:shadow-lg bg-white transition-shadow duration-300">
+            <Link key={product.product_id} to={`/products/${product.product_id}`} className="flex border rounded-md p-9 hover:bg-gray-100 bg-white transition-colors duration-300">
               <img
                 src={`http://localhost:5001${product.imageURL[0]}`} 
                 alt={product.name}
@@ -137,7 +137,7 @@ const SubcategoryProducts = () => {
               />
               <div className="flex-grow">
                 <h3 className="text-lg font-semibold">{product.name}</h3>
-                <p className="text-gray-600 text-sm">{product.description}</p>
+                <p className="text-gray-600 text-sm line-clamp-3">{product.description}</p>
                 {product.discount_percentage > 0 ? (
                   <>
                     <p className="text-xl font-semibold text-blue-600">
@@ -160,4 +160,3 @@ const SubcategoryProducts = () => {
 };
 
 export default SubcategoryProducts;
-

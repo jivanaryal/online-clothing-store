@@ -12,12 +12,14 @@ import PrivateRoute from "./auth/PrivateRoute";
 import CartPage from "./pages/cart-page/CartPage";
 import SubcategoryProducts from "./shared-components/all-products/SubCategoriesProduct";
 import AboutUs from "./pages/About-page/About";
+import MyOrders from "./pages/Orders/MyOrders";
 
 
 const App = () => {
   return (
     <Router>
       <AuthProvider>
+        
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<HomePage />} />
@@ -27,6 +29,7 @@ const App = () => {
             <Route path="/products/:id" element={<HeroProduct />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+        
           </Route>
           <Route
             path="/sales"
@@ -41,6 +44,14 @@ const App = () => {
             element={
               <PrivateRoute>
                 <CartPage />
+              </PrivateRoute>
+            }
+          /> 
+           <Route
+            path="/myorder"
+            element={
+              <PrivateRoute>
+                <MyOrders />
               </PrivateRoute>
             }
           /> 

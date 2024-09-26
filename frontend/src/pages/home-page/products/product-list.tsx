@@ -110,8 +110,22 @@ type AllProductsProps = {
 };
 
 function AllProducts({ products }: AllProductsProps) {
-  // Filter products to show only those with discounts
-  const discountedProducts = products.filter(product => product.discount_percentage > 0);
+  // Get the current date (start of the day)
+  const currentDate = new Date();
+  currentDate.setHours(0, 0, 0, 0);
+
+  // Filter products to show only those with active discounts (discount must be active)
+  const discountedProducts = products.filter(product => {
+    const discountStartDate = new Date(product.discount_start_date);
+    const discountEndDate = new Date(product.discount_end_date);
+
+    // Check if the discount is valid for the current date
+    return (
+      product.discount_percentage > 0 &&
+      discountStartDate <= currentDate &&
+      discountEndDate >= currentDate
+    );
+  });
 
   return (
     <div>
@@ -119,7 +133,11 @@ function AllProducts({ products }: AllProductsProps) {
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10 p-4">
         {discountedProducts.length > 0 ? (
           discountedProducts.map((product) => (
-            <Link key={product.product_id} to={`products/${product.product_id}`} className="transform transition-transform duration-300 hover:scale-105">
+            <Link
+              key={product.product_id}
+              to={`products/${product.product_id}`}
+              className="transform transition-transform duration-300 hover:scale-105"
+            >
               <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
                 <div className="relative">
                   <img
@@ -132,7 +150,9 @@ function AllProducts({ products }: AllProductsProps) {
                   </span>
                 </div>
                 <div className="p-4">
-                  <h3 className="text-lg font-semibold text-gray-800 truncate">{product.name}</h3>
+                  <h3 className="text-lg font-semibold text-gray-800 truncate">
+                    {product.name}
+                  </h3>
                   <div className="flex items-center mt-2 mb-2">
                     <p className="text-xl font-bold text-blue-600">
                       Rs. {product.price - (product.price * product.discount_percentage) / 100}
@@ -141,11 +161,13 @@ function AllProducts({ products }: AllProductsProps) {
                       Rs. {product.price}
                     </p>
                   </div>
-                  
+
                   {product.review_rating?.length > 0 && (
                     <div className="flex items-center text-sm text-gray-600">
                       <RatingStars rating={product.review_rating.length} />
-                      <span className="ml-2">({product.review_rating.length} reviews)</span>
+                      <span className="ml-2">
+                        ({product.review_rating.length} reviews)
+                      </span>
                     </div>
                   )}
                 </div>

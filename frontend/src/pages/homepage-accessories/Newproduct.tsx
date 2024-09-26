@@ -1,4 +1,3 @@
-// ... other imports remain unchanged
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -57,31 +56,29 @@ const Newproduct: React.FC = () => {
   const newProducts = products.filter((product) => isNewProduct(product.created_at));
 
   return (
-    <div className="p-4 w-11/12 mx-auto mt-4 mb-20 mr-4">
-      <h1 className="text-3xl font-bold mb-6">New Arrivals</h1>
+    <div className="p-8  w-11/12 mx-auto">
+      <h1 className="text-4xl font-bold mb-8  text-gray-900">New Arrivals</h1>
       {loading ? (
-        <p>Loading...</p>
+        <p className="text-center text-gray-600">Loading...</p>
       ) : newProducts.length > 0 ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 lg:gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {newProducts.map((product) => (
             <Link
               key={product.product_id}
               to={`products/${product.product_id}`}
-              className="transform transition-transform duration-300 hover:scale-105"
+              className="transform transition-transform duration-300 "
             >
               <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 relative">
                 {isNewProduct(product.created_at) && (
-                  <span className="absolute z-50 top-2 left-2 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
+                  <span className="absolute z-50 top-2 right-2 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
                     New
                   </span>
                 )}
-                <div className="relative">
-                  <img
-                    src={`http://localhost:5001${product.imageURL}`}
-                    alt={product.name}
-                    className="w-full h-64 object-cover rounded-t-lg"
-                  />
-                </div>
+                <img
+                  src={`http://localhost:5001${product.imageURL}`}
+                  alt={product.name}
+                  className="w-full h-64 object-cover rounded-t-lg transition-transform duration-300 hover:scale-110"
+                />
                 <div className="p-4">
                   <h3 className="text-lg font-semibold text-gray-800 truncate">{product.name}</h3>
                   <div className="flex items-center mt-2 mb-2">
@@ -103,7 +100,6 @@ const Newproduct: React.FC = () => {
                   {product.review_rating !== null && (
                     <div className="flex items-center">
                       {renderStars(product.review_rating)}
-                     
                     </div>
                   )}
                 </div>
@@ -112,7 +108,7 @@ const Newproduct: React.FC = () => {
           ))}
         </div>
       ) : (
-        <p>No new products available.</p>
+        <p className="text-center text-gray-600">No new products available.</p>
       )}
     </div>
   );
