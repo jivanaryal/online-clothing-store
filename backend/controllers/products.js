@@ -1,5 +1,6 @@
 const Product = require("../models/products");
 const path = require("path");
+const pool = require("../database/connect")
 
 const createProduct = async (req, res) => {
   try {
@@ -197,6 +198,44 @@ const catSubCatPro = async (req, res) => {
 };
 
 
+const getProductsBySubcategoryId = async (req, res) => {
+  const { id } = req.params;
+  console.log(req.params)
+
+    try {
+        // Query to get the subcategory_id for the given product_id from the products table
+        const [productResult] = await pool.query(
+            'SELECT subcategory_id FROM products WHERE product_id = ?',
+            [id]
+        );
+
+        if (productResult.length === 0) {
+            return res.status(404).json({ message: 'Product not found.' });
+        }
+
+        const subcategoryId = productResult[0].subcategory_id;
+
+        // Query to fetch all products that belong to the same subcategory, excluding the current product
+        const [relatedProducts] = await pool.query(
+            'SELECT * FROM products WHERE subcategory_id = ? AND product_id != ?',
+            [subcategoryId, id]
+        );
+
+        // If no related products found
+        if (relatedProducts.length === 0) {
+            return res.status(404).json({ message: 'No related products found.' });
+        }
+
+        // Return the related products
+        res.status(200).json(relatedProducts);
+    } catch (error) {
+        console.error('Error fetching related products:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
+
+
 module.exports = {
   createProduct,
   getAllProducts,
@@ -204,5 +243,6 @@ module.exports = {
   updateProduct,
   deleteProduct,
   getAllProductsWithReviewsAndDiscounts,
-  catSubCatPro
+  catSubCatPro,
+  getProductsBySubcategoryId
 };

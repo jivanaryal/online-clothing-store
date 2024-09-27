@@ -129,6 +129,39 @@ const verifyToken = async (req, res) => {
   }
 };
 
+
+const CustomerInfo = async (req, res) => {
+
+  try {
+    const { customerID } = req.params;
+     
+  const [results] = await pool.query('SELECT FirstName, LastName from customers where CustomerID = ?', [customerID]);
+
+  if (results.length === 0) {
+    return res.status(404).json({ message: "no user available" });
+      }
+  
+  return res.status(200).json(results);
+  } catch (error) {
+     res.status(500).json({ error: "Internal server error" });
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const ShowRecommendation = async (req, res) => {
     const customerID = req.params.customerID;
     console.log("Customer ID:", customerID); // Log the incoming customer ID
@@ -236,5 +269,6 @@ module.exports = {
   signupCustomers,
   loginCustomers,
   verifyToken,
-  ShowRecommendation
+  ShowRecommendation,
+  CustomerInfo
 };

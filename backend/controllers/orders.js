@@ -132,7 +132,8 @@ const getOrderDetailsByCustomer = async (req, res) => {
                 oi.quantity,
                 oi.unit_price,
                 oi.order_status,
-                p.name AS product_name
+                p.name AS product_name,
+                p.imageURl
             FROM 
                 orders o
             INNER JOIN 
