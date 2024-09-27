@@ -7,6 +7,7 @@ import { BiSolidCategory } from "react-icons/bi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useReducer } from "react";
 import { GrCompliance } from "react-icons/gr";
+import logo from "../assets/logo.png"
 
 export const SidebarItem = [
   {
@@ -128,11 +129,12 @@ const Sidebar = () => {
   return (
     <div>
       <main>
-        <h1 className="font-extrabold text-gray-800 text-2xl ml-6 mt-5">
-          Jivan Aryal
-        </h1>
+        <img src={logo} alt="" className="h-14 inline-flex animate-pulse -mt-1"/>
+        <strong className="font-extrabold text-gray-800   text-2xl mt-3  ml-1 mb-4 inline-flex">
+         Admin
+        </strong>
         <section>
-          <nav className="mt-6 flex justify-center flex-col ml-4 gap-2 mr-3">
+          <nav className="mt-6 flex justify-center  flex-col ml-4 gap-2 mr-3">
             {SidebarItem.map((item, index) => (
               <nav key={index}>
                 <ul
