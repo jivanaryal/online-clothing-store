@@ -164,10 +164,9 @@ function AllProducts({ products }: AllProductsProps) {
 
                   {product.review_rating?.length > 0 && (
                     <div className="flex items-center text-sm text-gray-600">
-                      <RatingStars rating={product.review_rating.length} />
-                      <span className="ml-2">
-                        ({product.review_rating.length} reviews)
-                      </span>
+                      {console.log(product.review_rating.length)}
+                      <RatingStars rating={product.review_rating} />
+                     
                     </div>
                   )}
                 </div>

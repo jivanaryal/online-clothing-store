@@ -129,8 +129,112 @@ const verifyToken = async (req, res) => {
   }
 };
 
+const ShowRecommendation = async (req, res) => {
+    const customerID = req.params.customerID;
+    console.log("Customer ID:", customerID); // Log the incoming customer ID
+
+    try {
+        // Step 1: Fetch all reviews from the database
+        const [results] = await pool.query('SELECT CustomerID, product_id, rating FROM reviews');
+        console.log("Fetched Results:", results); // Log fetched results
+
+        // Step 2: Transform results into a preference matrix
+        const prefs = {};
+        results.forEach(({ CustomerID, product_id, rating }) => {
+            if (!prefs[CustomerID]) prefs[CustomerID] = {};
+            prefs[CustomerID][product_id] = parseFloat(rating); // Convert rating to a number
+        });
+        
+        console.log("Preference Matrix:", prefs); // Log the preference matrix
+
+        // Step 3: Perform collaborative filtering algorithm
+        const recommendations = getRecommendations(prefs, customerID);
+        console.log("Recommendations:", recommendations); // Log the recommendations before sending
+        res.json(recommendations);
+    } catch (err) {
+        console.error("Error fetching recommendations:", err);
+        res.status(500).send(err);
+    }
+};
+
+// Function to calculate recommendations using collaborative filtering
+function getRecommendations(prefs, customerID) {
+    const totals = {};
+    const simSums = {};
+
+    // Get the ratings of the customer
+    const customerRatings = prefs[customerID];
+    console.log("Customer Ratings:", customerRatings); // Log customer ratings
+    if (!customerRatings) return []; // No ratings found for the customer
+
+    for (const other in prefs) {
+        if (other === customerID) continue; // Skip the customer themselves
+
+        const sim = pearsonCorrelation(prefs, customerID, other); // Use the Pearson correlation function
+        console.log(`Similarity between ${customerID} and ${other}:`, sim); // Log similarity
+        if (sim <= 0) continue; // Skip if similarity is not positive
+
+        for (const item in prefs[other]) {
+            // Only recommend items not already rated by the customer
+            if (!(item in customerRatings)) {
+                if (!totals[item]) totals[item] = 0;
+                totals[item] += prefs[other][item] * sim; // Weighted score
+
+                if (!simSums[item]) simSums[item] = 0;
+                simSums[item] += sim; // Total similarity
+            }
+        }
+    }
+
+    console.log("Total Scores:", totals); // Log total scores for all items
+    console.log("Similarity Sums:", simSums); // Log similarity sums
+
+    // Calculate rankings
+    const rankings = [];
+    for (const item in totals) {
+        rankings.push({ item, score: totals[item] / simSums[item] });
+    }
+
+    // Sort rankings by score
+    rankings.sort((a, b) => b.score - a.score);
+    console.log("Rankings:", rankings); // Log rankings before returning
+    return rankings;
+}
+
+function pearsonCorrelation(prefs, person1, person2) {
+    const si = [];
+    for (const item in prefs[person1]) {
+        if (item in prefs[person2]) si.push(item);
+    }
+
+    const n = si.length;
+    console.log(`Common items between ${person1} and ${person2}:`, si);
+
+    if (n === 0) return 0;
+
+    const sum1 = si.reduce((sum, item) => sum + prefs[person1][item], 0);
+    const sum2 = si.reduce((sum, item) => sum + prefs[person2][item], 0);
+    const sum1Sq = si.reduce((sum, item) => sum + Math.pow(prefs[person1][item], 2), 0);
+    const sum2Sq = si.reduce((sum, item) => sum + Math.pow(prefs[person2][item], 2), 0);
+    const pSum = si.reduce((sum, item) => sum + (prefs[person1][item] * prefs[person2][item]), 0);
+
+    const num = pSum - (sum1 * sum2 / n);
+    const den = Math.sqrt((sum1Sq - Math.pow(sum1, 2) / n) * (sum2Sq - Math.pow(sum2, 2) / n));
+    console.log(`Numerator: ${num}, Denominator: ${den}`);
+
+    // Handle identical ratings
+    if (den === 0) {
+        if (num === 0) return 1; // Perfect correlation if both ratings are identical
+        return 0; // No correlation
+    }
+
+    return num / den;
+}
+
+
 module.exports = {
   signupCustomers,
   loginCustomers,
   verifyToken,
+  ShowRecommendation
 };
