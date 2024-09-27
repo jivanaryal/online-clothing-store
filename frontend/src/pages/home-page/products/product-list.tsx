@@ -6,9 +6,10 @@ import { RatingStars } from "@/utils/ratingStars";
 
 type Props = {
   varient: string;
+  product_id?: string; // Add product_id as an optional prop
 };
 
-const ProductList = ({ varient }: Props) => {
+const ProductList = ({ varient, product_id }: Props) => {
   const [products, setProducts] = useState<Tproduct[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -16,7 +17,14 @@ const ProductList = ({ varient }: Props) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`http://localhost:5001/api/ocs/products/all`);
+        let url = "";
+        if (varient === "similar-product" && product_id) {
+          url = `http://localhost:5001/api/ocs/products/similar/${product_id}`;
+        } else {
+          url = `http://localhost:5001/api/ocs/products/all`;
+        }
+
+        const response = await fetch(url);
         if (!response.ok) throw new Error("Failed to fetch products");
         const data: Tproduct[] = await response.json();
         setProducts(data);
@@ -28,13 +36,13 @@ const ProductList = ({ varient }: Props) => {
     };
 
     fetchProducts();
-  }, []);
+  }, [varient, product_id]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="w-11/12 mx-auto mt-20 mb-20 mr-4">
+    <div className="p-8 mt-20 mb-20 mr-4">
       {varient === "similar-product" ? (
         <SimilarProduct products={products} />
       ) : varient === "all-product" ? (
@@ -60,76 +68,66 @@ type SimilarProductProps = {
 
 function SimilarProduct({ products }: SimilarProductProps) {
   return (
-    <div className="grid grid-cols-2 bg-red-500 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 gap-6">
-      {products.map((product, i) => (
-        <div key={i}>
-          <div className="max-h-80 p-1 border rounded-md hover:shadow-lg cursor-pointer">
-            <div className="image h-44 rounded-md">
+    <div className="p-8 bg-gray-100">
+      <h2 className="text-4xl font-bold mb-8 text-gray-900">Similar Products You May Like</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        {products.map((product) => (
+          <Link key={product.product_id} to={`/products/${product.product_id}`} className="group no-underline">
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105">
               <img
-                src={product.images[0]}
-                sizes={"100vw"}
-                alt=""
-                className="h-full w-full object-cover rounded-md"
+                src={`http://localhost:5001${product.imageURL[0]}`}
+                alt={product.name}
+                className="w-full h-56 object-cover transition-transform duration-300 ease-in-out group-hover:scale-110"
               />
-            </div>
-            <div className="content text-black p-1">
-              <p className="text-lg line-clamp-2 leading-5">{product.name}</p>
-              {product.discount_percentage > 0 && (
-                <p className="text-xl font-semibold text-blue-600">
-                  Rs. {product.price - (product.price * product.discount_percentage) / 100}
-                </p>
-              )}
-              {product.discount_percentage > 0 && (
-                <div className="flex items-center gap-2">
-                  <p className="text-gray-600 line-through">
-                    Rs. {product.price}
-                  </p>
-                  <p>{product.discount_percentage}%</p>
+              <div className="p-4">
+                <h3 className="text-xl font-semibold text-gray-800">{product.name}</h3>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-2xl font-bold text-blue-600">${product.price}</span>
+                  {product.discount_percentage && (
+                    <span className="text-sm text-gray-400 line-through">
+                      ${(
+                        parseFloat(product.price) *
+                        (1 + parseFloat(product.discount_percentage) / 100)
+                      ).toFixed(2)}
+                    </span>
+                  )}
                 </div>
-              )}
-              {product.avgRating > 0 && (
-                <div className="flex items-center gap-2">
-                  {/* Render stars here */}
-                  <span>{product.avgRating}</span>
-                  <span className="text-muted-foreground">
-                    ({product.reviews.length} reviews)
+                <div className="flex items-center">
+                  <span className={`text-sm ${product.stockQuantity > 0 ? "text-green-500" : "text-red-500"}`}>
+                    {product.stockQuantity > 0 ? "In Stock" : "Out of Stock"}
                   </span>
+                  <div className="ml-2 flex items-center">
+                    <span className="text-yellow-500">{"★".repeat(Math.floor(product.avgRating))}</span>
+                    <span className="text-gray-400">{` (${product.review_count})`}</span>
+                  </div>
                 </div>
-              )}
+              </div>
             </div>
-          </div>
-        </div>
-      ))}
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }
 
-// all products
 type AllProductsProps = {
   products: Tproduct[];
 };
 
 function AllProducts({ products }: AllProductsProps) {
-  // Get the current date (start of the day)
   const currentDate = new Date();
   currentDate.setHours(0, 0, 0, 0);
 
-  // Filter products to show only those with active discounts (discount must be active)
-  const discountedProducts = products.filter(product => {
+  const discountedProducts = products.filter((product) => {
     const discountStartDate = new Date(product.discount_start_date);
     const discountEndDate = new Date(product.discount_end_date);
 
-    // Check if the discount is valid for the current date
-    return (
-      product.discount_percentage > 0 &&
-      discountStartDate <= currentDate &&
-      discountEndDate >= currentDate
-    );
+    return product.discount_percentage > 0 && discountStartDate <= currentDate && discountEndDate >= currentDate;
   });
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6">Discounted Products</h1>
+      <h1 className="text-4xl font-bold mb-6">Discounted Products</h1>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10 p-4">
         {discountedProducts.length > 0 ? (
           discountedProducts.map((product) => (
@@ -150,23 +148,16 @@ function AllProducts({ products }: AllProductsProps) {
                   </span>
                 </div>
                 <div className="p-4">
-                  <h3 className="text-lg font-semibold text-gray-800 truncate">
-                    {product.name}
-                  </h3>
+                  <h3 className="text-lg font-semibold text-gray-800 truncate">{product.name}</h3>
                   <div className="flex items-center mt-2 mb-2">
                     <p className="text-xl font-bold text-blue-600">
                       Rs. {product.price - (product.price * product.discount_percentage) / 100}
                     </p>
-                    <p className="text-sm text-gray-500 line-through ml-2">
-                      Rs. {product.price}
-                    </p>
+                    <p className="text-sm text-gray-500 line-through ml-2">Rs. {product.price}</p>
                   </div>
-
                   {product.review_rating?.length > 0 && (
                     <div className="flex items-center text-sm text-gray-600">
-                      {console.log(product.review_rating.length)}
                       <RatingStars rating={product.review_rating} />
-                     
                     </div>
                   )}
                 </div>

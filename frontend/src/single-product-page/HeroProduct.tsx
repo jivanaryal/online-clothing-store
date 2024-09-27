@@ -5,6 +5,7 @@ import { FaMinus, FaPlus } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Rating from "@/components/rating/Rating";
+import ProductList from "@/pages/home-page/products/product-list";
 
 const HeroProduct = () => {
   const [product, setProduct] = useState<any>(null);
@@ -274,7 +275,8 @@ const handleAddToCart = async () => {
     <div className="mt-8">
       <Rating />
     </div>
-  </div>
+      </div>
+      <ProductList varient="similar-product"product_id={id} />
 </main>
 
 

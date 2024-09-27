@@ -56,7 +56,7 @@ const Newproduct: React.FC = () => {
   const newProducts = products.filter((product) => isNewProduct(product.created_at));
 
   return (
-    <div className="p-8  w-11/12 mx-auto">
+    <div className="p-8 ">
       <h1 className="text-4xl font-bold mb-8  text-gray-900">New Arrivals</h1>
       {loading ? (
         <p className="text-center text-gray-600">Loading...</p>

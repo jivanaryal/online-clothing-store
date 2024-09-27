@@ -2,7 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { RatingStars } from '@/utils/ratingStars';
-import { AiOutlineGroup, AiOutlineUnorderedList } from 'react-icons/ai'; // Import icons
+import { AiOutlineGroup, AiOutlineUnorderedList } from 'react-icons/ai';
 
 interface Product {
   id: number;
@@ -23,26 +23,26 @@ const SubcategoryProducts = () => {
   const [loading, setLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState<string>('');
   const [viewType, setViewType] = useState<'grid' | 'list'>('grid');
-  const [noProductsMessage, setNoProductsMessage] = useState<string>(''); // New state for message
+  const [noProductsMessage, setNoProductsMessage] = useState<string>('');
 
   const subcategory_id = id;
 
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
-      setProducts([]);  // Clear products when switching subcategories
-      setNoProductsMessage('');  // Clear message when switching subcategories
-      
+      setProducts([]);
+      setNoProductsMessage('');
+
       try {
         const res = await axios.get(`http://localhost:5001/api/ocs/subcategories/new/${subcategory_id}`);
         if (res.data.length === 0) {
-          setNoProductsMessage('No products available for this subcategory.'); // Set no products message
+          setNoProductsMessage('No products available for this subcategory.');
         } else {
           setProducts(res.data);
         }
       } catch (error) {
         console.error('Error fetching products:', error);
-        setNoProductsMessage('No products available for this subcategory.'); // Handle error message
+        setNoProductsMessage('No products available for this subcategory.');
       } finally {
         setLoading(false);
       }
@@ -65,15 +65,15 @@ const SubcategoryProducts = () => {
 
   return (
     <div className="container mx-auto px-4 py-6 min-h-[80vh]">
-      <h1 className="text-2xl font-bold mb-4">Products</h1>
+      <h1 className="text-3xl font-bold text-center mb-4">Our Products</h1>
       <div className="flex items-center justify-between mb-4">
-        <div>
+        <div className="flex items-center">
           <label htmlFor="sort" className="mr-2">Sort by:</label>
           <select
             id="sort"
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
-            className="p-2 border rounded"
+            className="p-2 border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
             <option value="">Default</option>
             <option value="low-to-high">Price: Low to High</option>
@@ -91,15 +91,15 @@ const SubcategoryProducts = () => {
       </div>
 
       {loading ? (
-        <p className="text-gray-700">Loading...</p>
+        <p className="text-gray-700 text-center">Loading...</p>
       ) : noProductsMessage ? (
-        <p className="text-gray-700">{noProductsMessage}</p> // Display message when no products are found
+        <p className="text-gray-700 text-center">{noProductsMessage}</p>
       ) : viewType === 'grid' ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {sortedProducts.map((product) => (
             <Link key={product.product_id} to={`/products/${product.product_id}`}>
-              <div className="p-4 border rounded-md bg-white transition-colors duration-300 hover:bg-gray-100">
-                <div className="image h-44 mb-2">
+              <div className="p-4 border rounded-lg shadow-md bg-white transition-transform transform hover:scale-105 duration-300">
+                <div className="h-60 mb-2">
                   <img
                     src={`http://localhost:5001${product.imageURL[0]}`} 
                     alt={product.name}
@@ -110,14 +110,12 @@ const SubcategoryProducts = () => {
                   <h3 className="text-lg font-semibold line-clamp-2">{product.name}</h3>
                   <p className="text-gray-600 text-sm line-clamp-3">{product.description}</p>
                   {product.discount_percentage > 0 ? (
-                    <>
+                    <div className="flex flex-col">
                       <p className="text-xl font-semibold text-blue-600">
                         Rs. {parseFloat(product.price) - (parseFloat(product.price) * product.discount_percentage) / 100}
                       </p>
-                      <div className="flex items-center gap-2">
-                        <p className="text-gray-600 line-through">Rs. {product.price}</p>
-                      </div>
-                    </>
+                      <p className="text-gray-600 line-through">Rs. {product.price}</p>
+                    </div>
                   ) : (
                     <p className="text-xl font-semibold text-blue-600">Rs. {product.price}</p>
                   )}
@@ -127,26 +125,24 @@ const SubcategoryProducts = () => {
           ))}
         </div>
       ) : (
-        <div className="flex flex-col space-y-4">
+        <div className="flex flex-col space-y-6">
           {sortedProducts.map((product) => (
-            <Link key={product.product_id} to={`/products/${product.product_id}`} className="flex border rounded-md p-9 hover:bg-gray-100 bg-white transition-colors duration-300">
+            <Link key={product.product_id} to={`/products/${product.product_id}`} className="flex border rounded-lg p-8 hover:bg-gray-100 bg-white transition-colors duration-300 shadow-md">
               <img
                 src={`http://localhost:5001${product.imageURL[0]}`} 
                 alt={product.name}
-                className="h-24 w-24 object-cover rounded-md mr-4"
+                className="h-32 w-32 object-cover rounded-md mr-4"
               />
               <div className="flex-grow">
                 <h3 className="text-lg font-semibold">{product.name}</h3>
                 <p className="text-gray-600 text-sm line-clamp-3">{product.description}</p>
                 {product.discount_percentage > 0 ? (
-                  <>
+                  <div className="flex flex-col">
                     <p className="text-xl font-semibold text-blue-600">
                       Rs. {parseFloat(product.price) - (parseFloat(product.price) * product.discount_percentage) / 100}
                     </p>
-                    <div className="flex items-center gap-2">
-                      <p className="text-gray-600 line-through">Rs. {product.price}</p>
-                    </div>
-                  </>
+                    <p className="text-gray-600 line-through">Rs. {product.price}</p>
+                  </div>
                 ) : (
                   <p className="text-xl font-semibold text-blue-600">Rs. {product.price}</p>
                 )}

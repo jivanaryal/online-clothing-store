@@ -12,10 +12,12 @@ const Index = () => {
       <CarouselSection />
       <HeroSection />
       {/* <ProductList /> */}
-      <ImageGrid />
-      <Recommendation />
+      <div className="mx-10">
+      {/* <ImageGrid /> */}
       <Newproduct />
-      <ProductList varient={"all-product"} />
+      <Recommendation />
+        <ProductList varient={"all-product"} />
+        </div>
     </div>
   );
 };

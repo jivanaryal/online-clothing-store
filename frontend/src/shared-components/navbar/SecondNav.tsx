@@ -1,10 +1,13 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { GiGoldStack, GiHamburgerMenu } from "react-icons/gi";
-import { GoStack } from "react-icons/go";
-import { MdPersonOutline, MdLogout } from "react-icons/md";
+import {GiHamburgerMenu, GiSelfLove } from "react-icons/gi";
+import { BsSaveFill } from "react-icons/bs";
+import { MdPersonOutline, MdLogout, MdPerson } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import { FaCartPlus } from "react-icons/fa";
 import { useState, useEffect } from "react";
+import axios from "axios";
+import { FaBasketShopping } from "react-icons/fa6";
+import logo from "@/assets/logo.png"
 
 interface Subcategory {
   id: number;
@@ -23,18 +26,26 @@ const SecondNav = () => {
   const [loading, setLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
-  const [cartItemCount, setCartItemCount] = useState(0); // Track cart items
+  const [cartItemCount, setCartItemCount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Simulate user authentication check
+    // Check user authentication
     const checkUserAuth = async () => {
       const token = localStorage.getItem("token");
       const id = localStorage.getItem("CustomerID");
 
-      if (token || id) {
+      if (token && id) {
         setIsLoggedIn(true);
-        setUsername("User"); // Replace with actual user fetch
+        // Fetch customer info using the stored CustomerID
+        try {
+          const response = await fetch(`http://localhost:5001/api/auth/ocs/customers/info/${id}`);
+          const data = await response.json();
+         
+          setUsername(data[0].FirstName + " " + data[0].LastName); // Assuming the username is in the 'username' field
+        } catch (error) {
+          console.error('Error fetching customer info:', error);
+        }
       } else {
         setIsLoggedIn(false);
       }
@@ -42,6 +53,7 @@ const SecondNav = () => {
 
     checkUserAuth();
 
+    // Fetch categories and subcategories
     fetch('http://localhost:5001/api/ocs/products/catsub')
       .then((res) => res.json())
       .then((data) => {
@@ -56,7 +68,7 @@ const SecondNav = () => {
 
     // Simulate cart item count fetch
     const cartCount = localStorage.getItem("cartItemCount") || 0;
-    setCartItemCount(Number(cartCount)); // Replace with actual cart count fetch
+    setCartItemCount(Number(cartCount));
   }, []);
 
   const transformAndFilterData = (data: any[]): Category[] => {
@@ -103,28 +115,20 @@ const SecondNav = () => {
   };
 
   return (
- <div className="sticky top-0 z-50">
-      <nav className="flex items-center justify-between py-3 px-6 shadow-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+    <div className="">
+      <nav className="flex items-center justify-between py-1 px-6 shadow-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white">
         {/* Left - Branding & Navigation Links */}
-        <div className="flex items-center space-x-4">
+          <img src={logo} alt=""  className="w-16 animate-pulse"/>
+        <div className="flex items-center  space-x-10">
           <p
             className="text-3xl font-bold cursor-pointer hover:text-yellow-300 transition duration-300 ease-in-out"
             onClick={() => navigate("/")}
           >
             Fashion
           </p>
-          <NavLink
-            to="/"
-            className="text-lg font-medium hover:text-yellow-300 transition duration-300 ease-in-out"
-          >
-            Home
-          </NavLink>
-          <NavLink
-            to="/about"
-            className="text-lg font-medium hover:text-yellow-300 transition duration-300 ease-in-out"
-          >
-            About Us
-          </NavLink>
+          
+          <NavLink to="/" className="text-lg font-medium hover:text-yellow-300 transition duration-300 ease-in-out">Home</NavLink>
+          <NavLink to="/about" className="text-lg font-medium hover:text-yellow-300 transition duration-300 ease-in-out">About Us</NavLink>
         </div>
 
         {/* Center - Category Dropdowns */}
@@ -137,13 +141,10 @@ const SecondNav = () => {
                 <span className="text-xl font-semibold cursor-pointer hover:text-yellow-300">
                   {category.name}
                 </span>
-                <ul className="absolute left-0 top-8 hidden bg-white text-gray-800 shadow-lg rounded-md group-hover:block transform group-hover:scale-105 min-w-[250px] p-4 z-10">
+                <ul className="absolute left-0 top-8 hidden bg-white text-gray-800 shadow-lg rounded-md group-hover:block transform group-hover:scale-105 min-w-[450px] p-4 z-10">
                   {category.subcategories.map((subcategory) => (
                     <li key={subcategory.id} className="border-b last:border-b-0">
-                      <NavLink
-                        to={`/subcategory/${subcategory.id}`}
-                        className="block px-4 py-2 hover:bg-blue-100 hover:text-blue-700 transition duration-200"
-                      >
+                      <NavLink to={`/subcategory/${subcategory.id}`} className="block px-4 py-2 hover:bg-blue-100 hover:text-blue-700 transition duration-200">
                         {subcategory.name}
                       </NavLink>
                     </li>
@@ -157,7 +158,7 @@ const SecondNav = () => {
         {/* Right - User Icons & Cart */}
         <div className="flex items-center space-x-6">
           <NavLink to="/myorder" className="relative">
-            <GoStack className="text-3xl hover:text-yellow-300 transition duration-300" />
+            <FaBasketShopping className="text-3xl hover:text-yellow-300 transition duration-300" />
             {cartItemCount > 0 && (
               <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold text-white bg-red-600 rounded-full">
                 {cartItemCount}
@@ -175,29 +176,16 @@ const SecondNav = () => {
 
           {!isLoggedIn ? (
             <div className="flex space-x-4 items-center">
-              <NavLink
-                to="/login"
-                className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black rounded-md font-bold transition duration-300"
-              >
-                Login
-              </NavLink>
-              <NavLink
-                to="/signup"
-                className="px-4 py-2 bg-green-500 hover:bg-green-600 text-black rounded-md font-bold transition duration-300"
-              >
-                Signup
-              </NavLink>
+              <NavLink to="/login" className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black rounded-md font-bold transition duration-300">Login</NavLink>
+              <NavLink to="/signup" className="px-4 py-2 bg-green-500 hover:bg-green-600 text-black rounded-md font-bold transition duration-300">Signup</NavLink>
             </div>
           ) : (
             <div className="flex items-center space-x-4">
-              <p className="text-sm font-medium">{username}</p>
-              <NavLink to="/profile">
-                <MdPersonOutline className="text-2xl hover:text-yellow-300 transition duration-300" />
-              </NavLink>
-              <button
-                onClick={handleLogout}
-                className="text-2xl text-red-600 hover:text-red-800 transition duration-300"
-              >
+             <strong className="text-sm font-medium bg-blue-200 p-2 text-black rounded-lg shadow-md">{username}</strong>
+ <div className="flex items-center justify-center w-12 h-12 bg-white text-red-400 rounded-full hover:bg-red-400 transition duration-300">
+    <MdPerson className="text-red-500 text-2xl" />
+  </div>
+              <button onClick={handleLogout} className="text-2xl text-red-600 hover:text-red-800 transition duration-300">
                 <MdLogout />
               </button>
             </div>
@@ -213,11 +201,7 @@ const SecondNav = () => {
         </div>
 
         {/* Mobile Sidebar */}
-        <div
-          className={`fixed top-0 right-0 h-screen w-64 bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg transition-transform duration-300 ease-in-out ${
-            sidebar ? "translate-x-0" : "translate-x-full"
-          }`}
-        >
+        <div className={`fixed top-0 right-0 h-screen w-64 bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg transition-transform duration-300 ease-in-out ${sidebar ? "translate-x-0" : "translate-x-full"}`}>
           <div className="flex justify-end p-4">
             <IoMdClose
               className="text-2xl cursor-pointer hover:text-yellow-300 transition duration-300"
@@ -236,7 +220,7 @@ const SecondNav = () => {
                       <li key={subcategory.id}>
                         <NavLink
                           to={`/subcategory/${subcategory.id}`}
-                          className="block px-4 py-2 hover:bg-blue-100"
+                          className="block px-4 py-2 hover:bg-blue-100 hover:text-blue-700 transition duration-200"
                         >
                           {subcategory.name}
                         </NavLink>
