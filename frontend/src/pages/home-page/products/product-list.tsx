@@ -69,7 +69,7 @@ type SimilarProductProps = {
 function SimilarProduct({ products }: SimilarProductProps) {
   return (
     <div className="p-8 bg-gray-100">
-      <h2 className="text-4xl font-bold mb-8 text-gray-900">Similar Products You May Like</h2>
+      <h2 className="text-4xl font-bold mb-8 text-gray-900">Related Products</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         {products.map((product) => (
           <Link key={product.product_id} to={`/products/${product.product_id}`} className="group no-underline">
@@ -127,8 +127,8 @@ function AllProducts({ products }: AllProductsProps) {
 
   return (
     <div>
-      <h1 className="text-4xl font-bold mb-6">Discounted Products</h1>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10 p-4">
+      <h1 className="text-4xl font-bold mb-6">Flash Sale</h1>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-10 p-4">
         {discountedProducts.length > 0 ? (
           discountedProducts.map((product) => (
             <Link
@@ -141,7 +141,7 @@ function AllProducts({ products }: AllProductsProps) {
                   <img
                     src={`http://localhost:5001${product.imageURL}`}
                     alt={product.name}
-                    className="w-full h-48 object-cover rounded-t-lg"
+                    className="w-full h-64 object-cover rounded-t-lg"
                   />
                   <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
                     {product.discount_percentage}% OFF

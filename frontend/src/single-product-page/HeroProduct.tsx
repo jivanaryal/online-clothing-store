@@ -43,6 +43,7 @@ const HeroProduct = () => {
       navigate("/login", { state: { from: `/products/${product.product_id}` } });
       return;
     }
+    console.log(showPayPal)
     setShowPayPal(true);
   };
 
@@ -232,7 +233,9 @@ const handleAddToCart = async () => {
           >
             Buy Now
           </button>
-        </div>
+            </div>
+            
+          
 
         {/* PayPal Button */}
         {showPayPal && (

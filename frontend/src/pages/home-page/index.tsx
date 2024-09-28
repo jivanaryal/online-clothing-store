@@ -1,5 +1,6 @@
 import Newproduct from "../homepage-accessories/Newproduct";
 import Recommendation from "../homepage-accessories/Recommendation";
+import TrendingProduct from "../homepage-accessories/TrendingProduct";
 import ImageGrid from "../images/Grid";
 import CarouselSection from "./carousel/Crousel-Section";
 import HeroSection from "./hero-section/HeroSection";
@@ -15,8 +16,9 @@ const Index = () => {
       <div className="mx-10">
       {/* <ImageGrid /> */}
       <Newproduct />
-      <Recommendation />
+        <Recommendation />
         <ProductList varient={"all-product"} />
+        <TrendingProduct />
         </div>
     </div>
   );

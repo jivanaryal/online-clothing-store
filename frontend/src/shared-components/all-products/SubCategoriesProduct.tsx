@@ -99,7 +99,7 @@ const SubcategoryProducts = () => {
           {sortedProducts.map((product) => (
             <Link key={product.product_id} to={`/products/${product.product_id}`}>
               <div className="p-4 border rounded-lg shadow-md bg-white transition-transform transform hover:scale-105 duration-300">
-                <div className="h-60 mb-2">
+                <div className="h-60   mb-2">
                   <img
                     src={`http://localhost:5001${product.imageURL[0]}`} 
                     alt={product.name}
