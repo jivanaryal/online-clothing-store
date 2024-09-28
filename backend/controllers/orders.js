@@ -195,11 +195,43 @@ const updateOrderStatus = async (req, res) => {
     }
 };
 
+const getTrending = async (req, res) => {
+  
+
+try {
+    const [orders] = await pool.execute(`
+        
+        SELECT 
+    p.name AS product_name,
+    p.imageURL,
+    p.price,
+    SUM(oi.quantity) AS total_quantity_sold
+FROM 
+    orders o
+INNER JOIN 
+    order_items oi ON o.order_id = oi.order_id
+INNER JOIN 
+    products p ON oi.product_id = p.product_id
+GROUP BY 
+    p.product_id, p.name, p.imageURL
+ORDER BY 
+    total_quantity_sold DESC
+LIMIT 10;
+
+        
+        
+        `);
+    return res.status(200).json(orders);
+} catch (error) {
+    return res.status(400).json({message:"error"});
+}
+}
 
 module.exports = {
     createOrder,
     getOrderDetails,
     getAllOrderDetails,
     getOrderDetailsByCustomer,
-    updateOrderStatus
+    updateOrderStatus,
+    getTrending
 };

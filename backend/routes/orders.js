@@ -6,6 +6,7 @@ router.post('/', orderController.createOrder);
 router.get('/all', orderController.getAllOrderDetails);
 router.get('/:orderId', orderController.getOrderDetails);
 router.get('/single/:customerId', orderController.getOrderDetailsByCustomer);
+router.get('/trending/products', orderController.getTrending)
 
 router.patch('/update/:id', orderController.updateOrderStatus);
 
