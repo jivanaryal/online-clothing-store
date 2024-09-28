@@ -80,7 +80,8 @@ const getAllOrderDetails = async (req, res) => {
                 oi.unit_price,
                 oi.order_status,
                 p.name AS product_name,
-                p.price AS product_price
+                p.price AS product_price,
+                p.imageURL
             FROM 
                 orders o
             INNER JOIN 

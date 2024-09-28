@@ -3,7 +3,7 @@ import TopNav from "@/shared-components/navbar/TopNav";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaPlus, FaMinus } from "react-icons/fa"; // Icons for the buttons
+import { FaPlus, FaMinus } from "react-icons/fa";
 
 const CartPage = () => {
   const [cartItem, setCartItem] = useState([]);
@@ -22,12 +22,12 @@ const CartPage = () => {
     fetchData();
   }, [id]);
 
-  // Function to update the quantity of a cart item
+  // Update cart item quantity
   const updateCartQuantity = async (itemId, newQuantity) => {
-    if (newQuantity < 1) return; // Prevent quantity from going below 1
+    if (newQuantity < 1) return; 
     try {
       await axios.patch(`http://localhost:5001/api/ocs/carts/items`, {
-        cart_id:itemId,
+        cart_id: itemId,
         quantity: newQuantity,
       });
       setCartItem((prevItems) =>
@@ -40,7 +40,7 @@ const CartPage = () => {
     }
   };
 
-  // Function to remove item from the cart
+  // Remove item from cart
   const removeFromCart = async (ids) => {
     try {
       await axios.delete(`http://localhost:5001/api/ocs/carts/items/${ids}`);
@@ -75,9 +75,8 @@ const CartPage = () => {
               >
                 <div
                   className="flex items-center space-x-6 cursor-pointer"
-                  // onClick={() => navigate(`/products/${item.product_id}`)}
+                  onClick={() => navigate(`/products/${item.product_id}`)} // Navigate to product page
                 >
-                  {/* Product Image */}
                   {item.product_imageURL && item.product_imageURL.length > 0 && (
                     <img
                       src={`http://localhost:5001${item.product_imageURL[0]}`}
@@ -86,7 +85,6 @@ const CartPage = () => {
                     />
                   )}
 
-                  {/* Product Info */}
                   <div>
                     <h2 className="text-xl font-semibold text-gray-900 hover:text-indigo-600 transition-colors">
                       {item.product_name}
@@ -94,18 +92,17 @@ const CartPage = () => {
                     <p className="text-gray-500">Price: ${item.product_price}</p>
                     <p className="text-gray-500">Size: {item.product_size}</p>
 
-                    {/* Quantity with Increase/Decrease Buttons */}
                     <div className="flex items-center space-x-3 mt-2">
                       <button
                         onClick={() => updateCartQuantity(item.id, item.quantity - 1)}
-                        className="bg-gray-200 text-gray-800 p-2 rounded-full hover:bg-gray-300"
+                        className="bg-gray-200 text-gray-800 p-2 rounded-full hover:bg-gray-300 transition-colors"
                       >
                         <FaMinus />
                       </button>
                       <p className="text-gray-500">Quantity: {item.quantity}</p>
                       <button
                         onClick={() => updateCartQuantity(item.id, item.quantity + 1)}
-                        className="bg-gray-200 text-gray-800 p-2 rounded-full hover:bg-gray-300"
+                        className="bg-gray-200 text-gray-800 p-2 rounded-full hover:bg-gray-300 transition-colors"
                       >
                         <FaPlus />
                       </button>
@@ -113,7 +110,6 @@ const CartPage = () => {
                   </div>
                 </div>
 
-                {/* Remove Button */}
                 <div>
                   <button
                     onClick={() => removeFromCart(item.id)}

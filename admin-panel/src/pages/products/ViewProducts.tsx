@@ -63,7 +63,7 @@ const ViewProducts: React.FC = () => {
           </header>
 
           <section className="grid pb-6   pl-4 grid-cols-1 sm:grid- s-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {products.slice(0, 10).map((product, index) => (
+            {products.map((product, index) => (
               <section
                 key={index}
                 className="bg-white transition-all shadow-md delay-100 duration-300   p-4  border-[1px] rounded-md"
