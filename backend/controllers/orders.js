@@ -204,6 +204,7 @@ try {
         
         SELECT 
     p.name AS product_name,
+    p.product_id,
     p.imageURL,
     p.price,
     SUM(oi.quantity) AS total_quantity_sold
