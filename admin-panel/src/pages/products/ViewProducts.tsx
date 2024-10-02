@@ -10,6 +10,8 @@ import { CgMore } from "react-icons/cg";
 
 const ViewProducts: React.FC = () => {
   const [products, setProducts] = useState<TProduct[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<TProduct[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [toggle, setToggle] = useState(false);
   const navigate = useNavigate();
 
@@ -17,25 +19,39 @@ const ViewProducts: React.FC = () => {
     async function getData() {
       const res = await getSingle("/products");
       setProducts(res.data);
+      setFilteredProducts(res.data); // Set filtered products initially to all products
     }
 
     getData();
   }, [toggle]);
 
+  useEffect(() => {
+    // Filter products based on the search term
+    if (searchTerm) {
+      const filtered = products.filter((product) =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredProducts(filtered);
+    } else {
+      setFilteredProducts(products); // Reset if no search term
+    }
+  }, [searchTerm, products]);
+
   const handleDeleteProduct = async (id: number) => {
     try {
       const res = await remove(`/products/${id}`);
       if (res?.status === 200) {
-        toast.success("product deleted");
+        toast.success("Product deleted");
         setToggle(!toggle);
       }
     } catch (error) {
       console.log(error);
     }
   };
+
   return (
-    <main className="bg-[#F7F7F7] ">
-      <header className="flex items-center justify-between mx-4 ">
+    <main className="bg-[#F7F7F7]">
+      <header className="flex items-center justify-between mx-4">
         <h1 className="font-bold text-2xl">Products List</h1>
         <button
           className="bg-blue-600 hover:bg-blue-700 hover:scale-[1.02] transition-all duration-200 delay-100 mt-3 text-sm font-semibold text-white py-2 px-3 flex items-center gap-2 rounded"
@@ -46,15 +62,17 @@ const ViewProducts: React.FC = () => {
         </button>
       </header>
 
-      <main className="min-h-screen   bg-[#F7F7F7]  ">
-        <div className="mx-10  bg-[#FFFFFF]">
-          <header className="flex justify-between mt-3 px-3 py-2 ">
+      <main className="min-h-screen bg-[#F7F7F7]">
+        <div className="mx-10 bg-[#FFFFFF]">
+          <header className="flex justify-between mt-3 px-3 py-2">
             <input
               type="search"
               name="search"
               id="search"
-              placeholder="search.."
+              placeholder="search..."
               className="m-2 border-2 py-1 my-3 pl-2 pr-20 rounded border-gray-400"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)} // Update search term
             />
             <section>
               <button>Category</button>
@@ -62,11 +80,11 @@ const ViewProducts: React.FC = () => {
             </section>
           </header>
 
-          <section className="grid pb-6   pl-4 grid-cols-1 sm:grid- s-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {products.map((product, index) => (
+          <section className="grid pb-6 pl-4 grid-cols-1 sm:grid- s-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {filteredProducts.map((product, index) => (
               <section
                 key={index}
-                className="bg-white transition-all shadow-md delay-100 duration-300   p-4  border-[1px] rounded-md"
+                className="bg-white transition-all shadow-md delay-100 duration-300 p-4 border-[1px] rounded-md"
               >
                 <div className="h-40 flex items-center justify-center">
                   <img
@@ -82,25 +100,21 @@ const ViewProducts: React.FC = () => {
                   </b>
                 </section>
                 <section className="flex justify-center gap-5 mt-4 text-sm">
-                  <Link
-                    to={`/products/edit/${product.product_id}`}
-                    state={product}
-                  >
-                    {" "}
-                    <button className="bg-white shadow-sm hover:bg-green-100  border-[1px] px-3 py-2 flex gap-1 items-center rounded">
+                  <Link to={`/products/edit/${product.product_id}`} state={product}>
+                    <button className="bg-white shadow-sm hover:bg-green-100 border-[1px] px-3 py-2 flex gap-1 items-center rounded">
                       <FaPen className="text-[10px] text-gray-600" />
-                      <p className="text-xs text-gray-800 font-bold ">Edit</p>
-                    </button>{" "}
+                      <p className="text-xs text-gray-800 font-bold">Edit</p>
+                    </button>
                   </Link>
                   <button
-                    className="bg-white hover:bg-red-100 text-red-500 border-[1px]  p-2 gap-1 flex items-center rounded"
+                    className="bg-white hover:bg-red-100 text-red-500 border-[1px] p-2 gap-1 flex items-center rounded"
                     onClick={() => handleDeleteProduct(product.product_id)}
                   >
                     <MdDelete />
                     <p className="text-xs font-bold">Delete</p>
                   </button>
                   <button
-                    className="bg-white hover:bg-blue-100 text-black  border-[1px]  p-2 gap-1 flex items-center rounded"
+                    className="bg-white hover:bg-blue-100 text-black border-[1px] p-2 gap-1 flex items-center rounded"
                     onClick={() => navigate(`action/${product.product_id}`)}
                   >
                     <CgMore />

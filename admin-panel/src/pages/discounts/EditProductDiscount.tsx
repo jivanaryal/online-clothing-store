@@ -55,6 +55,8 @@ const EditProductDiscount: React.FC<UpdateProductDiscountProps> = ({
   const handleSubmit = async (values) => {
     try {
       await update(`/discounts/${disId}`, values);
+      location.reload();
+      
     } catch (error) {
       console.log(error);
     }

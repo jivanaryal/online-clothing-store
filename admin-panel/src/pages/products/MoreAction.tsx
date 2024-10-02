@@ -39,6 +39,7 @@ const MoreAction = ({ newId }: IdProps) => {
   useEffect(() => {
     const getSingleProduct = async () => {
       const res = await getSingle(`/products/${id}`);
+        console.log(res.data)
       setSingleProduct(res.data);
 
       const res1 = await axios.get(`http://localhost:5001/api/ocs/products/${id}`);
@@ -75,8 +76,8 @@ const MoreAction = ({ newId }: IdProps) => {
             {/* Product Brand and Info */}
             <h2 className="text-2xl font-bold mb-4">{singleProduct?.brand}</h2>
             <p className="text-gray-600 text-lg mb-2">Price: <span className="font-semibold">Rs. {singleProduct?.price}</span></p>
-            <p className="text-gray-600 text-lg mb-2">Discount: <span className="font-semibold">{singleProduct?.discount}%</span></p>
-            <p className="text-gray-600 text-lg mb-4">Color: <span className="font-semibold">{singleProduct?.color}</span></p>
+            <p className="text-gray-600 text-lg mb-2">Discount: <span className="font-semibold">{singleProduct?.discount_percentage}%</span></p>
+            <p className="text-gray-600 text-lg mb-4">Size: <span className="font-semibold">{singleProduct?.size}</span></p>
 
             {/* Action Buttons */}
             <section className="flex space-x-4">
