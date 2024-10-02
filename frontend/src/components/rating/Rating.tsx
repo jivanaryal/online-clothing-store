@@ -79,6 +79,7 @@ const Rating: React.FC = () => {
         setRating(null);
         setComment('');
         fetchRatings();
+        location.reload();
       } catch (error) {
         console.error('Error submitting rating:', error);
       }

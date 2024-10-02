@@ -65,7 +65,7 @@ const Recommendation = () => {
 
     return (
         <div className="p-8 bg-white">
-            <h2 className="text-4xl font-bold mb-8 text-gray-900">Recommneded For You</h2>
+            <h2 className="text-4xl font-bold mb-8 text-gray-900">Recommended For You</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                 {recommendations.map((recommendation) => {
                     const product = productDetails[recommendation.item];

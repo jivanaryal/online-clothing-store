@@ -4,8 +4,11 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import sn from "@/assets/sliderone.png";
 import sm from '@/assets/slidertwo.png';
+import mm from '@/assets/1.png';
+import ss from '@/assets/2.png';
+import pp from '@/assets/3.png';
 
-const images = [sn, sm];
+const images = [sn,ss,pp,mm,sm];
 
 const ImageSlider = () => {
   const settings = {

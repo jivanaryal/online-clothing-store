@@ -98,7 +98,7 @@ function SimilarProduct({ products }: SimilarProductProps) {
                   </span>
                   <div className="ml-2 flex items-center">
                     <span className="text-yellow-500">{"★".repeat(Math.floor(product.avgRating))}</span>
-                    <span className="text-gray-400">{` (${product.review_count})`}</span>
+                    {/* <span className="text-gray-400">{` (${product.review_count})`}</span> */}
                   </div>
                 </div>
               </div>
